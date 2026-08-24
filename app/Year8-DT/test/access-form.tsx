@@ -43,7 +43,7 @@ export default function AccessForm() {
         "year8TestAccess",
         JSON.stringify({ name: trimmedName }),
       );
-      router.push("/test/exam");
+      router.push("/Year8-DT/test/exam");
     } catch {
       setIsEntering(false);
       setErrors({
