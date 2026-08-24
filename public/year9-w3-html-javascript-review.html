@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML + JavaScript Review — id & textContent</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f7fb;
+    color: #1f2937;
+  }
+
+  header {
+    background: #17365d;
+    color: white;
+    padding: 28px 24px;
+  }
+
+  header h1 {
+    margin: 0 0 8px 0;
+    font-size: 30px;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 16px;
+    opacity: 0.9;
+  }
+
+  main {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .rule {
+    background: white;
+    border-left: 5px solid #3b82f6;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+  }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+
+  .teacher {
+    border-top: 5px solid #4f46e5;
+  }
+
+  .student {
+    border-top: 5px solid #059669;
+  }
+
+  h2 {
+    margin-top: 0;
+    font-size: 21px;
+  }
+
+  h3 {
+    margin-bottom: 8px;
+  }
+
+  .goal {
+    background: #eef2ff;
+    padding: 10px 12px;
+    border-radius: 7px;
+    margin-bottom: 12px;
+  }
+
+  pre {
+    background: #111827;
+    color: #e5e7eb;
+    padding: 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    line-height: 1.45;
+    font-size: 14px;
+  }
+
+  .preview {
+    border: 2px dashed #cbd5e1;
+    padding: 14px;
+    border-radius: 8px;
+    margin: 12px 0;
+    background: #fafafa;
+    min-height: 90px;
+  }
+
+  .preview h1, .preview h2, .preview p {
+    margin: 6px 0;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin: 10px 0 6px;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #94a3b8;
+    border-radius: 7px;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .run {
+    background: #17365d;
+    color: white;
+  }
+
+  .reset {
+    background: #e5e7eb;
+    color: #111827;
+    margin-left: 8px;
+  }
+
+  .feedback {
+    min-height: 22px;
+    margin-top: 9px;
+    font-weight: bold;
+  }
+
+  .ok {
+    color: #047857;
+  }
+
+  .bad {
+    color: #b91c1c;
+  }
+
+  .full {
+    grid-column: 1 / -1;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    box-sizing: border-box;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #94a3b8;
+  }
+
+  iframe {
+    width: 100%;
+    min-height: 180px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    background: white;
+  }
+
+  @media (max-width: 800px) {
+    .pair {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>HTML + JavaScript Review</h1>
+  <p>Practice: finding an <b>id</b> and changing <b>textContent</b>.</p>
+</header>
+
+<main>
+
+  <div class="rule">
+    <strong>Remember:</strong><br>
+    Find the correct <code>id</code> in the HTML → use that same name in JavaScript → change the text with <code>.textContent</code>.
+  </div>
+
+  <!-- Pair 1 -->
+  <section class="pair">
+    <div class="card teacher">
+      <h2>1A. Teacher Example</h2>
+      <div class="goal">Change <b>Bonjour!</b> to <b>Ciao!</b>.</div>
+
+      <pre>&lt;h1 id="greeting"&gt;Namaste!&lt;/h1&gt;
+&lt;h2 id="hello"&gt;Bonjour!&lt;/h2&gt;
+
+&lt;button id="update"&gt;
+  Update
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  hello.textContent = 'Ciao!';
+};
+
+update.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1 id="t1greeting">Namaste!</h1>
+        <h2 id="t1hello">Bonjour!</h2>
+        <button class="run" onclick="t1hello.textContent='Ciao!'">Update</button>
+      </div>
+    </div>
+
+    <div class="card student">
+      <h2>1B. Your Turn</h2>
+      <div class="goal">Change <b>Goodbye!</b> to <b>See you!</b>.</div>
+
+      <pre>&lt;h1 id="title"&gt;My Website&lt;/h1&gt;
+&lt;h2 id="goodbye"&gt;Goodbye!&lt;/h2&gt;
+
+&lt;button id="change"&gt;
+  Change
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  ________.textContent = 'See you!';
+};
+
+change.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>My Website</h1>
+        <h2 id="s1goodbye">Goodbye!</h2>
+      </div>
+
+      <label>Type the missing id:</label>
+      <input id="a1" placeholder="Type here">
+      <button class="run" onclick="check1()">Run</button>
+      <button class="reset" onclick="reset1()">Reset</button>
+      <div id="f1" class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- Pair 2 -->
+  <section class="pair">
+    <div class="card teacher">
+      <h2>2A. Teacher Example</h2>
+      <div class="goal">Change <b>Australia</b> to <b>Italy</b>.</div>
+
+      <pre>&lt;h1 id="title"&gt;My Profile&lt;/h1&gt;
+&lt;p id="name"&gt;Alex&lt;/p&gt;
+&lt;p id="country"&gt;Australia&lt;/p&gt;
+
+&lt;button id="update"&gt;
+  Update
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  country.textContent = 'Italy';
+};
+
+update.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>My Profile</h1>
+        <p>Alex</p>
+        <p id="t2country">Australia</p>
+        <button class="run" onclick="t2country.textContent='Italy'">Update</button>
+      </div>
+    </div>
+
+    <div class="card student">
+      <h2>2B. Your Turn</h2>
+      <div class="goal">Change <b>Adelaide</b> to <b>Sydney</b>.</div>
+
+      <pre>&lt;h1 id="title"&gt;About Me&lt;/h1&gt;
+&lt;p id="name"&gt;Sarah&lt;/p&gt;
+&lt;p id="city"&gt;Adelaide&lt;/p&gt;
+
+&lt;button id="update"&gt;
+  Update
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  ________.textContent = 'Sydney';
+};
+
+update.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>About Me</h1>
+        <p>Sarah</p>
+        <p id="s2city">Adelaide</p>
+      </div>
+
+      <label>Type the missing id:</label>
+      <input id="a2" placeholder="Type here">
+      <button class="run" onclick="check2()">Run</button>
+      <button class="reset" onclick="reset2()">Reset</button>
+      <div id="f2" class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- Pair 3 -->
+  <section class="pair">
+    <div class="card teacher">
+      <h2>3A. Teacher Example</h2>
+      <div class="goal">Change the name from <b>John</b> to <b>David</b>.</div>
+
+      <pre>&lt;h1 id="heading"&gt;Student Profile&lt;/h1&gt;
+&lt;p id="name"&gt;John&lt;/p&gt;
+&lt;p id="age"&gt;14&lt;/p&gt;
+
+&lt;button id="edit"&gt;
+  Edit
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  name.textContent = 'David';
+};
+
+edit.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>Student Profile</h1>
+        <p id="t3name">John</p>
+        <p>14</p>
+        <button class="run" onclick="t3name.textContent='David'">Edit</button>
+      </div>
+    </div>
+
+    <div class="card student">
+      <h2>3B. Your Turn</h2>
+      <div class="goal">Change the age from <b>13</b> to <b>14</b>.</div>
+
+      <pre>&lt;h1 id="heading"&gt;Student Profile&lt;/h1&gt;
+&lt;p id="name"&gt;Emma&lt;/p&gt;
+&lt;p id="age"&gt;13&lt;/p&gt;
+
+&lt;button id="edit"&gt;
+  Edit
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  ________.textContent = '14';
+};
+
+edit.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>Student Profile</h1>
+        <p>Emma</p>
+        <p id="s3age">13</p>
+      </div>
+
+      <label>Type the missing id:</label>
+      <input id="a3" placeholder="Type here">
+      <button class="run" onclick="check3()">Run</button>
+      <button class="reset" onclick="reset3()">Reset</button>
+      <div id="f3" class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- Pair 4 -->
+  <section class="pair">
+    <div class="card teacher">
+      <h2>4A. Teacher Example</h2>
+      <div class="goal">Change two pieces of text.</div>
+
+      <pre>&lt;h1 id="title"&gt;My Favourite Things&lt;/h1&gt;
+&lt;p id="food"&gt;Pizza&lt;/p&gt;
+&lt;p id="sport"&gt;Soccer&lt;/p&gt;
+
+&lt;button id="update"&gt;
+  Update
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  food.textContent = 'Sushi';
+  sport.textContent = 'Basketball';
+};
+
+update.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>My Favourite Things</h1>
+        <p id="t4food">Pizza</p>
+        <p id="t4sport">Soccer</p>
+        <button class="run" onclick="t4food.textContent='Sushi'; t4sport.textContent='Basketball';">Update</button>
+      </div>
+    </div>
+
+    <div class="card student">
+      <h2>4B. Your Turn</h2>
+      <div class="goal">Change <b>Red → Blue</b> and <b>Cats → Dogs</b>.</div>
+
+      <pre>&lt;h1 id="title"&gt;My Favourite Things&lt;/h1&gt;
+&lt;p id="colour"&gt;Red&lt;/p&gt;
+&lt;p id="animal"&gt;Cats&lt;/p&gt;
+
+&lt;button id="update"&gt;
+  Update
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  ________.textContent = 'Blue';
+  ________.textContent = 'Dogs';
+};
+
+update.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>My Favourite Things</h1>
+        <p id="s4colour">Red</p>
+        <p id="s4animal">Cats</p>
+      </div>
+
+      <label>First missing id:</label>
+      <input id="a4a" placeholder="Type here">
+      <label>Second missing id:</label>
+      <input id="a4b" placeholder="Type here">
+
+      <button class="run" onclick="check4()">Run</button>
+      <button class="reset" onclick="reset4()">Reset</button>
+      <div id="f4" class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- Pair 5 -->
+  <section class="pair">
+    <div class="card teacher">
+      <h2>5A. Teacher Example</h2>
+      <div class="goal">Look at the <b>button id</b> too.</div>
+
+      <pre>&lt;h1 id="message"&gt;Hello!&lt;/h1&gt;
+
+&lt;button id="translate"&gt;
+  Translate
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  message.textContent = 'Bonjour!';
+};
+
+translate.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1 id="t5message">Hello!</h1>
+        <button class="run" onclick="t5message.textContent='Bonjour!'">Translate</button>
+      </div>
+    </div>
+
+    <div class="card student">
+      <h2>5B. Your Turn</h2>
+      <div class="goal">Fill in both missing ids.</div>
+
+      <pre>&lt;h1 id="greeting"&gt;Good morning!&lt;/h1&gt;
+
+&lt;button id="change"&gt;
+  Change
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  ________.textContent = 'Good afternoon!';
+};
+
+________.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1 id="s5greeting">Good morning!</h1>
+      </div>
+
+      <label>Text id:</label>
+      <input id="a5a" placeholder="Type here">
+
+      <label>Button id:</label>
+      <input id="a5b" placeholder="Type here">
+
+      <button class="run" onclick="check5()">Run</button>
+      <button class="reset" onclick="reset5()">Reset</button>
+      <div id="f5" class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- Pair 6 -->
+  <section class="pair">
+    <div class="card teacher">
+      <h2>6A. Teacher Example — Find the Match</h2>
+
+      <pre>&lt;h1 id="title"&gt;Welcome&lt;/h1&gt;
+&lt;p id="message"&gt;Hello!&lt;/p&gt;
+
+&lt;button id="update"&gt;
+  Update
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  message.textContent = 'Welcome!';
+};
+
+update.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="goal">
+        HTML <code>message</code> matches JavaScript <code>message</code>.<br>
+        HTML <code>update</code> matches JavaScript <code>update</code>.
+      </div>
+    </div>
+
+    <div class="card student">
+      <h2>6B. Your Turn — Fix the Mistake</h2>
+      <div class="goal">One id in the JavaScript does not match the HTML.</div>
+
+      <pre>&lt;h1 id="title"&gt;My Website&lt;/h1&gt;
+&lt;p id="greeting"&gt;Hello everyone!&lt;/p&gt;
+
+&lt;button id="change"&gt;
+  Change
+&lt;/button&gt;
+
+&lt;script&gt;
+function clickAction() {
+  message.textContent = 'Welcome everyone!';
+};
+
+change.onclick = clickAction;
+&lt;/script&gt;</pre>
+
+      <div class="preview">
+        <h1>My Website</h1>
+        <p id="s6greeting">Hello everyone!</p>
+      </div>
+
+      <label>Replace <code>message</code> with:</label>
+      <input id="a6" placeholder="Type the correct id">
+
+      <button class="run" onclick="check6()">Run</button>
+      <button class="reset" onclick="reset6()">Reset</button>
+      <div id="f6" class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- Final Playground -->
+  <section class="pair">
+    <div class="card full">
+      <h2>Final Practice — Edit and Run the Code</h2>
+      <div class="goal">
+        Change the code so the page shows <b>Japan</b> and <b>Tokyo</b> after clicking <b>Travel</b>.
+      </div>
+
+      <textarea id="playground"><h1 id="title">Travel</h1>
+<p id="country">Australia</p>
+<p id="city">Adelaide</p>
+
+<button id="travel">
+  Travel
+</button>
+
+<script>
+function clickAction() {
+  country.textContent = 'Japan';
+  city.textContent = 'Tokyo';
+};
+
+travel.onclick = clickAction;
+</script></textarea>
+
+      <button class="run" onclick="runPlayground()">Run Code</button>
+      <button class="reset" onclick="resetPlayground()">Reset</button>
+
+      <h3>Preview</h3>
+      <iframe id="previewFrame"></iframe>
+    </div>
+  </section>
+
+</main>
+
+<script>
+function feedback(id, correct, text) {
+  var box = document.getElementById(id);
+  box.textContent = text;
+  box.className = "feedback " + (correct ? "ok" : "bad");
+}
+
+function check1() {
+  if (document.getElementById("a1").value.trim() === "goodbye") {
+    document.getElementById("s1goodbye").textContent = "See you!";
+    feedback("f1", true, "Correct!");
+  } else {
+    feedback("f1", false, "Check the id beside Goodbye! in the HTML.");
+  }
+}
+function reset1() {
+  document.getElementById("s1goodbye").textContent = "Goodbye!";
+  document.getElementById("a1").value = "";
+  document.getElementById("f1").textContent = "";
+}
+
+function check2() {
+  if (document.getElementById("a2").value.trim() === "city") {
+    document.getElementById("s2city").textContent = "Sydney";
+    feedback("f2", true, "Correct!");
+  } else {
+    feedback("f2", false, "Find the id attached to Adelaide.");
+  }
+}
+function reset2() {
+  document.getElementById("s2city").textContent = "Adelaide";
+  document.getElementById("a2").value = "";
+  document.getElementById("f2").textContent = "";
+}
+
+function check3() {
+  if (document.getElementById("a3").value.trim() === "age") {
+    document.getElementById("s3age").textContent = "14";
+    feedback("f3", true, "Correct!");
+  } else {
+    feedback("f3", false, "Find the id attached to 13.");
+  }
+}
+function reset3() {
+  document.getElementById("s3age").textContent = "13";
+  document.getElementById("a3").value = "";
+  document.getElementById("f3").textContent = "";
+}
+
+function check4() {
+  var one = document.getElementById("a4a").value.trim();
+  var two = document.getElementById("a4b").value.trim();
+
+  if (one === "colour" && two === "animal") {
+    document.getElementById("s4colour").textContent = "Blue";
+    document.getElementById("s4animal").textContent = "Dogs";
+    feedback("f4", true, "Correct!");
+  } else {
+    feedback("f4", false, "Check which id belongs to Red and which id belongs to Cats.");
+  }
+}
+function reset4() {
+  document.getElementById("s4colour").textContent = "Red";
+  document.getElementById("s4animal").textContent = "Cats";
+  document.getElementById("a4a").value = "";
+  document.getElementById("a4b").value = "";
+  document.getElementById("f4").textContent = "";
+}
+
+function check5() {
+  var one = document.getElementById("a5a").value.trim();
+  var two = document.getElementById("a5b").value.trim();
+
+  if (one === "greeting" && two === "change") {
+    document.getElementById("s5greeting").textContent = "Good afternoon!";
+    feedback("f5", true, "Correct!");
+  } else {
+    feedback("f5", false, "Check the h1 id and the button id.");
+  }
+}
+function reset5() {
+  document.getElementById("s5greeting").textContent = "Good morning!";
+  document.getElementById("a5a").value = "";
+  document.getElementById("a5b").value = "";
+  document.getElementById("f5").textContent = "";
+}
+
+function check6() {
+  if (document.getElementById("a6").value.trim() === "greeting") {
+    document.getElementById("s6greeting").textContent = "Welcome everyone!";
+    feedback("f6", true, "Correct!");
+  } else {
+    feedback("f6", false, "Look at the id beside Hello everyone!.");
+  }
+}
+function reset6() {
+  document.getElementById("s6greeting").textContent = "Hello everyone!";
+  document.getElementById("a6").value = "";
+  document.getElementById("f6").textContent = "";
+}
+
+var originalPlayground = document.getElementById("playground").value;
+
+function runPlayground() {
+  document.getElementById("previewFrame").srcdoc = document.getElementById("playground").value;
+}
+
+function resetPlayground() {
+  document.getElementById("playground").value = originalPlayground;
+  document.getElementById("previewFrame").srcdoc = "";
+}
+</script>
+
+</body>
+</html>

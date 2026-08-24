@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Revision — Input + Button</title>
+<style>
+:root{
+  --navy:#12245f; --blue:#2563eb; --purple:#7c3aed;
+  --bg:#f5f7fb; --card:#fff; --line:#dbe3f0;
+  --text:#1b2437; --muted:#667085; --code:#101827;
+  --codeText:#eef3ff; --slot:#eef4ff; --good:#16734a;
+  --bad:#b42318; --yellow:#ffe66d; --lock:#eef1f5;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+.app{width:min(1300px,96vw);margin:18px auto 30px}
+h1{margin:0 0 6px;color:var(--navy);font-size:36px}
+.intro{margin:0 0 16px;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:1.18fr .82fr;gap:18px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 24px rgba(25,45,85,.07);overflow:hidden}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px 10px;border-bottom:1px solid #edf1f7}
+.head h2{margin:0;color:var(--navy);font-size:22px}
+.tag{color:var(--muted);font-size:12px;font-weight:800}
+
+pre.code{margin:0;min-height:500px;padding:18px 22px 22px;overflow:auto;background:var(--code);color:var(--codeText);font:600 15px/1.6 Consolas,Monaco,monospace;white-space:pre}
+.code-hole{
+  display:inline-flex;min-width:72px;min-height:26px;align-items:center;justify-content:center;
+  padding:1px 6px;border-radius:6px;background:var(--yellow);color:#111827;font-weight:900;vertical-align:middle;
+}
+.code-hole.wide{min-width:112px}
+.code-hole.over{outline:3px solid #fff;outline-offset:2px}
+.code-hole.correct{background:#8ee6ae}
+.code-hole.wrong{background:#ffb4ad}
+.code-hole .token{color:#111827;background:transparent;border:0;padding:0;box-shadow:none}
+
+.preview{padding:20px}
+.preview-stage{min-height:360px;padding:18px;border:2px solid #dce7f7;border-radius:14px;background:#fbfcff}
+.preview-stage input{width:220px;padding:8px 10px;border:1px solid #bbc7dc;border-radius:7px;font-size:16px}
+.preview-stage button{margin-left:8px;padding:8px 12px;border:0;border-radius:8px;background:var(--navy);color:#fff;font-weight:800;cursor:pointer}
+.preview-stage h2{margin:22px 0 8px;font-size:24px;color:#24355f}
+.status{margin-top:18px;font-size:13px;font-weight:800;color:#9a6700}
+.status.good{color:var(--good)}
+
+.work{padding:18px}
+.tabs{display:flex;gap:10px;margin-bottom:14px}
+.tab{border:0;border-radius:11px;padding:10px 16px;background:#e9eef7;color:var(--navy);font-size:15px;font-weight:850;cursor:pointer}
+.tab.active{background:var(--navy);color:#fff}
+.tab:disabled{background:#e3e6eb;color:#9aa1ad;cursor:not-allowed;opacity:.8}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+.section{position:relative;padding:16px;margin-bottom:14px;border:1px solid var(--line);border-radius:14px;background:#fff;transition:.2s ease}
+.section.locked{background:var(--lock);opacity:.62}
+.section.locked *{pointer-events:none}
+.lock-label{position:absolute;right:14px;top:12px;font-size:12px;font-weight:900;color:#7b8495;text-transform:uppercase;letter-spacing:.06em}
+.section h3{margin:0 0 8px;color:var(--navy);font-size:19px}
+.helper{margin:0 0 12px;color:var(--muted);font-size:13px}
+
+.formula{
+  padding:14px 16px;border:2px solid #e0e8f7;border-radius:13px;background:#fafcff;
+  font:700 17px/1.65 Consolas,Monaco,monospace;white-space:nowrap;overflow-x:auto
+}
+.formula-line{display:block;margin:3px 0;white-space:nowrap}
+.slot{
+  display:inline-flex;min-width:110px;min-height:38px;align-items:center;justify-content:center;
+  padding:5px 9px;margin:2px 3px;border:2px dashed #8faef5;border-radius:9px;background:var(--slot);
+  color:var(--navy);vertical-align:middle;font:700 14px/1.25 Consolas,Monaco,monospace;white-space:nowrap
+}
+.slot.wide{min-width:310px}
+.slot.small{min-width:90px}
+.slot.filled{border-style:solid;background:#f3f7ff}
+.slot.over,.bank.over{outline:3px solid rgba(255,230,109,.9);outline-offset:2px}
+.slot.wrong{border-color:var(--bad);background:#fff1f0}
+.slot.correct{border-color:var(--good);background:#eefaf3}
+
+.bank{
+  display:flex;flex-wrap:wrap;gap:9px;margin-top:10px;min-height:54px;padding:8px;
+  border:1.5px dashed #c4d0e5;border-radius:11px;background:#fafcff
+}
+.bank::before{
+  content:"Options";display:block;width:100%;font-size:11px;font-weight:800;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em
+}
+.token{
+  display:inline-block;padding:8px 11px;border:1px solid #c9d6ec;border-radius:9px;background:#f8fbff;
+  color:#10204f;font:700 14px/1.25 Consolas,Monaco,monospace;cursor:grab;user-select:none;white-space:nowrap
+}
+.token.dragging{opacity:.45}
+.token.selected{outline:3px solid rgba(37,99,235,.22);border-color:var(--blue);background:#edf4ff}
+
+.actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:12px}
+.action{border:0;border-radius:9px;padding:9px 13px;background:var(--navy);color:#fff;font-weight:800;cursor:pointer}
+.feedback{font-size:13px;font-weight:800}.feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}
+.code-instruction{padding:14px 16px;margin-bottom:12px;border:2px solid #e0e8f7;border-radius:13px;background:#fafcff;color:var(--navy);font-weight:800}
+
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <h1>JavaScript Revision — Input + Button</h1>
+  <p class="intro">First rebuild the JavaScript formulas. Then use them to complete two different interactions: input changes one line, button changes another.</p>
+
+  <div class="grid">
+    <section class="card">
+      <div class="head">
+        <h2>Original Code</h2>
+        <span class="tag">Drag Tab 2 options directly onto the yellow ???</span>
+      </div>
+
+      <pre class="code">&lt;input id="nameInput" placeholder="Type your name"&gt;
+&lt;button id="saveButton"&gt;Save&lt;/button&gt;
+
+&lt;h2&gt;Typing: &lt;span id="typingText"&gt;...&lt;/span&gt;&lt;/h2&gt;
+&lt;h2&gt;Saved: &lt;span id="savedText"&gt;...&lt;/span&gt;&lt;/h2&gt;
+
+&lt;script&gt;
+<span class="code-hole" data-code-expected="function">???</span> <span class="code-hole wide" data-code-expected="inputAction">???</span>() {
+  <span class="code-hole wide" data-code-expected="typingText">???</span>.textContent = <span class="code-hole wide" data-code-expected="nameInput">???</span>.<span class="code-hole" data-code-expected="value">???</span>;
+}
+
+<span class="code-hole" data-code-expected="function">???</span> <span class="code-hole wide" data-code-expected="clickAction">???</span>() {
+  <span class="code-hole wide" data-code-expected="savedText">???</span>.textContent = <span class="code-hole wide" data-code-expected="nameInput">???</span>.<span class="code-hole" data-code-expected="value">???</span>;
+}
+
+<span class="code-hole wide" data-code-expected="nameInput">???</span>.<span class="code-hole" data-code-expected="oninput">???</span> = <span class="code-hole wide" data-code-expected="inputAction">???</span>;
+<span class="code-hole wide" data-code-expected="saveButton">???</span>.<span class="code-hole" data-code-expected="onclick">???</span> = <span class="code-hole wide" data-code-expected="clickAction">???</span>;
+&lt;/script&gt;</pre>
+    </section>
+
+    <section class="card">
+      <div class="head">
+        <h2>Preview</h2>
+        <span class="tag">Input and button change different lines</span>
+      </div>
+      <div class="preview">
+        <div class="preview-stage">
+          <input id="previewInput" placeholder="Type your name">
+          <button id="previewButton">Save</button>
+
+          <h2>Typing: <span id="previewTyping">...</span></h2>
+          <h2>Saved: <span id="previewSaved">...</span></h2>
+
+          <div id="previewStatus" class="status">Locked — complete Tab 2 correctly first.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card work">
+    <div class="tabs">
+      <button class="tab active" data-tab="formulaPanel">1. Formula</button>
+      <button class="tab" id="codeTabButton" data-tab="codePanel" disabled>2. Complete the Code</button>
+    </div>
+
+    <div id="formulaPanel" class="tab-panel active">
+
+      <div class="section" data-step="1">
+        <h3>Step 1 — Function Structure</h3>
+        <p class="helper">Build the structure using: function name, set value sentence, and event sentence.</p>
+
+        <div class="formula">
+<span class="formula-line">function <span class="slot" data-expected="FUNCTION_NAME"></span>() {</span>
+<span class="formula-line">  <span class="slot wide" data-expected="SET_VALUE_SENTENCE"></span></span>
+<span class="formula-line">}</span>
+<span class="formula-line"><span class="slot wide" data-expected="EVENT_SENTENCE"></span></span>
+        </div>
+
+        <div class="bank" data-bank="structure">
+          <div class="token" draggable="true" data-value="EVENT_SENTENCE">TRIGGER_ID.EVENT = FUNCTION;</div>
+          <div class="token" draggable="true" data-value="FUNCTION_NAME">FUNCTION_NAME</div>
+          <div class="token" draggable="true" data-value="SET_VALUE_SENTENCE">TARGET_ID.textContent = SOURCE_ID.value;</div>
+        </div>
+
+        <div class="actions">
+          <button class="action step-check" data-check-step="1">Check & Unlock Step 2</button>
+          <span class="feedback" data-feedback-step="1"></span>
+        </div>
+      </div>
+
+      <div class="section locked" data-step="2">
+        <span class="lock-label">Locked</span>
+        <h3>Step 2 — Set Value Formula</h3>
+        <p class="helper">Complete the formula without changing its structure.</p>
+
+        <div class="formula">
+          <span class="slot" data-expected="TARGET_ID"></span>.textContent = <span class="slot" data-expected="SOURCE_ID"></span>.<span class="slot small" data-expected="value"></span>;
+        </div>
+
+        <div class="bank" data-bank="set-value">
+          <div class="token" draggable="true" data-value="value">value</div>
+          <div class="token" draggable="true" data-value="SOURCE_ID">SOURCE_ID</div>
+          <div class="token" draggable="true" data-value="TARGET_ID">TARGET_ID</div>
+        </div>
+
+        <div class="actions">
+          <button class="action step-check" data-check-step="2">Check & Unlock Step 3</button>
+          <span class="feedback" data-feedback-step="2"></span>
+        </div>
+      </div>
+
+      <div class="section locked" data-step="3">
+        <span class="lock-label">Locked</span>
+        <h3>Step 3 — Event Formula</h3>
+        <p class="helper">Complete the general event sentence.</p>
+
+        <div class="formula">
+          <span class="slot" data-expected="TRIGGER_ID"></span>.<span class="slot" data-expected="EVENT"></span> = <span class="slot" data-expected="FUNCTION"></span>;
+        </div>
+
+        <div class="bank" data-bank="event-formula">
+          <div class="token" draggable="true" data-value="FUNCTION">FUNCTION</div>
+          <div class="token" draggable="true" data-value="TRIGGER_ID">TRIGGER_ID</div>
+          <div class="token" draggable="true" data-value="EVENT">EVENT</div>
+        </div>
+
+        <div class="actions">
+          <button class="action step-check" data-check-step="3">Check & Unlock Step 4</button>
+          <span class="feedback" data-feedback-step="3"></span>
+        </div>
+      </div>
+
+      <div class="section locked" data-step="4">
+        <span class="lock-label">Locked</span>
+        <h3>Step 4 — Event Types</h3>
+        <p class="helper">Match each element with the event used in this lesson.</p>
+
+        <div class="formula">
+          input → <span class="slot" data-expected="oninput"></span>&nbsp;&nbsp;&nbsp;&nbsp; button → <span class="slot" data-expected="onclick"></span>
+        </div>
+
+        <div class="bank" data-bank="event-types">
+          <div class="token" draggable="true" data-value="onclick">onclick</div>
+          <div class="token" draggable="true" data-value="oninput">oninput</div>
+        </div>
+
+        <div class="actions">
+          <button class="action step-check" data-check-step="4">Check & Unlock Tab 2</button>
+          <span class="feedback" data-feedback-step="4"></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="codePanel" class="tab-panel">
+      <div class="section">
+        <h3>Complete the JavaScript</h3>
+        <div class="code-instruction">Drag these options directly onto the yellow <strong>???</strong> in the Original Code above. Options are shuffled.</div>
+
+        <div class="bank" data-bank="code">
+          <!-- All required tokens, including repeated values -->
+          <div class="token" draggable="true" data-value="function">function</div>
+          <div class="token" draggable="true" data-value="function">function</div>
+
+          <div class="token" draggable="true" data-value="inputAction">inputAction</div>
+          <div class="token" draggable="true" data-value="inputAction">inputAction</div>
+          <div class="token" draggable="true" data-value="clickAction">clickAction</div>
+          <div class="token" draggable="true" data-value="clickAction">clickAction</div>
+
+          <div class="token" draggable="true" data-value="typingText">typingText</div>
+          <div class="token" draggable="true" data-value="savedText">savedText</div>
+
+          <div class="token" draggable="true" data-value="nameInput">nameInput</div>
+          <div class="token" draggable="true" data-value="nameInput">nameInput</div>
+          <div class="token" draggable="true" data-value="nameInput">nameInput</div>
+
+          <div class="token" draggable="true" data-value="value">value</div>
+          <div class="token" draggable="true" data-value="value">value</div>
+
+          <div class="token" draggable="true" data-value="saveButton">saveButton</div>
+          <div class="token" draggable="true" data-value="oninput">oninput</div>
+          <div class="token" draggable="true" data-value="onclick">onclick</div>
+
+          <!-- Distractors -->
+          <div class="token" draggable="true" data-value="textContent">textContent</div>
+          <div class="token" draggable="true" data-value="button">button</div>
+          <div class="token" draggable="true" data-value="input">input</div>
+        </div>
+
+        <div class="actions">
+          <button class="action" id="checkCode">Check & Run</button>
+          <span id="codeFeedback" class="feedback"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+let draggedToken=null;
+let selectedToken=null;
+let unlocked=false;
+
+function shuffleBank(bank){
+  const tokens=[...bank.querySelectorAll(':scope > .token')];
+  for(let i=tokens.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [tokens[i],tokens[j]]=[tokens[j],tokens[i]];
+  }
+  tokens.forEach(t=>bank.appendChild(t));
+}
+
+function homeBank(token){
+  return document.querySelector(`.bank[data-bank="${token.dataset.home}"]`);
+}
+function returnHome(token){
+  const bank=homeBank(token);
+  if(bank) bank.appendChild(token);
+  token.classList.remove('selected');
+}
+function storeHomes(){
+  document.querySelectorAll('.bank').forEach(bank=>{
+    bank.querySelectorAll(':scope > .token').forEach(token=>{
+      token.dataset.home=bank.dataset.bank;
+    });
+  });
+}
+function setSelected(token){
+  document.querySelectorAll('.token.selected').forEach(t=>t.classList.remove('selected'));
+  selectedToken=token;
+  if(token) token.classList.add('selected');
+}
+function placeToken(container,token){
+  if(!container||!token) return;
+  const existing=container.querySelector('.token');
+  if(existing&&existing!==token) returnHome(existing);
+  if(container.classList.contains('code-hole')) container.textContent='';
+  container.appendChild(token);
+  container.classList.add('filled');
+  container.classList.remove('wrong','correct');
+  setSelected(null);
+}
+function tokenValue(container){
+  const token=container.querySelector('.token');
+  return token?token.dataset.value:'';
+}
+function restoreCodeHole(hole){
+  if(!hole.querySelector('.token')) hole.textContent='???';
+}
+
+function setupToken(token){
+  token.addEventListener('dragstart',e=>{
+    draggedToken=token;
+    token.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',token.dataset.value);
+  });
+  token.addEventListener('dragend',()=>{
+    token.classList.remove('dragging');
+    draggedToken=null;
+    document.querySelectorAll('.slot,.code-hole,.bank').forEach(x=>x.classList.remove('over'));
+  });
+  token.addEventListener('click',e=>{
+    e.stopPropagation();
+    const parent=token.parentElement;
+    if(parent.classList.contains('slot')||parent.classList.contains('code-hole')){
+      returnHome(token);
+      parent.classList.remove('filled','wrong','correct');
+      if(parent.classList.contains('code-hole')) restoreCodeHole(parent);
+      return;
+    }
+    setSelected(token);
+  });
+}
+function setupTarget(target){
+  target.addEventListener('dragover',e=>{
+    e.preventDefault();
+    e.dataTransfer.dropEffect='move';
+    target.classList.add('over');
+  });
+  target.addEventListener('dragleave',()=>target.classList.remove('over'));
+  target.addEventListener('drop',e=>{
+    e.preventDefault();
+    target.classList.remove('over');
+    if(draggedToken) placeToken(target,draggedToken);
+  });
+  target.addEventListener('click',()=>{
+    if(selectedToken) placeToken(target,selectedToken);
+  });
+}
+function setupBank(bank){
+  bank.addEventListener('dragover',e=>{
+    e.preventDefault();
+    e.dataTransfer.dropEffect='move';
+    bank.classList.add('over');
+  });
+  bank.addEventListener('dragleave',()=>bank.classList.remove('over'));
+  bank.addEventListener('drop',e=>{
+    e.preventDefault();
+    bank.classList.remove('over');
+    if(draggedToken&&draggedToken.dataset.home===bank.dataset.bank){
+      const oldParent=draggedToken.parentElement;
+      returnHome(draggedToken);
+      oldParent.classList.remove('filled','wrong','correct');
+      if(oldParent.classList.contains('code-hole')) restoreCodeHole(oldParent);
+    }
+  });
+}
+
+function checkContainers(containers,key){
+  let all=true;
+  containers.forEach(c=>{
+    const ok=tokenValue(c)===c.dataset[key];
+    c.classList.toggle('correct',ok);
+    c.classList.toggle('wrong',!ok);
+    if(!ok) all=false;
+  });
+  return all;
+}
+function unlockStep(step){
+  const section=document.querySelector(`.section[data-step="${step}"]`);
+  if(!section)return;
+  section.classList.remove('locked');
+  const label=section.querySelector('.lock-label');
+  if(label)label.remove();
+}
+function checkStep(step){
+  const section=document.querySelector(`.section[data-step="${step}"]`);
+  const ok=checkContainers([...section.querySelectorAll('.slot')],'expected');
+  const fb=document.querySelector(`[data-feedback-step="${step}"]`);
+  fb.textContent=ok?'Correct.':'Not yet — check the red blanks.';
+  fb.className='feedback '+(ok?'good':'bad');
+  if(ok){
+    if(step<4) unlockStep(step+1);
+    if(step===4){
+      document.getElementById('codeTabButton').disabled=false;
+      fb.textContent='Correct — Tab 2 is ready.';
+    }
+  }
+}
+
+storeHomes();
+document.querySelectorAll('.bank').forEach(shuffleBank);
+document.querySelectorAll('.token').forEach(setupToken);
+document.querySelectorAll('.slot,.code-hole').forEach(setupTarget);
+document.querySelectorAll('.bank').forEach(setupBank);
+
+document.querySelectorAll('.step-check').forEach(btn=>{
+  btn.addEventListener('click',()=>checkStep(Number(btn.dataset.checkStep)));
+});
+
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn.disabled)return;
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('checkCode').addEventListener('click',()=>{
+  const holes=[...document.querySelectorAll('.code-hole')];
+  const ok=checkContainers(holes,'codeExpected');
+  const fb=document.getElementById('codeFeedback');
+  fb.textContent=ok?'Correct — preview unlocked.':'Not yet — check the red blanks.';
+  fb.className='feedback '+(ok?'good':'bad');
+
+  if(ok){
+    unlocked=true;
+    document.getElementById('previewStatus').textContent='Unlocked — typing changes the first line; clicking Save changes the second line.';
+    document.getElementById('previewStatus').className='status good';
+  }else{
+    unlocked=false;
+    document.getElementById('previewStatus').textContent='Locked — complete Tab 2 correctly first.';
+    document.getElementById('previewStatus').className='status';
+    document.getElementById('previewTyping').textContent='...';
+    document.getElementById('previewSaved').textContent='...';
+  }
+});
+
+document.getElementById('previewInput').addEventListener('input',()=>{
+  if(!unlocked)return;
+  document.getElementById('previewTyping').textContent=
+    document.getElementById('previewInput').value || '...';
+});
+
+document.getElementById('previewButton').addEventListener('click',()=>{
+  if(!unlocked)return;
+  document.getElementById('previewSaved').textContent=
+    document.getElementById('previewInput').value || '...';
+});
+</script>
+</body>
+</html>

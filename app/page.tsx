@@ -44,25 +44,25 @@ export default function Home() {
             </span>
           </Link>
 
-          <article
-            aria-label="Year 9 Digit Tech, no resources available"
-            className="flex min-h-72 flex-col justify-between rounded-2xl border border-[#c8d7e2] bg-white p-7 shadow-[0_18px_45px_rgba(52,82,106,0.08)] dark:border-[#315066] dark:bg-[#102536] sm:p-9"
+          <Link
+            href="/Year9-DT"
+            className="group flex min-h-72 flex-col justify-between rounded-2xl bg-[#0b1f3a] p-7 text-white shadow-[0_20px_50px_rgba(11,31,58,0.16)] transition-[transform,background-color,box-shadow] hover:-translate-y-1 hover:bg-[#10345a] hover:shadow-[0_24px_60px_rgba(11,31,58,0.22)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2aa7c9]/40 active:translate-y-0 sm:p-9"
           >
             <div>
-              <p className="text-sm font-bold text-[#647385] dark:text-[#a9beca]">
-                No resources yet
+              <p className="text-sm font-bold text-[#9fdcec]">
+                Available now
               </p>
               <h2 className="mt-4 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
                 Year 9 Digit Tech
               </h2>
-              <p className="mt-4 max-w-sm leading-7 text-[#647385] dark:text-[#a9beca]">
-                Resources for this year level will appear here when they are ready.
+              <p className="mt-4 max-w-sm leading-7 text-[#d9edf8]">
+                Review HTML and practise core JavaScript skills.
               </p>
             </div>
-            <span className="mt-10 font-bold text-[#7b8996] dark:text-[#91a8b7]">
-              Coming soon
+            <span className="mt-10 font-bold text-[#9fdcec] transition-colors group-hover:text-white">
+              Open course
             </span>
-          </article>
+          </Link>
         </section>
       </div>
     </main>

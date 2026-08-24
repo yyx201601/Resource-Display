@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Year 9 JavaScript Formula Viewer</title>
+<style>
+:root{
+  --navy:#10204f; --blue:#2563eb; --purple:#7c3aed;
+  --ink:#172033; --muted:#667085; --line:#dbe3f2;
+  --bg:#f4f7fb; --code:#101827; --hl:#ffe66d; --green:#16734a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+.app{width:min(1280px,96vw);margin:18px auto}
+.top,.card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 24px rgba(25,45,85,.07)}
+.top{overflow:hidden}
+.top-head{display:flex;justify-content:space-between;align-items:end;gap:20px;padding:16px 24px 10px}
+h1{margin:0;color:var(--navy);font-size:clamp(28px,3vw,42px)}
+.page-tag{color:var(--muted);font-size:15px;font-weight:800;padding-bottom:5px}
+
+.full-code{
+  margin:0;padding:18px 28px 22px;background:var(--code);color:#edf3ff;
+  font:600 clamp(15px,1.3vw,19px)/1.55 Consolas,Monaco,monospace;
+  white-space:pre;overflow:auto;min-height:215px
+}
+.top-token{display:inline;padding:1px 2px;border-radius:5px;transition:.12s ease}
+.top-token.hl{background:var(--hl);color:#111827;box-shadow:0 0 0 2px rgba(255,230,109,.18)}
+
+.inline-edit{
+  display:inline-block;
+  min-width:145px;
+  padding:1px 6px;
+  margin:0 1px;
+  border:1px dashed #8fb1ff;
+  border-radius:5px;
+  background:#19243b;
+  color:#fff;
+  outline:none;
+  vertical-align:baseline;
+}
+.inline-edit:focus{border-color:var(--hl);background:#22314f}
+.inline-edit.small{min-width:115px}
+
+.line-editor{
+  display:inline-block;
+  min-width:520px;
+  padding:3px 7px;
+  border:1px dashed #8fb1ff;
+  border-radius:6px;
+  background:#19243b;
+  color:#fff;
+  outline:none;
+}
+.line-editor:focus{border-color:var(--hl);background:#22314f}
+
+.bottom{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,.75fr);gap:18px;margin-top:18px}
+.formula-panel{padding:24px 28px}
+.section-label{margin:0 0 6px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:13px;font-weight:850}
+.meaning{margin:0 0 22px;color:var(--navy);font-size:clamp(23px,2.2vw,33px);font-weight:850}
+.formula,.example{
+  margin:0;padding:18px 20px;border-radius:16px;
+  font:700 clamp(19px,2vw,29px)/1.4 Consolas,Monaco,monospace;
+  white-space:pre;overflow-x:auto
+}
+.formula{border:2px solid #e6ddfb;background:#fbf9ff}
+.example{border:2px solid #dce9ff;background:#f8fbff}
+.formula-part{display:inline;padding:2px 3px;border-radius:7px;cursor:help;transition:.12s ease}
+.formula-part:hover,.formula-part.active{background:var(--hl);color:#111827}
+.hint{min-height:28px;margin:10px 2px 0;color:var(--muted);font-size:15px;font-weight:650}
+
+.reference{padding:20px}
+.reference h2{margin:0;color:var(--navy);font-size:23px}
+.reference .sub{margin:6px 0 14px;color:var(--muted);font-size:14px}
+.ref-code{
+  margin:0;padding:20px;min-height:250px;background:var(--code);color:#edf3ff;border-radius:16px;
+  font:650 clamp(15px,1.25vw,18px)/1.7 Consolas,Monaco,monospace;
+  white-space:pre;overflow-x:auto
+}
+.ref{display:inline;padding:1px 2px;border-radius:5px;transition:.12s ease}
+.ref.hl{background:var(--hl);color:#111827;box-shadow:0 0 0 2px rgba(255,230,109,.2)}
+
+.result-box{padding:20px}
+.result-box h2{margin:0;color:var(--navy);font-size:23px}
+.result-box .sub{margin:6px 0 14px;color:var(--muted);font-size:14px}
+.run-frame{width:100%;height:250px;border:2px solid #dce9ff;border-radius:16px;background:#fff;display:block}
+.run-row{display:flex;align-items:center;gap:12px;margin-top:12px}
+.run-btn{background:var(--green)}
+.run-note{color:var(--muted);font-size:13px;font-weight:650}
+
+.nav{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:18px}
+button{border:0;border-radius:12px;padding:11px 19px;background:var(--navy);color:#fff;font-size:16px;font-weight:800;cursor:pointer}
+button:disabled{opacity:.3;cursor:default}
+#counter{min-width:80px;text-align:center;color:var(--muted);font-weight:800}
+@media(max-width:900px){.bottom{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="top">
+    <div class="top-head">
+      <h1 id="title"></h1>
+      <div class="page-tag" id="tag"></div>
+    </div>
+    <div class="full-code" id="fullCode"></div>
+  </section>
+
+  <section class="bottom">
+    <div class="card formula-panel">
+      <div class="section-label">In words</div>
+      <div class="meaning" id="meaning"></div>
+
+      <div class="section-label">Formula — hover a part</div>
+      <div class="formula" id="formula"></div>
+      <div class="hint" id="hint">Hover part of the formula →</div>
+
+      <div class="section-label" style="margin-top:20px">In this example</div>
+      <div class="example" id="example"></div>
+    </div>
+
+    <aside class="card" id="sidePanel"></aside>
+  </section>
+
+  <div class="nav">
+    <button id="prev">← Previous</button>
+    <div id="counter"></div>
+    <button id="next">Next →</button>
+  </div>
+</div>
+
+<script>
+const setFormula = [
+  {text:"TARGET_ID", keys:["target-id"], hint:"TARGET_ID → find the target element's id."},
+  {text:".textContent", keys:["target-tag"], hint:".textContent → look at the target element. Leave its id out."},
+  {text:" = ", keys:[], hint:"= → set the left side to the value on the right."},
+  {text:"SOURCE_ID", keys:["source-id"], hint:"SOURCE_ID → find the source input's id."},
+  {text:".value;", keys:["source-tag"], hint:".value → look at the input element. Leave its id out."}
+];
+
+function bothFormula(live=false){
+  return [
+    ...setFormula,
+    {text:"\n",keys:[],hint:""},
+    {text:"TRIGGER_ID",keys:["trigger-id"],hint:"TRIGGER_ID → find the trigger element's id."},
+    {text:".EVENT",keys:["trigger-tag"],hint: live ? ".EVENT → input → oninput." : ".EVENT → button → onclick."},
+    {text:" = ",keys:[],hint:"= → connect the event to the function."},
+    {text:"FUNCTION;",keys:["function-name"],hint:"FUNCTION → find the function name."}
+  ];
+}
+
+const pages = [
+{
+  title:"1. Set value",
+  tag:"QUICK REVIEW",
+  mode:"teach",
+  meaning:"Set TARGET's text to SOURCE's value",
+  formula:setFormula,
+  full:`<input id="food">
+<h1 id="heading">...</h1>
+<button id="button">Update</button>
+
+<script>
+function clickAction() {
+  heading.textContent = food.value;
+}
+
+button.onclick = clickAction;
+<\/script>`,
+  example:`heading.textContent = food.value;`,
+  reference:[
+    {text:"<input ",key:"source-tag"},{text:'id="food"',key:"source-id"},{text:">",key:"source-tag"},
+    {text:"\n"},{text:"<h1 ",key:"target-tag"},{text:'id="heading"',key:"target-id"},{text:">...</h1>",key:"target-tag"}
+  ]
+},
+{
+  title:"2. Event",
+  tag:"QUICK REVIEW",
+  mode:"teach",
+  meaning:"When TRIGGER gets an EVENT, run the FUNCTION",
+  formula:[
+    {text:"TRIGGER_ID",keys:["trigger-id"],hint:"TRIGGER_ID → find the trigger element's id."},
+    {text:".EVENT",keys:["trigger-tag"],hint:".EVENT → button → onclick."},
+    {text:" = ",keys:[],hint:"= → connect the event to the function."},
+    {text:"FUNCTION;",keys:["function-name"],hint:"FUNCTION → find the function name."}
+  ],
+  full:`<input id="food">
+<h1 id="heading">...</h1>
+<button id="button">Update</button>
+
+<script>
+function clickAction() {
+  heading.textContent = food.value;
+}
+
+button.onclick = clickAction;
+<\/script>`,
+  example:`button.onclick = clickAction;`,
+  reference:[
+    {text:"<button ",key:"trigger-tag"},{text:'id="button"',key:"trigger-id"},{text:">Update</button>",key:"trigger-tag"},
+    {text:"\n\nfunction "},{text:"clickAction",key:"function-name"},{text:"() {\n  ...\n}\n\n"},
+    {text:"button",key:"trigger-id"},{text:".onclick",key:"trigger-tag"},{text:" = "},{text:"clickAction",key:"function-name"},{text:";"}
+  ]
+},
+{
+  title:"3. Put it together",
+  tag:"BUTTON + INPUT",
+  mode:"teach",
+  meaning:"Use both formulas together",
+  formula:bothFormula(false),
+  full:`<input id="food">
+<h1 id="heading">...</h1>
+<button id="button">Update</button>
+
+<script>
+function clickAction() {
+  heading.textContent = food.value;
+}
+
+button.onclick = clickAction;
+<\/script>`,
+  example:`heading.textContent = food.value;
+button.onclick = clickAction;`,
+  reference:[
+    {text:"<input ",key:"source-tag"},{text:'id="food"',key:"source-id"},{text:">",key:"source-tag"},{text:"\n"},
+    {text:"<h1 ",key:"target-tag"},{text:'id="heading"',key:"target-id"},{text:">...</h1>",key:"target-tag"},{text:"\n"},
+    {text:"<button ",key:"trigger-tag"},{text:'id="button"',key:"trigger-id"},{text:">Update</button>",key:"trigger-tag"},{text:"\n\nfunction "},
+    {text:"clickAction",key:"function-name"},{text:"() {\n  heading.textContent = food.value;\n}\n\n"},
+    {text:"button",key:"trigger-id"},{text:".onclick",key:"trigger-tag"},{text:" = "},{text:"clickAction",key:"function-name"},{text:";"}
+  ]
+},
+{
+  title:"4. Practice 1",
+  tag:"FILL THE BLANKS",
+  mode:"practice-fill",
+  meaning:"Use both formulas",
+  formula:bothFormula(false),
+  example:`________.textContent = ________.value;
+________.onclick = ________;`,
+  data:{
+    htmlBefore:[
+      {text:'<input ',key:"source-tag"},{text:'id="name"',key:"source-id"},{text:'>'},{text:'\n'},
+      {text:'<p ',key:"target-tag"},{text:'id="message"',key:"target-id"},{text:'>...</p>'},{text:'\n'},
+      {text:'<button ',key:"trigger-tag"},{text:'id="show"',key:"trigger-id"},{text:'>Show</button>'},{text:'\n\n<script>\nfunction '},
+      {text:'showAction',key:"function-name"},{text:'() {\n  '}
+    ],
+    blanks:[
+      {id:"b1",placeholder:"________",cls:"small"},
+      {text:".textContent = "},
+      {id:"b2",placeholder:"________",cls:"small"},
+      {text:".value;\n}\n\n"},
+      {id:"b3",placeholder:"________",cls:"small"},
+      {text:".onclick = "},
+      {id:"b4",placeholder:"________",cls:"small"},
+      {text:";\n<\\/script>"}
+    ],
+    runHtml:`<input id="name" placeholder="Type a name">
+<p id="message">...</p>
+<button id="show">Show</button>`,
+    functionName:"showAction"
+  }
+},
+{
+  title:"5. Practice 2",
+  tag:"WRITE THE TWO LINES",
+  mode:"practice-lines",
+  meaning:"Same formulas — different elements",
+  formula:bothFormula(false),
+  example:`TARGET_ID.textContent = SOURCE_ID.value;
+TRIGGER_ID.onclick = FUNCTION;`,
+  data:{
+    htmlBefore:[
+      {text:'<textarea ',key:"source-tag"},{text:'id="comment"',key:"source-id"},{text:'></textarea>'},{text:'\n'},
+      {text:'<span ',key:"target-tag"},{text:'id="preview"',key:"target-id"},{text:'>...</span>'},{text:'\n'},
+      {text:'<button ',key:"trigger-tag"},{text:'id="update"',key:"trigger-id"},{text:'>Preview</button>'},{text:'\n\n<script>\nfunction '},
+      {text:'previewAction',key:"function-name"},{text:'() {\n  '}
+    ],
+    lines:[
+      {id:"line1",placeholder:"Write SET VALUE line"},
+      {text:"\n}\n\n"},
+      {id:"line2",placeholder:"Write EVENT line"},
+      {text:"\n<\\/script>"}
+    ],
+    runHtml:`<textarea id="comment" placeholder="Type a comment"></textarea>
+<br><br><span id="preview">...</span>
+<br><br><button id="update">Preview</button>`,
+    functionName:"previewAction"
+  }
+},
+{
+  title:"6. Practice 3",
+  tag:"WRITE IT YOURSELF",
+  mode:"practice-lines",
+  meaning:"Identify the roles, then write both lines",
+  formula:bothFormula(false),
+  example:`Use the two formulas above. No fill-in scaffold.`,
+  data:{
+    htmlBefore:[
+      {text:'<input ',key:"source-tag"},{text:'id="captionInput"',key:"source-id"},{text:'>'},{text:'\n'},
+      {text:'<figcaption ',key:"target-tag"},{text:'id="caption"',key:"target-id"},{text:'>...</figcaption>'},{text:'\n'},
+      {text:'<button ',key:"trigger-tag"},{text:'id="button"',key:"trigger-id"},{text:'>Update caption</button>'},{text:'\n\n<script>\nfunction '},
+      {text:'inputAction',key:"function-name"},{text:'() {\n  '}
+    ],
+    lines:[
+      {id:"line1",placeholder:""},
+      {text:"\n}\n\n"},
+      {id:"line2",placeholder:""},
+      {text:"\n<\\/script>"}
+    ],
+    runHtml:`<input id="captionInput" placeholder="Type a caption">
+<br><br><figcaption id="caption">...</figcaption>
+<br><br><button id="button">Update caption</button>`,
+    functionName:"inputAction"
+  }
+},
+{
+  title:"7. Live input",
+  tag:"INPUT → ONINPUT",
+  mode:"teach",
+  meaning:"Same two formulas — new trigger and event",
+  formula:bothFormula(true),
+  full:`<input id="food">
+<h1 id="heading">...</h1>
+
+<script>
+function inputAction() {
+  heading.textContent = food.value;
+}
+
+food.oninput = inputAction;
+<\/script>`,
+  example:`heading.textContent = food.value;
+food.oninput = inputAction;`,
+  reference:[
+    {text:"<input ",key:"source-tag trigger-tag"},{text:'id="food"',key:"source-id trigger-id"},{text:">",key:"source-tag trigger-tag"},{text:"\n"},
+    {text:"<h1 ",key:"target-tag"},{text:'id="heading"',key:"target-id"},{text:">...</h1>",key:"target-tag"},{text:"\n\nfunction "},
+    {text:"inputAction",key:"function-name"},{text:"() {\n  heading.textContent = food.value;\n}\n\n"},
+    {text:"food",key:"trigger-id"},{text:".oninput",key:"trigger-tag"},{text:" = "},{text:"inputAction",key:"function-name"},{text:";"}
+  ]
+}
+];
+
+let page=0;
+const $=id=>document.getElementById(id);
+
+function keysOf(el){return (el.dataset.key||"").split(/\s+/).filter(Boolean)}
+function clearHL(){
+  document.querySelectorAll(".ref,.top-token").forEach(x=>x.classList.remove("hl"));
+  document.querySelectorAll(".formula-part").forEach(x=>x.classList.remove("active"));
+}
+function highlight(keys,source){
+  clearHL(); source.classList.add("active");
+  document.querySelectorAll(".ref,.top-token").forEach(x=>{
+    if(keysOf(x).some(k=>keys.includes(k))) x.classList.add("hl");
+  });
+}
+function renderFormula(parts){
+  const box=$("formula"); box.innerHTML="";
+  parts.forEach(part=>{
+    const s=document.createElement("span");
+    s.className="formula-part"; s.textContent=part.text;
+    const keys=part.keys||[];
+    s.onmouseenter=()=>{highlight(keys,s);$("hint").textContent=part.hint||""};
+    s.onmouseleave=()=>{clearHL();$("hint").textContent="Hover part of the formula →"};
+    box.appendChild(s);
+  });
+}
+function addStaticParts(box,parts){
+  parts.forEach(part=>{
+    const s=document.createElement("span");
+    s.className="top-token"; s.textContent=part.text;
+    if(part.key) s.dataset.key=part.key;
+    box.appendChild(s);
+  });
+}
+function renderTop(p){
+  const box=$("fullCode"); box.innerHTML="";
+  if(p.mode==="teach"){box.textContent=p.full;return;}
+
+  addStaticParts(box,p.data.htmlBefore);
+
+  if(p.mode==="practice-fill"){
+    p.data.blanks.forEach(part=>{
+      if(part.text!==undefined){
+        const s=document.createElement("span"); s.textContent=part.text; box.appendChild(s);
+      }else{
+        const e=document.createElement("span");
+        e.contentEditable="true";
+        e.className="inline-edit "+(part.cls||"");
+        e.dataset.editid=part.id;
+        e.textContent=part.placeholder;
+        e.onfocus=()=>{if(e.textContent===part.placeholder)e.textContent=""};
+        e.onblur=()=>{if(!e.textContent.trim())e.textContent=part.placeholder};
+        box.appendChild(e);
+      }
+    });
+  }else{
+    p.data.lines.forEach(part=>{
+      if(part.text!==undefined){
+        const s=document.createElement("span"); s.textContent=part.text; box.appendChild(s);
+      }else{
+        const e=document.createElement("span");
+        e.contentEditable="true";
+        e.className="line-editor";
+        e.dataset.editid=part.id;
+        e.textContent=part.placeholder||"";
+        box.appendChild(e);
+      }
+    });
+  }
+}
+function renderTeachSide(p){
+  const side=$("sidePanel"); side.className="card reference";
+  side.innerHTML=`<h2>Look here while writing</h2>
+    <div class="sub">Hover the formula. Only the code you need will highlight.</div>
+    <pre class="ref-code" id="refCode"></pre>`;
+  const box=$("refCode");
+  p.reference.forEach(part=>{
+    const s=document.createElement("span");
+    s.className="ref"; s.textContent=part.text;
+    if(part.key) s.dataset.key=part.key;
+    box.appendChild(s);
+  });
+}
+function renderPracticeSide(p){
+  const side=$("sidePanel"); side.className="card result-box";
+  side.innerHTML=`<h2>Run result</h2>
+    <div class="sub">Edit the JavaScript in the code block above, then run it.</div>
+    <iframe id="runFrame" class="run-frame" sandbox="allow-scripts"></iframe>
+    <div class="run-row">
+      <button id="runBtn" class="run-btn">Run ▶</button>
+      <span class="run-note" id="runNote">Test the result on the right.</span>
+    </div>`;
+  $("runBtn").onclick=()=>runPractice(p);
+  $("runFrame").srcdoc=previewDoc(p,false);
+}
+function getEdit(id){
+  const el=document.querySelector(`[data-editid="${id}"]`);
+  return el ? el.textContent.trim() : "";
+}
+function codeLines(p){
+  if(p.mode==="practice-fill"){
+    const vals=["b1","b2","b3","b4"].map(getEdit);
+    if(vals.some(v=>!v || v.includes("_"))) return null;
+    return {
+      setLine:`${vals[0]}.textContent = ${vals[1]}.value;`,
+      eventLine:`${vals[2]}.onclick = ${vals[3]};`
+    };
+  }
+  return {setLine:getEdit("line1"),eventLine:getEdit("line2")};
+}
+function previewDoc(p,execute){
+  const code=codeLines(p);
+  const warning = execute && !code ? `<p style="color:#9a6700;font-weight:700">Complete the code first.</p>` : "";
+  const setLine = execute && code ? code.setLine : "";
+  const eventLine = execute && code ? code.eventLine : "";
+  return `<!doctype html><html><head><meta charset="UTF-8"><style>
+    body{font-family:Arial,sans-serif;padding:18px;color:#172033}
+    input,textarea{font-size:17px;padding:8px;border:1px solid #aeb9cc;border-radius:7px}
+    textarea{width:90%;min-height:60px}
+    button{font-size:15px;padding:8px 12px;cursor:pointer}
+    p,span,figcaption{font-size:21px}
+    #err{color:#b42318;font-weight:700;font-size:13px;margin-top:14px}
+  </style></head><body>
+  ${p.data.runHtml}
+  ${warning}<div id="err"></div>
+  <script>
+  window.onerror=function(m){document.getElementById("err").textContent="Code error: "+m;return true;};
+  function ${p.data.functionName}(){${setLine}}
+  ${eventLine}
+  <\/script></body></html>`;
+}
+function runPractice(p){
+  $("runFrame").srcdoc=previewDoc(p,true);
+  $("runNote").textContent="Running — test the page above.";
+}
+function render(){
+  const p=pages[page];
+  $("title").textContent=p.title;
+  $("tag").textContent=p.tag;
+  $("meaning").textContent=p.meaning;
+  $("example").textContent=p.example;
+  renderTop(p); renderFormula(p.formula);
+  if(p.mode==="teach") renderTeachSide(p); else renderPracticeSide(p);
+  $("counter").textContent=`${page+1} / ${pages.length}`;
+  $("prev").disabled=page===0; $("next").disabled=page===pages.length-1;
+}
+$("prev").onclick=()=>{if(page>0){page--;render()}};
+$("next").onclick=()=>{if(page<pages.length-1){page++;render()}};
+render();
+</script>
+</body>
+</html>
