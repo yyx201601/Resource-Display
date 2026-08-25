@@ -88,7 +88,6 @@ export function parseStartAssessmentInput(value: unknown): StartAssessmentInput 
       max: 80,
       pattern: SLUG_PATTERN,
     }).toLowerCase(),
-    accessCode: stringValue(input.accessCode, "accessCode", { max: 80 }).toUpperCase(),
     studentName: stringValue(input.studentName, "studentName", { max: 80 }),
     clientAttemptId: stringValue(input.clientAttemptId, "clientAttemptId", {
       max: 36,

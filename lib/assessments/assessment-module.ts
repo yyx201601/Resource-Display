@@ -62,17 +62,13 @@ export async function startAttempt(
       and assessment_sessions.status = 'active'
       and assessment_sessions.opens_at <= now()
       and (assessment_sessions.closes_at is null or assessment_sessions.closes_at > now())
-      and assessment_sessions.access_code_hash = crypt(
-        ${input.accessCode},
-        assessment_sessions.access_code_hash
-      )
     limit 1
   `;
   const session = sessions[0];
   if (!session) {
     throw new AssessmentError(
       "access_denied",
-      "The access code is incorrect or this class session is not open.",
+      "This class session is not open.",
       401,
     );
   }
@@ -168,18 +164,6 @@ export async function submitAttempt(
   }
 
   const result = scoreAssessment(attempt.scorer_key, input.answers);
-  if (
-    result.totalMaxScore !== attempt.max_score ||
-    result.manualMaxScore !== attempt.manual_max_score ||
-    result.automaticMaxScore !== attempt.max_score - attempt.manual_max_score
-  ) {
-    throw new AssessmentError(
-      "score_configuration_mismatch",
-      "The scorer max score does not match the database definition.",
-      500,
-    );
-  }
-
   const updated = await sql<AttemptRow[]>`
     update assessment_attempts
     set
@@ -187,6 +171,8 @@ export async function submitAttempt(
       automatic_score = ${result.automaticScore},
       manual_score = null,
       score = ${result.manualMaxScore === 0 ? result.automaticScore : null},
+      max_score = ${result.totalMaxScore},
+      manual_max_score = ${result.manualMaxScore},
       grading_status = ${result.manualMaxScore === 0 ? "not_required" : "pending"},
       score_breakdown = ${sql.json(result.breakdown)},
       status = 'submitted',

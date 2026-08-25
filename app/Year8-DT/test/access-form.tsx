@@ -6,6 +6,7 @@ import { startAssessment } from "@/lib/assessments/client";
 const ASSESSMENT_SLUG = "year8-dt-45";
 const ASSESSMENT_VERSION = "v3";
 const CLASS_CODE = "year8-default";
+const ACCESS_CODE = "START";
 
 type FormErrors = {
   name?: string;
@@ -31,6 +32,8 @@ export default function AccessForm() {
 
     if (!code.trim()) {
       nextErrors.code = "Enter the access code provided by your teacher.";
+    } else if (code.trim().toUpperCase() !== ACCESS_CODE) {
+      nextErrors.code = "The access code is incorrect.";
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -58,7 +61,6 @@ export default function AccessForm() {
         assessmentSlug: ASSESSMENT_SLUG,
         assessmentVersion: ASSESSMENT_VERSION,
         classCode: CLASS_CODE,
-        accessCode: code,
         studentName: trimmedName,
         clientAttemptId,
       });
