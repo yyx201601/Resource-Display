@@ -104,7 +104,7 @@ export default function AccessForm() {
           <dl className="relative mt-14 grid grid-cols-3 gap-5 border-t border-white/20 pt-6">
             <div>
               <dt className="text-xs text-[#a9c5d4]">Marks</dt>
-              <dd className="mt-1 text-xl font-bold sm:text-2xl">45</dd>
+              <dd className="mt-1 text-xl font-bold sm:text-2xl">48</dd>
             </div>
             <div>
               <dt className="text-xs text-[#a9c5d4]">Time</dt>

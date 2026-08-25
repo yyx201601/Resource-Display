@@ -64,8 +64,9 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 .bank h4{margin:0;color:var(--navy)}
 .drag{padding:11px 12px;border-radius:11px;border:1px solid #9bc7da;background:#e9f6fb;font-weight:700;cursor:grab;user-select:none}
 .targets{display:grid;gap:12px}
-.targetrow{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}
-.hwicon{min-height:92px;border:1px solid var(--line);border-radius:13px;display:flex;align-items:center;justify-content:center;background:#fff;font-size:48px}
+.targetrow{display:grid;grid-template-columns:170px 1fr;gap:12px;align-items:center}
+.hwimage{height:112px;border:1px solid var(--line);border-radius:13px;display:flex;align-items:center;justify-content:center;background:#fff;padding:8px;overflow:hidden}
+.hwimage img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .drop{min-height:58px;border:2px dashed #b6c8d5;border-radius:12px;padding:9px;background:#fff}
 .drop.over{border-color:var(--cyan);background:#f1fbfe}
 
@@ -130,28 +131,48 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 
 
 /* Interactive self-protection phone */
-.phone-section{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:24px;align-items:start;margin-top:14px}
+.phone-section{display:grid;grid-template-columns:minmax(280px,359px) 1fr;gap:24px;align-items:start;margin-top:14px}
 .phone{
-  border:10px solid #111923;border-radius:34px;background:#fff;overflow:hidden;
-  min-height:610px;box-shadow:0 16px 34px rgba(14,31,48,.16)
+  position:relative;isolation:isolate;width:min(100%,359px);aspect-ratio:359/745;
+  margin-inline:auto;overflow:hidden;background:#fff
 }
-.phone-top{background:#0f2239;color:#fff;text-align:center;padding:10px;font-weight:700;font-size:14px}
-.phone-screen{padding:14px}
+.phone-device-photo{
+  position:absolute;z-index:0;top:-6.846%;left:-159.053%;width:417.827%;height:auto;
+  max-width:none;display:block;pointer-events:none;user-select:none
+}
+.phone-top{
+  position:absolute;z-index:2;top:7.65%;left:4%;right:4%;height:4.9%;
+  display:flex;align-items:center;justify-content:center;background:rgba(15,34,57,.97);
+  border-bottom:1px solid rgba(255,255,255,.16);color:#fff;text-align:center;
+  padding:0 12px;font-weight:700;font-size:12.5px;letter-spacing:.01em
+}
+.phone-screen{
+  position:absolute;z-index:1;top:12.5%;left:4%;right:4%;bottom:2.15%;
+  overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
+  border-radius:0 0 43px 43px;padding:12px;background:
+    linear-gradient(155deg,rgba(241,250,252,.98),rgba(227,241,247,.99));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)
+}
+.phone-screen::-webkit-scrollbar{width:5px}
+.phone-screen::-webkit-scrollbar-thumb{border-radius:999px;background:rgba(15,34,57,.28)}
 .phone-home{display:block}
-.phone-apps{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.phone-apps{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .phone-app{
-  min-height:96px;border:1px solid var(--line);border-radius:16px;background:#f8fbfd;
-  color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;padding:12px
+  min-height:78px;border:1px solid rgba(150,179,195,.72);border-radius:15px;
+  background:rgba(255,255,255,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+  color:var(--navy);font-size:14px;font-weight:700;cursor:pointer;padding:8px
 }
-.phone-app:hover{background:#eef7fb}
-.phone-app span{display:block;font-size:30px;margin-bottom:7px}
+.phone-app:hover{background:#fff;border-color:#6e9fbb}
+.phone-app:active{transform:translateY(1px)}
+.phone-app>span:not(.unread-dot){display:block;font-size:27px;line-height:1;margin-bottom:6px}
 .phone-panel{display:none}
 .phone-panel.active{display:block}
+.phone-panel h3{margin:2px 0 9px;color:var(--navy);font-size:19px;line-height:1.25}
 .phone-back{
-  border:0;background:#e8f1f6;color:var(--navy);border-radius:10px;padding:8px 11px;
-  font-weight:700;cursor:pointer;margin-bottom:12px
+  border:0;background:#dbeaf1;color:var(--navy);border-radius:10px;padding:7px 10px;
+  font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px
 }
-.phone-card{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:#fff;line-height:1.45}
+.phone-card{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0;background:#fff;font-size:13.5px;line-height:1.4}
 .phone-warning{background:#fff7e5;border-color:#d7b26b}
 .phone-danger{background:#fff5f5;border-color:#d89c9c}
 .phone-task{border:1px solid var(--line);border-radius:16px;background:#fff;padding:17px}
@@ -160,27 +181,32 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 .phone-step{padding:14px 0;border-top:1px solid #e7edf2}
 .phone-step:first-of-type{border-top:0}
 .phone-tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;background:#eaf2f7;color:var(--blue)}
-.status-list{display:grid;gap:8px;margin-top:12px}
-.status-item{padding:9px 10px;border-radius:10px;background:#f4f7f9;color:#536675;font-size:13px}
+.status-list{display:grid;gap:6px;margin-top:9px}
+.status-item{padding:7px 9px;border-radius:9px;background:rgba(244,247,249,.88);color:#536675;font-size:12px;line-height:1.25}
 .status-item.done{background:#eaf7f1;color:#217a57;font-weight:700}
 @media(max-width:850px){
   .phone-section{grid-template-columns:1fr}
+  .phone{width:min(100%,340px)}
+}
+@media(max-width:430px){
+  .phone-top{font-size:11.5px}
+  .phone-screen{padding:9px;border-radius:0 0 34px 34px}
+  .phone-apps{gap:7px}
+  .phone-app{min-height:68px;border-radius:12px;padding:7px;font-size:12.5px}
+  .phone-app>span:not(.unread-dot){font-size:23px;margin-bottom:5px}
+  .phone-card{padding:8px;font-size:12px}
+  .status-list{gap:5px;margin-top:7px}
+  .status-item{padding:6px 7px;font-size:11px}
 }
 
 
-/* Page-by-page module navigation */
+/* Question-section navigation */
 .module-page{display:none}
 .module-page.active{display:block}
+.module-page>.mh{display:none}
+.module-page.show-module-header>.mh{display:flex}
 .worksheet-page{display:none}
 .worksheet-page.active{display:block}
-.module-nav{
-  max-width:1120px;margin:14px auto 0;padding:0 18px;
-  display:flex;justify-content:space-between;align-items:center;gap:12px
-}
-.module-step{
-  font-size:13px;font-weight:700;color:var(--navy);
-  background:#e8f2f8;padding:7px 11px;border-radius:999px
-}
 .module-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding:0 32px 28px}
 .module-actions button:disabled,.phone-task-nav button:disabled{opacity:.45;cursor:not-allowed}
 
@@ -281,11 +307,6 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 <div class="pill" id="pill">0% complete</div>
 </div></div>
 
-<div class="module-nav">
-  <div class="module-step" id="moduleStep">Page 1 of 10</div>
-  <div class="small" id="moduleTitle">Q1-Q2 | Hardware, Software & Networks</div>
-</div>
-
 <main id="root">
 
 <div class="assessment-layout">
@@ -309,21 +330,27 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 <div class="worksheet-page active" data-worksheet-page data-page-label="Q1-Q2">
 
 <div class="q" id="question-q1" data-question-anchor="q1">
-<p class="qt"><strong>Q1. Match the hardware</strong> <span class="small">(4 marks)</span><br>
+<p class="qt"><strong>Q1. Match the hardware</strong> <span class="small">(7 marks)</span><br>
 Drag each hardware name to the correct picture.</p>
 <div class="draglayout">
 <div class="bank" id="hardwarebank">
 <h4>Hardware names</h4>
 <div class="drag" draggable="true" data-match="monitor" data-bank="hardwarebank">Monitor</div>
-<div class="drag" draggable="true" data-match="ssd" data-bank="hardwarebank">SSD / Storage Drive</div>
+<div class="drag" draggable="true" data-match="speaker" data-bank="hardwarebank">Speaker</div>
+<div class="drag" draggable="true" data-match="microphone" data-bank="hardwarebank">Microphone</div>
+<div class="drag" draggable="true" data-match="projector" data-bank="hardwarebank">Projector</div>
 <div class="drag" draggable="true" data-match="keyboard" data-bank="hardwarebank">Keyboard</div>
 <div class="drag" draggable="true" data-match="mouse" data-bank="hardwarebank">Mouse</div>
+<div class="drag" draggable="true" data-match="camera" data-bank="hardwarebank">Webcam / Camera</div>
 </div>
 <div class="targets">
-<div class="targetrow"><div class="hwicon">⌨️</div><div class="drop scored" data-answer="keyboard"></div></div>
-<div class="targetrow"><div class="hwicon">🖥️</div><div class="drop scored" data-answer="monitor"></div></div>
-<div class="targetrow"><div class="hwicon">🖱️</div><div class="drop scored" data-answer="mouse"></div></div>
-<div class="targetrow"><div class="hwicon">💾</div><div class="drop scored" data-answer="ssd"></div></div>
+<div class="targetrow"><div class="hwimage"><img src="/assets/year8-hardware/keyboard.png" alt="Keyboard"></div><div class="drop scored" data-answer="keyboard"></div></div>
+<div class="targetrow"><div class="hwimage"><img src="/assets/year8-hardware/monitor.png" alt="Monitor"></div><div class="drop scored" data-answer="monitor"></div></div>
+<div class="targetrow"><div class="hwimage"><img src="/assets/year8-hardware/mouse.png" alt="Mouse"></div><div class="drop scored" data-answer="mouse"></div></div>
+<div class="targetrow"><div class="hwimage"><img src="/assets/year8-hardware/speaker.png" alt="Speaker"></div><div class="drop scored" data-answer="speaker"></div></div>
+<div class="targetrow"><div class="hwimage"><img src="/assets/year8-hardware/microphone.png" alt="Microphone"></div><div class="drop scored" data-answer="microphone"></div></div>
+<div class="targetrow"><div class="hwimage"><img src="/assets/year8-hardware/projector.png" alt="Projector"></div><div class="drop scored" data-answer="projector"></div></div>
+<div class="targetrow"><div class="hwimage"><img src="/assets/year8-hardware/webcam-camera.png" alt="Webcam or camera"></div><div class="drop scored" data-answer="camera"></div></div>
 </div>
 </div>
 </div>
@@ -429,8 +456,8 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 </div>
 <div class="module-actions">
-<button type="button" class="secondary prev-module" disabled>← Previous Page</button>
-<button type="button" class="primary next-module">Next Page →</button>
+<button type="button" class="secondary prev-module" disabled>← Previous Section</button>
+<button type="button" class="primary next-module">Next Section →</button>
 </div>
 </section>
 
@@ -617,8 +644,8 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 </div>
 </div>
 <div class="module-actions">
-<button type="button" class="secondary prev-module">← Previous Page</button>
-<button type="button" class="primary next-module">Next Page →</button>
+<button type="button" class="secondary prev-module">← Previous Section</button>
+<button type="button" class="primary next-module">Next Section →</button>
 </div>
 </section>
 
@@ -636,7 +663,8 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 
 <div class="phone-section">
 
-<div class="phone">
+<div class="phone" role="group" aria-label="Interactive fictional training phone">
+  <img class="phone-device-photo" src="/assets/year8-phone/security-phone-reference.png" alt="" width="1500" height="844" draggable="false" aria-hidden="true">
   <div class="phone-top">My Security Check</div>
   <div class="phone-screen">
 
@@ -862,7 +890,7 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 </div>
 </div>
 <div class="module-actions">
-<button type="button" class="secondary prev-module">← Previous Page</button>
+<button type="button" class="secondary prev-module">← Previous Section</button>
 <button type="button" class="primary next-module">Review & Submit →</button>
 </div>
 </section>
@@ -1226,7 +1254,7 @@ function interactions(){
 }
 
 function progress(){
-  const max=41; // hardware + software matching + MCQs + 4 short answers
+  const max=44; // hardware + software matching + MCQs + 4 short answers
   const p=Math.min(100,Math.round(interactions()/max*100));
   document.getElementById('bar').style.width=p+'%';
   document.getElementById('pill').textContent=p+'% complete';
@@ -1242,11 +1270,6 @@ function blankShort(){
 /* Worksheet paging */
 const modulePages=[...document.querySelectorAll('.module-page')];
 const worksheetPages=[...document.querySelectorAll('.worksheet-page')];
-const moduleNames=[
-  'Hardware, Software & Networks',
-  'Cyber Security',
-  'Protect Yourself'
-];
 let currentModule=0;
 let currentWorksheetPage=0;
 
@@ -1371,31 +1394,38 @@ function updatePagingButtons(){
   });
   document.querySelectorAll('.next-module').forEach(btn=>{
     btn.disabled=false;
-    btn.textContent=currentWorksheetPage===worksheetPages.length-1?'Review & Submit →':'Next Page →';
+    btn.textContent=currentWorksheetPage===worksheetPages.length-1?'Review & Submit →':'Next Section →';
   });
 }
 
-function showWorksheetPage(index,scrollToTop=true){
+function scrollQuestionIntoView(question,behavior=preferredScrollBehavior()){
+  requestAnimationFrame(()=>question.anchor.scrollIntoView({behavior,block:'start'}));
+}
+
+function showWorksheetPage(index,scrollToQuestion=true){
   currentWorksheetPage=Math.max(0,Math.min(worksheetPages.length-1,index));
   const activePage=worksheetPages[currentWorksheetPage];
-  currentModule=Number(activePage.closest('.module-page').dataset.moduleIndex);
-  modulePages.forEach((m,i)=>m.classList.toggle('active',i===currentModule));
+  const activeModulePage=activePage.closest('.module-page');
+  currentModule=Number(activeModulePage.dataset.moduleIndex);
+  modulePages.forEach(modulePage=>{
+    const isActive=modulePage===activeModulePage;
+    modulePage.classList.toggle('active',isActive);
+    modulePage.classList.toggle('show-module-header',isActive&&activePage===modulePage.querySelector('.worksheet-page'));
+  });
   worksheetPages.forEach((page,i)=>page.classList.toggle('active',i===currentWorksheetPage));
-  document.getElementById('moduleStep').textContent='Page '+(currentWorksheetPage+1)+' of '+worksheetPages.length;
-  document.getElementById('moduleTitle').textContent=activePage.dataset.pageLabel+' | '+moduleNames[currentModule];
   updatePagingButtons();
   const firstQuestion=questionDefinitions.find(question=>question.page===currentWorksheetPage);
-  if(firstQuestion)setCurrentQuestion(firstQuestion.id);
-  if(scrollToTop)window.scrollTo({top:0,behavior:preferredScrollBehavior()});
+  if(firstQuestion){
+    setCurrentQuestion(firstQuestion.id);
+    if(scrollToQuestion)scrollQuestionIntoView(firstQuestion);
+  }
 }
 
 function jumpToQuestion(questionId,pageIndex){
   showWorksheetPage(pageIndex,false);
   setCurrentQuestion(questionId);
-  requestAnimationFrame(()=>{
-    const target=document.getElementById('question-'+questionId);
-    if(target)target.scrollIntoView({behavior:preferredScrollBehavior(),block:'start'});
-  });
+  const question=questionDefinitions.find(item=>item.id===questionId);
+  if(question)scrollQuestionIntoView(question);
 }
 
 questionButtons.forEach(button=>{
@@ -1429,7 +1459,7 @@ document.querySelectorAll('.next-module').forEach(btn=>{
 document.querySelectorAll('.prev-module').forEach(btn=>{
   btn.addEventListener('click',()=>showWorksheetPage(currentWorksheetPage-1));
 });
-showWorksheetPage(0);
+showWorksheetPage(0,false);
 updatePagingButtons();
 
 document.getElementById('reviewbtn').addEventListener('click',()=>{

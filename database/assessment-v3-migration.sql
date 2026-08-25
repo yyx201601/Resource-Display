@@ -13,7 +13,7 @@ values (
   'v3',
   'Year 8 Digital Technologies Test',
   'year8-dt-45-v3',
-  45,
+  48,
   10
 )
 on conflict (slug, version)

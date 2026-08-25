@@ -28,20 +28,23 @@ const CORRECT_RADIOS: Record<string, string> = {
 const CORRECT_SINGLE_PLACEMENTS: Record<string, string> = {
   "drag-0": "hardware-1",
   "drag-1": "hardware-3",
-  "drag-2": "hardware-0",
-  "drag-3": "hardware-2",
-  "drag-4": "software-type-0",
-  "drag-5": "software-type-1",
+  "drag-2": "hardware-4",
+  "drag-3": "hardware-5",
+  "drag-4": "hardware-0",
+  "drag-5": "hardware-2",
+  "drag-6": "hardware-6",
+  "drag-7": "software-type-0",
+  "drag-8": "software-type-1",
 };
 
 const CORRECT_EXAMPLE_GROUPS = [
   [
-    ["drag-6", "software-example-0"],
-    ["drag-8", "software-example-0"],
+    ["drag-9", "software-example-0"],
+    ["drag-11", "software-example-0"],
   ],
   [
-    ["drag-7", "software-example-1"],
-    ["drag-9", "software-example-1"],
+    ["drag-10", "software-example-1"],
+    ["drag-12", "software-example-1"],
   ],
 ] as const;
 
@@ -100,9 +103,9 @@ export function scoreYear8DigitalTechnologiesV3(
   return {
     automaticScore:
       radioScore + singlePlacementScore + exampleGroupScore + selectionScore,
-    automaticMaxScore: 35,
+    automaticMaxScore: 38,
     manualMaxScore: 10,
-    totalMaxScore: 45,
+    totalMaxScore: 48,
     breakdown: {
       radio: radioScore,
       matching: singlePlacementScore + exampleGroupScore,

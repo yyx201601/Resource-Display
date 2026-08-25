@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+/ppt_edit_tmp/
 
 # debug
 npm-debug.log*
