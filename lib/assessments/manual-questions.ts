@@ -50,10 +50,10 @@ const QUESTIONS_BY_SCORER: Record<string, ManualQuestionDefinition[]> = {
       questionKey: "phishing-response",
       label: "Q9",
       prompt:
-        "Explain why the urgent school-account message is phishing rather than only a general scam, and give one safe action Alex should take.",
+        "Identify the specific threat in Alex's urgent school-account message and give one safe action Alex should take.",
       maxScore: 2,
       markingGuide: [
-        "1 mark: explains that it impersonates a trusted source to obtain login details through a link.",
+        "1 mark: identifies phishing.",
         "1 mark: gives a safe action such as avoiding the link, checking the official site, or reporting the message.",
       ],
     },
@@ -61,12 +61,12 @@ const QUESTIONS_BY_SCORER: Record<string, ManualQuestionDefinition[]> = {
       questionKey: "malware-interception",
       label: "Q10",
       prompt:
-        "Identify the two threats in Priya's scenario and explain one risk caused by either threat.",
+        "Identify the threat in Priya's free editing program scenario, explain which detail supports the answer, and describe one risk to Priya.",
       maxScore: 3,
       markingGuide: [
         "1 mark: identifies malware from the unknown downloaded program.",
-        "1 mark: identifies data interception while information travels across the network.",
-        "1 mark: explains a relevant risk such as stolen files, exposed information, privacy loss, or account compromise.",
+        "1 mark: uses scenario evidence such as the unknown download or unexpected copying of saved files.",
+        "1 mark: explains a relevant risk such as stolen files, privacy loss, device damage, or account compromise.",
       ],
     },
     {
