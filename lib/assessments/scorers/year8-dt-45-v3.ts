@@ -18,11 +18,11 @@ const CORRECT_RADIOS: Record<string, string> = {
   q6d: "encryption",
   q7a: "meaning",
   q7b: "factor",
-  q8a: "wrong",
-  q8b: "permission",
-  q8c: "dontuse",
-  q8d: "report",
-  q8e: "purpose",
+  q13a: "wrong",
+  q13b: "permission",
+  q13c: "dontuse",
+  q13d: "report",
+  q13e: "purpose",
 };
 
 const CORRECT_SINGLE_PLACEMENTS: Record<string, string> = {

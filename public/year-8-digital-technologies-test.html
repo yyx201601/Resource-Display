@@ -744,43 +744,43 @@ Click that app first, read the information on the phone, then answer the questio
 <div class="mcqcard rq" data-answer="wrong">
 <p><strong>Q13A.</strong> A student installs harmful software on a friend's laptop “as a joke” without asking.</p>
 <div class="choices">
-<label class="choice compact"><input type="radio" name="q8a" value="fine">Responsible because it is only a joke</label>
-<label class="choice compact"><input type="radio" name="q8a" value="wrong">Not responsible because there is no permission and harm could occur</label>
+<label class="choice compact"><input type="radio" name="q13a" value="fine">Responsible because it is only a joke</label>
+<label class="choice compact"><input type="radio" name="q13a" value="wrong">Not responsible because there is no permission and harm could occur</label>
 </div>
 </div>
 
 <div class="mcqcard rq" data-answer="permission">
 <p><strong>Q13B.</strong> A school asks a cyber security professional to test its system.</p>
 <div class="choices">
-<label class="choice compact"><input type="radio" name="q8b" value="permission">This can be responsible because there is permission and a legitimate purpose</label>
-<label class="choice compact"><input type="radio" name="q8b" value="anything">Professionals can access anything they want</label>
+<label class="choice compact"><input type="radio" name="q13b" value="permission">This can be responsible because there is permission and a legitimate purpose</label>
+<label class="choice compact"><input type="radio" name="q13b" value="anything">Professionals can access anything they want</label>
 </div>
 </div>
 
 <div class="mcqcard rq" data-answer="dontuse">
 <p><strong>Q13C.</strong> You accidentally see another student's password. What is the most responsible action?</p>
 <div class="choices">
-<label class="choice compact"><input type="radio" name="q8c" value="login">Try logging in once</label>
-<label class="choice compact"><input type="radio" name="q8c" value="dontuse">Do not use it; tell the student or teacher if appropriate</label>
-<label class="choice compact"><input type="radio" name="q8c" value="save">Save it in case you need it later</label>
+<label class="choice compact"><input type="radio" name="q13c" value="login">Try logging in once</label>
+<label class="choice compact"><input type="radio" name="q13c" value="dontuse">Do not use it; tell the student or teacher if appropriate</label>
+<label class="choice compact"><input type="radio" name="q13c" value="save">Save it in case you need it later</label>
 </div>
 </div>
 
 <div class="mcqcard rq" data-answer="report">
 <p><strong>Q13D.</strong> You discover a security weakness in a school system. What should you do?</p>
 <div class="choices">
-<label class="choice compact"><input type="radio" name="q8d" value="exploit">Try the weakness to see what you can access</label>
-<label class="choice compact"><input type="radio" name="q8d" value="public">Post it publicly</label>
-<label class="choice compact"><input type="radio" name="q8d" value="report">Report it to an appropriate teacher or staff member</label>
+<label class="choice compact"><input type="radio" name="q13d" value="exploit">Try the weakness to see what you can access</label>
+<label class="choice compact"><input type="radio" name="q13d" value="public">Post it publicly</label>
+<label class="choice compact"><input type="radio" name="q13d" value="report">Report it to an appropriate teacher or staff member</label>
 </div>
 </div>
 
 <div class="mcqcard rq" data-answer="purpose">
 <p><strong>Q13E.</strong> Which THREE questions are most useful when deciding whether a technical action is responsible?</p>
 <div class="choices">
-<label class="choice compact"><input type="radio" name="q8e" value="purpose">What is the purpose? Do I have permission? Who could be harmed?</label>
-<label class="choice compact"><input type="radio" name="q8e" value="funny">Is it funny? Is it fast? Is it difficult?</label>
-<label class="choice compact"><input type="radio" name="q8e" value="hide">Can I hide it? Can I delete it? Will anyone notice?</label>
+<label class="choice compact"><input type="radio" name="q13e" value="purpose">What is the purpose? Do I have permission? Who could be harmed?</label>
+<label class="choice compact"><input type="radio" name="q13e" value="funny">Is it funny? Is it fast? Is it difficult?</label>
+<label class="choice compact"><input type="radio" name="q13e" value="hide">Can I hide it? Can I delete it? Will anyone notice?</label>
 </div>
 </div>
 
@@ -1133,50 +1133,6 @@ function progress(){
   document.getElementById('bar').style.width=p+'%';
   document.getElementById('pill').textContent=p+'% complete';
   saveState();
-}
-
-function scoreHardware(){
-  let s=0;
-  hwDrops.forEach(z=>{
-    const d=z.querySelector('.drag');
-    if(d&&d.dataset.match===z.dataset.answer)s++;
-  });
-  return s;
-}
-
-/* Q3 = 4 marks:
-   1 mark for each correct type label (2),
-   1 mark for each example group if both examples in that box are correct (2). */
-function scoreSoftware(){
-  let s=0;
-  softwareTypeSlots.forEach(z=>{
-    const d=z.querySelector('.drag');
-    if(d&&d.dataset.match===z.dataset.answer)s++;
-  });
-  softwareExampleZones.forEach(z=>{
-    const items=[...z.querySelectorAll('.drag')];
-    if(items.length===2 && items.every(i=>i.dataset.match===z.dataset.answer))s++;
-  });
-  return s;
-}
-
-function scoreRadios(){
-  let s=0;
-  document.querySelectorAll('.rq').forEach(q=>{
-    const checked=q.querySelector('input[type=radio]:checked');
-    if(checked && checked.value===q.dataset.answer)s++;
-  });
-  return s;
-}
-
-function scoreMulti(){
-  let s=0;
-  document.querySelectorAll('.multiq').forEach(q=>{
-    const correct=new Set(q.dataset.correct.split(','));
-    const selected=new Set([...q.querySelectorAll('input[type=checkbox]:checked')].map(x=>x.value));
-    if(selected.size===correct.size && [...correct].every(v=>selected.has(v)))s++;
-  });
-  return s;
 }
 
 function blankShort(){
