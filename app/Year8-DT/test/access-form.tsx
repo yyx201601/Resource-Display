@@ -1,7 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { startAssessment } from "@/lib/assessments/client";
+
+const ASSESSMENT_SLUG = "year8-dt-45";
+const CLASS_CODE = "year8-default";
 
 type FormErrors = {
   name?: string;
@@ -10,13 +13,12 @@ type FormErrors = {
 };
 
 export default function AccessForm() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [isEntering, setIsEntering] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const trimmedName = name.trim();
@@ -26,8 +28,8 @@ export default function AccessForm() {
       nextErrors.name = "Enter your name to continue.";
     }
 
-    if (code.trim().toUpperCase() !== "START") {
-      nextErrors.code = "That access code is not correct.";
+    if (!code.trim()) {
+      nextErrors.code = "Enter the access code provided by your teacher.";
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -39,15 +41,38 @@ export default function AccessForm() {
     setIsEntering(true);
 
     try {
+      const attemptStorageKey = [
+        "assessmentClientAttempt",
+        ASSESSMENT_SLUG,
+        CLASS_CODE,
+        trimmedName.toLowerCase(),
+      ].join(":");
+      let clientAttemptId = localStorage.getItem(attemptStorageKey);
+      if (!clientAttemptId || !/^[0-9a-f-]{36}$/i.test(clientAttemptId)) {
+        clientAttemptId = crypto.randomUUID();
+        localStorage.setItem(attemptStorageKey, clientAttemptId);
+      }
+      const access = await startAssessment({
+        assessmentSlug: ASSESSMENT_SLUG,
+        classCode: CLASS_CODE,
+        accessCode: code,
+        studentName: trimmedName,
+        clientAttemptId,
+      });
       sessionStorage.setItem(
         "year8TestAccess",
-        JSON.stringify({ name: trimmedName }),
+        JSON.stringify({ ...access, name: access.studentName }),
       );
-      router.push("/Year8-DT/test/exam");
-    } catch {
+      // The destination is a rewritten standalone HTML document, so it needs a full navigation.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.assign("/Year8-DT/test/exam");
+    } catch (error) {
       setIsEntering(false);
       setErrors({
-        form: "Your browser could not save this session. Enable browser storage and try again.",
+        form:
+          error instanceof Error
+            ? error.message
+            : "The test could not be opened. Please try again.",
       });
     }
   }
@@ -184,7 +209,7 @@ export default function AccessForm() {
               </button>
 
               <p className="text-sm leading-6 text-[#647385] dark:text-[#a9beca]">
-                Your answers reset if the test page is refreshed or closed.
+                Your progress is saved automatically on this device.
               </p>
             </form>
           </div>

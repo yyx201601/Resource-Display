@@ -9,8 +9,8 @@
 document.documentElement.style.display='none';
 try{
 const access=JSON.parse(sessionStorage.getItem('year8TestAccess')||'null');
-if(!access||typeof access.name!=='string'||!access.name.trim()){location.replace('/Year8-DT/test');return}
-window.year8TestStudentName=access.name.trim();document.documentElement.style.display=''
+if(!access||typeof access.name!=='string'||!access.name.trim()||!access.attemptId||!access.clientAttemptId){location.replace('/Year8-DT/test');return}
+window.year8TestStudentName=access.name.trim();window.year8TestAccessData=access;document.documentElement.style.display=''
 }catch(e){location.replace('/Year8-DT/test')}
 })();
 </script>
@@ -30,7 +30,7 @@ main{padding:22px 18px 70px}.module{background:var(--card);border:1px solid var(
 </head>
 <body>
 <header><div class="wrap"><h1>Year 8 Digital Technologies Test</h1><p>Hardware, Software, Networks and Cyber Security<br><strong id="studentname"></strong></p></div></header>
-<div class="top"><div class="topin"><div class="bar"><div id="bar"></div></div><div class="pill" id="pill">0% complete</div></div></div>
+<div class="top"><div class="topin"><div class="bar"><div id="bar"></div></div><div class="pill" id="savepill" aria-live="polite">Autosave on</div><div class="pill" id="pill">0% complete</div></div></div>
 <main id="root">
 
 <section class="module" id="m1"><div class="mh"><div><h2>Module 1 - Hardware, Software & Networks</h2><p>Recognise, classify and build the network model.</p></div><div class="meta">15 minutes · 15 marks</div></div><div class="content">
@@ -101,23 +101,301 @@ main{padding:22px 18px 70px}.module{background:var(--card);border:1px solid var(
 </main>
 <script>
 (function(){
-let dragged=null,submitted=false;const root=document.getElementById('root');
-const studentName=document.getElementById('studentname');if(studentName&&window.year8TestStudentName)studentName.textContent='Student: '+window.year8TestStudentName;
-const drags=[...document.querySelectorAll('.drag')],single=[...document.querySelectorAll('.drop.single')],multi=[...document.querySelectorAll('.multi')],banks=[...document.querySelectorAll('.bank')];
-drags.forEach(x=>{x.addEventListener('dragstart',()=>{if(submitted)return;dragged=x;setTimeout(()=>x.style.opacity='.45',0)});x.addEventListener('dragend',()=>{x.style.opacity='1';dragged=null;progress()})});
-function zone(z,isMulti){z.addEventListener('dragover',e=>{if(submitted)return;e.preventDefault();z.classList.add('over')});z.addEventListener('dragleave',()=>z.classList.remove('over'));z.addEventListener('drop',e=>{if(submitted)return;e.preventDefault();z.classList.remove('over');if(!dragged)return;if(!isMulti){const old=z.querySelector('.drag');if(old)document.getElementById(old.dataset.bank).appendChild(old)}z.appendChild(dragged);progress()})}
-single.forEach(z=>zone(z,false));multi.forEach(z=>zone(z,true));banks.forEach(b=>{b.addEventListener('dragover',e=>{if(!submitted)e.preventDefault()});b.addEventListener('drop',e=>{if(submitted)return;e.preventDefault();if(dragged)b.appendChild(dragged);progress()})});
-const home=document.getElementById('home');document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>{home.style.display='none';document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(b.dataset.app).classList.add('active')}));document.querySelectorAll('.back').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));home.style.display='block'}));document.getElementById('install').addEventListener('click',()=>document.getElementById('alert').style.display='block');
-const clues=[...document.querySelectorAll('.clue')],protect=[...document.querySelectorAll('.protect')];function limit(list,max,label){list.forEach(c=>c.addEventListener('change',()=>{if(list.filter(x=>x.checked).length>max)c.checked=false;document.getElementById(label).textContent=list.filter(x=>x.checked).length+' / '+max+' selected';progress()}))}limit(clues,3,'cluecount');limit(protect,2,'protectcount');document.querySelectorAll('input').forEach(x=>x.addEventListener('change',progress));
-function radioGroups(scope=document){const rs=[...scope.querySelectorAll('input[type=radio]')];return [...new Set(rs.map(r=>r.name))]}
-function interactions(){const filledSingle=single.filter(z=>z.querySelector('.drag')).length;const software=[...document.querySelectorAll('.software .drag')].length;const radios=radioGroups().filter(n=>document.querySelector('input[name="'+n+'"]:checked')).length;const special=clues.filter(x=>x.checked).length+protect.filter(x=>x.checked).length;return filledSingle+software+radios+special}
-function progress(){const max=44,p=Math.min(100,Math.round(interactions()/max*100));document.getElementById('bar').style.width=p+'%';document.getElementById('pill').textContent=p+'% complete'}
-function scoreSingle(scope){let s=0;[...scope.querySelectorAll('.scored')].forEach(z=>{const i=z.querySelector('.drag');if(i&&i.dataset.match===z.dataset.answer)s++});return s}
-function scoreSoft(){let s=0;document.querySelectorAll('.software').forEach(z=>[...z.querySelectorAll('.drag')].forEach(i=>{if(i.dataset.match===z.dataset.answer)s++}));return s}
-function scoreRadio(scope){let s=0;scope.querySelectorAll('.rq').forEach(q=>{const c=q.querySelector('input[type=radio]:checked');if(c&&c.value===q.dataset.answer)s++});return s}
-function total(){const m1=scoreSingle(document.getElementById('m1'))+scoreSoft();const m2a=scoreSingle(document.getElementById('m2a'))+scoreRadio(document.getElementById('m2a'));const goodClues=new Set(['name','birthday','school']);const c=clues.filter(x=>x.checked&&goodClues.has(x.value)).length;const goodP=new Set(['change','mfa']);const p=protect.filter(x=>x.checked&&goodP.has(x.value)).length;const m2b=scoreRadio(document.getElementById('m2b'))+c+p;const m2c=scoreRadio(document.getElementById('m2c'));return m1+m2a+m2b+m2c}
+const TEST_VERSION='year8-dt-45-v1';
+let dragged=null,submitted=false,submittedScore=null,restoring=false;
+const root=document.getElementById('root');
+const savePill=document.getElementById('savepill');
+const currentStudent=(window.year8TestStudentName||'anonymous').trim();
+const storageKey='year8TestDraft:'+TEST_VERSION+':'+currentStudent.toLowerCase();
+const studentName=document.getElementById('studentname');
+if(studentName&&window.year8TestStudentName)studentName.textContent='Student: '+window.year8TestStudentName;
+
+const drags=[...document.querySelectorAll('.drag')];
+const single=[...document.querySelectorAll('.drop.single')];
+const multi=[...document.querySelectorAll('.multi')];
+const banks=[...document.querySelectorAll('.bank')];
+const clues=[...document.querySelectorAll('.clue')];
+const protect=[...document.querySelectorAll('.protect')];
+const alertBox=document.getElementById('alert');
+
+drags.forEach((item,index)=>item.dataset.saveId='drag-'+index);
+banks.forEach(bank=>bank.dataset.saveZone='bank-'+bank.id);
+single.forEach((item,index)=>item.dataset.saveZone='single-'+index);
+multi.forEach((item,index)=>item.dataset.saveZone='multi-'+index);
+
+function radioGroups(scope=document){
+const radios=[...scope.querySelectorAll('input[type=radio]')];
+return [...new Set(radios.map(radio=>radio.name))]
+}
+
+function checkboxId(checkbox){
+return (checkbox.classList.contains('clue')?'clue:':'protect:')+checkbox.value
+}
+
+function captureAnswers(){
+const radios={};
+radioGroups().forEach(name=>{
+const selected=document.querySelector('input[name="'+name+'"]:checked');
+if(selected)radios[name]=selected.value
+});
+const placements={};
+drags.forEach(item=>{
+const parent=item.closest('[data-save-zone]');
+if(parent)placements[item.dataset.saveId]=parent.dataset.saveZone
+});
+return {
+radios,
+checkboxes:[...document.querySelectorAll('input[type=checkbox]:checked')].map(checkboxId),
+placements
+}
+}
+
+function saveState(){
+if(restoring)return;
+const answers=captureAnswers();
+const state={
+version:TEST_VERSION,
+radios:answers.radios,
+checkboxes:answers.checkboxes,
+placements:answers.placements,
+installed:alertBox.style.display==='block',
+submitted,
+serverRecorded:submitted,
+score:submitted?submittedScore:null,
+updatedAt:new Date().toISOString()
+};
+try{
+localStorage.setItem(storageKey,JSON.stringify(state));
+savePill.textContent='Saved locally'
+}catch(error){
+savePill.textContent='Autosave unavailable'
+}
+}
+
+function restoreState(){
+let state;
+try{state=JSON.parse(localStorage.getItem(storageKey)||'null')}catch(error){return false}
+if(!state||state.version!==TEST_VERSION)return false;
+restoring=true;
+const dragById=new Map(drags.map(item=>[item.dataset.saveId,item]));
+const zoneById=new Map([...banks,...single,...multi].map(item=>[item.dataset.saveZone,item]));
+Object.entries(state.placements||{}).forEach(([dragId,zoneId])=>{
+const item=dragById.get(dragId),target=zoneById.get(zoneId);
+if(item&&target)target.appendChild(item)
+});
+document.querySelectorAll('input[type=radio]').forEach(input=>{
+input.checked=state.radios&&state.radios[input.name]===input.value
+});
+const checked=new Set(Array.isArray(state.checkboxes)?state.checkboxes:[]);
+document.querySelectorAll('input[type=checkbox]').forEach(input=>input.checked=checked.has(checkboxId(input)));
+if(state.installed)alertBox.style.display='block';
+updateSelectionCounts();
+if(state.submitted&&state.serverRecorded){
+submitted=true;
+submittedScore=Number.isFinite(state.score)?state.score:total();
+root.classList.add('locked');
+document.getElementById('review').style.display='none';
+document.getElementById('buttons').style.display='none';
+document.getElementById('done').style.display='block';
+document.getElementById('score').textContent='Score: '+submittedScore+' / 45'
+}
+restoring=false;
+savePill.textContent='Progress restored';
+setTimeout(()=>{if(savePill.textContent==='Progress restored')savePill.textContent='Saved locally'},2500);
+return true
+}
+
+drags.forEach(item=>{
+item.addEventListener('dragstart',()=>{
+if(submitted)return;
+dragged=item;
+setTimeout(()=>item.style.opacity='.45',0)
+});
+item.addEventListener('dragend',()=>{
+item.style.opacity='1';
+dragged=null;
+progress()
+})
+});
+
+function zone(target,isMulti){
+target.addEventListener('dragover',event=>{
+if(submitted)return;
+event.preventDefault();
+target.classList.add('over')
+});
+target.addEventListener('dragleave',()=>target.classList.remove('over'));
+target.addEventListener('drop',event=>{
+if(submitted)return;
+event.preventDefault();
+target.classList.remove('over');
+if(!dragged)return;
+if(!isMulti){
+const old=target.querySelector('.drag');
+if(old)document.getElementById(old.dataset.bank).appendChild(old)
+}
+target.appendChild(dragged);
+progress()
+})
+}
+
+single.forEach(target=>zone(target,false));
+multi.forEach(target=>zone(target,true));
+banks.forEach(bank=>{
+bank.addEventListener('dragover',event=>{if(!submitted)event.preventDefault()});
+bank.addEventListener('drop',event=>{
+if(submitted)return;
+event.preventDefault();
+if(dragged)bank.appendChild(dragged);
+progress()
+})
+});
+
+const home=document.getElementById('home');
+document.querySelectorAll('.app').forEach(button=>button.addEventListener('click',()=>{
+home.style.display='none';
+document.querySelectorAll('.panel').forEach(panel=>panel.classList.remove('active'));
+document.getElementById(button.dataset.app).classList.add('active')
+}));
+document.querySelectorAll('.back').forEach(button=>button.addEventListener('click',()=>{
+document.querySelectorAll('.panel').forEach(panel=>panel.classList.remove('active'));
+home.style.display='block'
+}));
+document.getElementById('install').addEventListener('click',()=>{
+alertBox.style.display='block';
+saveState()
+});
+
+function updateSelectionCounts(){
+document.getElementById('cluecount').textContent=clues.filter(item=>item.checked).length+' / 3 selected';
+document.getElementById('protectcount').textContent=protect.filter(item=>item.checked).length+' / 2 selected'
+}
+
+function limit(list,max){
+list.forEach(checkbox=>checkbox.addEventListener('change',()=>{
+if(list.filter(item=>item.checked).length>max)checkbox.checked=false;
+updateSelectionCounts()
+}))
+}
+
+limit(clues,3);
+limit(protect,2);
+document.querySelectorAll('input').forEach(input=>input.addEventListener('change',progress));
+
+function interactions(){
+const filledSingle=single.filter(target=>target.querySelector('.drag')).length;
+const software=[...document.querySelectorAll('.software .drag')].length;
+const radios=radioGroups().filter(name=>document.querySelector('input[name="'+name+'"]:checked')).length;
+const special=clues.filter(item=>item.checked).length+protect.filter(item=>item.checked).length;
+return filledSingle+software+radios+special
+}
+
+function progress(){
+const max=44,percentage=Math.min(100,Math.round(interactions()/max*100));
+document.getElementById('bar').style.width=percentage+'%';
+document.getElementById('pill').textContent=percentage+'% complete';
+saveState()
+}
+
+function scoreSingle(scope){
+let score=0;
+[...scope.querySelectorAll('.scored')].forEach(target=>{
+const item=target.querySelector('.drag');
+if(item&&item.dataset.match===target.dataset.answer)score++
+});
+return score
+}
+
+function scoreSoft(){
+let score=0;
+document.querySelectorAll('.software').forEach(target=>[...target.querySelectorAll('.drag')].forEach(item=>{
+if(item.dataset.match===target.dataset.answer)score++
+}));
+return score
+}
+
+function scoreRadio(scope){
+let score=0;
+scope.querySelectorAll('.rq').forEach(question=>{
+const selected=question.querySelector('input[type=radio]:checked');
+if(selected&&selected.value===question.dataset.answer)score++
+});
+return score
+}
+
+function total(){
+const m1=scoreSingle(document.getElementById('m1'))+scoreSoft();
+const m2a=scoreSingle(document.getElementById('m2a'))+scoreRadio(document.getElementById('m2a'));
+const goodClues=new Set(['name','birthday','school']);
+const clueScore=clues.filter(item=>item.checked&&goodClues.has(item.value)).length;
+const goodProtections=new Set(['change','mfa']);
+const protectionScore=protect.filter(item=>item.checked&&goodProtections.has(item.value)).length;
+const m2b=scoreRadio(document.getElementById('m2b'))+clueScore+protectionScore;
+const m2c=scoreRadio(document.getElementById('m2c'));
+return m1+m2a+m2b+m2c
+}
+
 function complete(){return interactions()>=44}
-document.getElementById('reviewbtn').addEventListener('click',()=>{document.getElementById('review').style.display='block';document.getElementById('reviewmsg').textContent=complete()?'All sections appear complete. Submit when ready.':'Some items appear unanswered. Review before submitting.';document.getElementById('review').scrollIntoView({behavior:'smooth'})});document.getElementById('backbtn').addEventListener('click',()=>document.getElementById('m1').scrollIntoView({behavior:'smooth'}));document.getElementById('submitbtn').addEventListener('click',()=>{if(submitted)return;submitted=true;root.classList.add('locked');document.getElementById('review').style.display='none';document.getElementById('buttons').style.display='none';document.getElementById('done').style.display='block';document.getElementById('score').textContent='Score: '+total()+' / 45';document.getElementById('done').scrollIntoView({behavior:'smooth'})});document.getElementById('resetbtn').addEventListener('click',()=>{if(confirm('Reset the entire test? All answers will be cleared.'))location.reload()});progress();
+
+document.getElementById('reviewbtn').addEventListener('click',()=>{
+document.getElementById('review').style.display='block';
+document.getElementById('reviewmsg').textContent=complete()?'All sections appear complete. Submit when ready.':'Some items appear unanswered. Review before submitting.';
+document.getElementById('review').scrollIntoView({behavior:'smooth'})
+});
+document.getElementById('backbtn').addEventListener('click',()=>document.getElementById('m1').scrollIntoView({behavior:'smooth'}));
+document.getElementById('submitbtn').addEventListener('click',async()=>{
+if(submitted)return;
+const submitButton=document.getElementById('submitbtn');
+const reviewMessage=document.getElementById('reviewmsg');
+const access=window.year8TestAccessData;
+submitButton.disabled=true;
+submitButton.textContent='Submitting...';
+reviewMessage.textContent='Sending your answers securely. Keep this page open.';
+try{
+const response=await fetch('/api/assessments/submit',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+attemptId:access.attemptId,
+clientAttemptId:access.clientAttemptId,
+answers:captureAnswers()
+})
+});
+const result=await response.json();
+if(!response.ok)throw new Error(result.message||'Submission failed. Please try again.');
+submitted=true;
+submittedScore=result.score;
+root.classList.add('locked');
+document.getElementById('review').style.display='none';
+document.getElementById('buttons').style.display='none';
+document.getElementById('done').style.display='block';
+document.getElementById('score').textContent='Score: '+result.score+' / '+result.maxScore;
+saveState();
+document.getElementById('done').scrollIntoView({behavior:'smooth'})
+}catch(error){
+submitButton.disabled=false;
+submitButton.textContent='Submit Test';
+reviewMessage.textContent=error instanceof Error?error.message:'Submission failed. Please try again.'
+}
+});
+document.getElementById('resetbtn').addEventListener('click',()=>{
+if(confirm('Reset the entire test? All answers will be cleared.')){
+try{localStorage.removeItem(storageKey)}catch(error){}
+location.reload()
+}
+});
+window.addEventListener('pagehide',saveState);
+restoreState();
+if(!submitted&&window.year8TestAccessData.status==='submitted'&&Number.isFinite(window.year8TestAccessData.score)){
+submitted=true;
+submittedScore=window.year8TestAccessData.score;
+root.classList.add('locked');
+document.getElementById('review').style.display='none';
+document.getElementById('buttons').style.display='none';
+document.getElementById('done').style.display='block';
+document.getElementById('score').textContent='Score: '+submittedScore+' / '+window.year8TestAccessData.maxScore
+}
+progress();
 })();
 </script>
 </body>
