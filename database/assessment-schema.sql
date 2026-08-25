@@ -208,8 +208,8 @@ insert into assessment_definitions (
   slug, version, title, scorer_key, max_score, manual_max_score
 )
 values (
-  'year8-dt-45', 'v2', 'Year 8 Digital Technologies Test',
-  'year8-dt-45-v2', 45, 5
+  'year8-dt-45', 'v3', 'Year 8 Digital Technologies Test',
+  'year8-dt-45-v3', 45, 10
 )
 on conflict (slug, version)
 do update set
@@ -228,7 +228,7 @@ select
   crypt('START', gen_salt('bf'))
 from assessment_definitions
 where assessment_definitions.slug = 'year8-dt-45'
-  and assessment_definitions.version = 'v2'
+  and assessment_definitions.version = 'v3'
   and not exists (
     select 1
     from assessment_sessions

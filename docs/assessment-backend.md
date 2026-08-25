@@ -6,7 +6,7 @@ The assessment module separates test definitions, classroom sessions, and studen
 
 1. Add a PostgreSQL integration from the Vercel Storage Marketplace.
 2. Use its pooled connection string as `DATABASE_URL`.
-3. For a new database, run [`database/assessment-schema.sql`](../database/assessment-schema.sql). For an existing v1 database, run [`database/assessment-manual-marking-migration.sql`](../database/assessment-manual-marking-migration.sql).
+3. For a new database, run [`database/assessment-schema.sql`](../database/assessment-schema.sql). For the existing deployment, apply [`database/assessment-v3-migration.sql`](../database/assessment-v3-migration.sql); the earlier manual-marking migration remains available for databases still on v1.
 4. Add `TEACHER_DASHBOARD_CODE` and a long random `TEACHER_SESSION_SECRET` in Vercel project environment variables.
 5. Redeploy the project.
 
@@ -19,7 +19,7 @@ Reusable browser functions live in `lib/assessments/client.ts`:
 ```ts
 await startAssessment({
   assessmentSlug: "year8-dt-45",
-  assessmentVersion: "v2",
+  assessmentVersion: "v3",
   classCode: "year8-default",
   accessCode: "START",
   studentName: "Student name",
@@ -31,9 +31,9 @@ await submitAssessment({
   clientAttemptId,
   answers: {
     radios: { q5a: "phishing" },
-    checkboxes: ["clue:name"],
-    placements: { "drag-2": "single-0" },
-    shortAnswers: { "ethical-permission": "The school gave permission..." },
+    checkboxes: ["p1:school"],
+    placements: { "drag-2": "hardware-0" },
+    shortAnswers: { "data-interception": "The data was copied while travelling..." },
   },
 });
 ```
@@ -49,7 +49,7 @@ await submitAssessment({
 ```json
 {
   "assessmentSlug": "year8-dt-45",
-  "assessmentVersion": "v2",
+  "assessmentVersion": "v3",
   "classCode": "year8-default",
   "accessCode": "START",
   "studentName": "Student name",
@@ -93,6 +93,6 @@ Insert another `assessment_sessions` row with the same `assessment_id`, a unique
 
 1. Add a scorer under `lib/assessments/scorers/`.
 2. Register it in `lib/assessments/scorers/index.ts`.
-3. If it has teacher-marked questions, register their prompts, mark limits, and marking guides in `lib/assessments/manual-questions.ts`.
+3. If it has teacher-marked questions, register their prompts, mark limits, and marking guides in `lib/assessments/manual-questions.ts`. The current v3 assessment has 35 automatically marked points and four short-answer questions worth 10 points.
 4. Add an `assessment_definitions` row whose `scorer_key` matches the registry key and whose `manual_max_score` matches the registered questions.
 5. Create one or more classroom sessions for the definition.

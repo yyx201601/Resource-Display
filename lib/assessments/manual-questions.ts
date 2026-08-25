@@ -34,6 +34,54 @@ const QUESTIONS_BY_SCORER: Record<string, ManualQuestionDefinition[]> = {
       ],
     },
   ],
+  "year8-dt-45-v3": [
+    {
+      questionKey: "data-interception",
+      label: "Q8",
+      prompt:
+        "Mia's private message is copied while travelling across a public network. Explain what happened and why the encrypted message may still be protected.",
+      maxScore: 2,
+      markingGuide: [
+        "1 mark: identifies data interception or copying data while it travels.",
+        "1 mark: explains that encryption makes the content unreadable or difficult to understand without the key.",
+      ],
+    },
+    {
+      questionKey: "phishing-response",
+      label: "Q9",
+      prompt:
+        "Explain why the urgent school-account message is phishing rather than only a general scam, and give one safe action Alex should take.",
+      maxScore: 2,
+      markingGuide: [
+        "1 mark: explains that it impersonates a trusted source to obtain login details through a link.",
+        "1 mark: gives a safe action such as avoiding the link, checking the official site, or reporting the message.",
+      ],
+    },
+    {
+      questionKey: "malware-interception",
+      label: "Q10",
+      prompt:
+        "Identify the two threats in Priya's scenario and explain one risk caused by either threat.",
+      maxScore: 3,
+      markingGuide: [
+        "1 mark: identifies malware from the unknown downloaded program.",
+        "1 mark: identifies data interception while information travels across the network.",
+        "1 mark: explains a relevant risk such as stolen files, exposed information, privacy loss, or account compromise.",
+      ],
+    },
+    {
+      questionKey: "password-identity",
+      label: "Q11",
+      prompt:
+        "Explain Jordan's password problem, what happened next, and one suitable protection.",
+      maxScore: 3,
+      markingGuide: [
+        "1 mark: identifies password reuse or the same password being used across accounts.",
+        "1 mark: identifies identity theft or impersonation after the account is accessed.",
+        "1 mark: gives a suitable protection such as changing to unique passwords or enabling MFA.",
+      ],
+    },
+  ],
 };
 
 export function getManualQuestions(scorerKey: string) {

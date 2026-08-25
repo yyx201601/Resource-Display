@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { startAssessment } from "@/lib/assessments/client";
 
 const ASSESSMENT_SLUG = "year8-dt-45";
-const ASSESSMENT_VERSION = "v2";
+const ASSESSMENT_VERSION = "v3";
 const CLASS_CODE = "year8-default";
 
 type FormErrors = {
@@ -112,7 +112,7 @@ export default function AccessForm() {
             </div>
             <div>
               <dt className="text-xs text-[#a9c5d4]">Modules</dt>
-              <dd className="mt-1 text-xl font-bold sm:text-2xl">4</dd>
+              <dd className="mt-1 text-xl font-bold sm:text-2xl">3</dd>
             </div>
           </dl>
         </section>

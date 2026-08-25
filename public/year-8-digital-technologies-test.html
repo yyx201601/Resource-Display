@@ -1,364 +1,1317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Year 8 Digital Technologies Test</title>
 <script>
 (function(){
 document.documentElement.style.display='none';
 try{
-const access=JSON.parse(sessionStorage.getItem('year8TestAccess')||'null');
-if(!access||typeof access.name!=='string'||!access.name.trim()||!access.attemptId||!access.clientAttemptId){location.replace('/Year8-DT/test');return}
-window.year8TestStudentName=access.name.trim();window.year8TestAccessData=access;document.documentElement.style.display=''
-}catch(e){location.replace('/Year8-DT/test')}
+  const access=JSON.parse(sessionStorage.getItem('year8TestAccess')||'null');
+  if(!access||typeof access.name!=='string'||!access.name.trim()||!access.attemptId||!access.clientAttemptId){
+    location.replace('/Year8-DT/test');
+    return;
+  }
+  window.year8TestStudentName=access.name.trim();
+  window.year8TestAccessData=access;
+  document.documentElement.style.display='';
+}catch(error){
+  location.replace('/Year8-DT/test');
+}
 })();
 </script>
 <style>
-:root{--navy:#0b1f3a;--blue:#1c67a5;--cyan:#2aa7c9;--green:#217a57;--red:#a93636;--ink:#172033;--muted:#647385;--line:#d4e0e8;--bg:#f4f8fb;--card:#fff;--soft:#f8fbfd}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:linear-gradient(120deg,var(--navy),#144c78);color:#fff;padding:28px 18px}header .wrap,main{max-width:1100px;margin:auto}h1{margin:0 0 6px;font-size:clamp(28px,4vw,44px)}header p{margin:0;color:#d9edf8}
-.top{position:sticky;top:0;z-index:9;background:rgba(244,248,251,.96);border-bottom:1px solid #e1e9ef}.topin{max-width:1100px;margin:auto;padding:10px 18px;display:flex;gap:14px;align-items:center}.bar{height:9px;background:#dce8ef;border-radius:999px;overflow:hidden;flex:1}.bar>div{height:100%;width:0;background:var(--cyan)}.pill{font-size:13px;font-weight:700;color:var(--navy);background:#e8f2f8;padding:7px 10px;border-radius:999px;white-space:nowrap}
-main{padding:22px 18px 70px}.module{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:20px 0;overflow:hidden;box-shadow:0 8px 22px rgba(28,66,96,.05)}.mh{padding:18px 20px;background:linear-gradient(90deg,#f3f8fb,#fff);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.mh h2{margin:0;color:var(--navy);font-size:25px}.mh p{margin:5px 0 0;color:var(--muted)}.meta{font-size:13px;color:var(--blue);font-weight:700}.content{padding:20px}
-.q{padding:18px 0;border-top:1px solid #e8eef3}.q:first-child{border-top:0;padding-top:0}.qt{font-size:18px;line-height:1.45;margin:0 0 12px}.small{font-size:13px;color:var(--muted)}.choices{display:grid;gap:9px}.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff}.choice:hover{border-color:#96bdd1;background:#fbfdfe}input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.12)}.short-answer{display:block;width:100%;min-height:130px;resize:vertical;border:1px solid #9eb4c3;border-radius:12px;background:#fff;color:var(--ink);padding:12px 14px;font:inherit;line-height:1.55;outline:none}.short-answer:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(42,167,201,.18)}
-.draglayout{display:grid;grid-template-columns:1fr 1.55fr;gap:18px;align-items:start}.bank{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.bank h4{margin:0;color:var(--navy)}.drag{padding:11px 12px;border-radius:11px;border:1px solid #9bc7da;background:#e9f6fb;font-weight:700;cursor:grab;user-select:none}.targets{display:grid;gap:12px}.targetrow{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:center}.imgph{min-height:92px;border:2px dashed #adc2d1;border-radius:13px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fafcfd;color:#5c7384;font-weight:700;padding:10px}.drop{min-height:58px;border:2px dashed #b6c8d5;border-radius:12px;padding:9px;background:#fff}.drop strong{display:block;color:var(--navy);margin-bottom:5px}.drop.over{border-color:var(--cyan);background:#f1fbfe}.drop .drag{margin-top:5px}.sortgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.sort{min-height:130px;border:2px dashed #b6c8d5;border-radius:14px;padding:12px;background:#fbfdfe}.sort h4{margin:0 0 7px;color:var(--navy)}
-.net{display:grid;grid-template-columns:1fr 44px 1fr 44px 1fr;align-items:center;gap:6px;margin-top:12px}.arrow{text-align:center;font-size:30px;color:var(--blue)}.netslot{min-height:92px}.role{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:8px}
-.scenario{border:1px solid var(--line);background:var(--soft);border-radius:14px;padding:15px;margin:12px 0}.phonewrap{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:24px;align-items:start}.phone{border:10px solid #111923;border-radius:34px;background:#fff;min-height:560px;overflow:hidden;box-shadow:0 16px 34px rgba(14,31,48,.16)}.ptop{background:#0f2239;color:#fff;text-align:center;padding:10px;font-weight:700;font-size:14px}.screen{padding:14px}.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.app{min-height:90px;border:1px solid var(--line);border-radius:16px;background:#f8fbfd;color:var(--navy);font-size:16px;font-weight:700;cursor:pointer;padding:12px}.app span{display:block;font-size:30px;margin-bottom:7px}.panel{display:none}.panel.active{display:block}.back{border:0;background:#e8f1f6;color:var(--navy);border-radius:10px;padding:8px 11px;font-weight:700;cursor:pointer;margin-bottom:12px}.fake{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:#fff}.task{border:1px solid var(--line);border-radius:15px;padding:17px;background:#fff}.task h3{margin:0 0 6px;color:var(--navy)}.step{border-top:1px solid #e6edf2;padding:15px 0}.step:first-of-type{border-top:0}.tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;background:#eaf2f7;color:var(--blue)}.note{border-left:5px solid #a16a12;background:#fff7e5;border-radius:10px;padding:12px 14px;margin:14px 0}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}button.primary,button.secondary,button.danger{border:0;border-radius:11px;padding:12px 17px;font-size:15px;font-weight:700;cursor:pointer}button.primary{background:var(--navy);color:#fff}button.secondary{background:#e9eef3;color:var(--navy)}button.danger{background:#8f2f2f;color:#fff}.review{display:none;background:#fff;border:2px solid var(--navy);border-radius:16px;padding:20px;margin-top:22px}.submitted{display:none;background:#eaf7f1;border:1px solid #abd6c5;border-radius:16px;padding:22px;margin-top:22px}.submitted h3{margin:0 0 7px;color:var(--green)}.locked{pointer-events:none;opacity:.84}
-@media(max-width:820px){.draglayout,.phonewrap,.sortgrid,.targetrow{grid-template-columns:1fr}.net{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.top{position:static}}
+:root{
+  --navy:#0b1f3a;--blue:#1c67a5;--cyan:#2aa7c9;--green:#217a57;--red:#a93636;
+  --ink:#172033;--muted:#647385;--line:#d4e0e8;--bg:#f4f8fb;--card:#fff;--soft:#f8fbfd;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,var(--navy),#144c78);color:#fff;padding:26px 18px}
+header .wrap,main{max-width:1120px;margin:auto}
+h1{margin:0 0 6px;font-size:clamp(28px,4vw,44px)}
+header p{margin:0;color:#d9edf8}
+.top{position:sticky;top:0;z-index:9;background:rgba(244,248,251,.96);border-bottom:1px solid #e1e9ef}
+.topin{max-width:1120px;margin:auto;padding:10px 18px;display:flex;gap:14px;align-items:center}
+.bar{height:9px;background:#dce8ef;border-radius:999px;overflow:hidden;flex:1}
+.bar>div{height:100%;width:0;background:var(--cyan)}
+.pill{font-size:13px;font-weight:700;color:var(--navy);background:#e8f2f8;padding:7px 10px;border-radius:999px;white-space:nowrap}
+main{padding:22px 18px 70px}
+.module{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:20px 0;overflow:hidden;box-shadow:0 8px 22px rgba(28,66,96,.05)}
+.mh{padding:18px 20px;background:linear-gradient(90deg,#f3f8fb,#fff);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mh h2{margin:0;color:var(--navy);font-size:25px}
+.mh p{margin:5px 0 0;color:var(--muted)}
+.meta{font-size:13px;color:var(--blue);font-weight:700}
+.content{padding:20px}
+.q{padding:18px 0;border-top:1px solid #e8eef3}
+.q:first-child{border-top:0;padding-top:0}
+.qt{font-size:18px;line-height:1.45;margin:0 0 12px}
+.small{font-size:13px;color:var(--muted)}
+.choices{display:grid;gap:9px}
+.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff}
+.choice:hover{border-color:#96bdd1;background:#fbfdfe}
+.choice.compact{padding:9px 10px}
+input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
+.scenario{border:1px solid var(--line);background:var(--soft);border-radius:14px;padding:15px;margin:12px 0;line-height:1.5}
+.answerbox{width:100%;min-height:82px;border:1px solid #aebfcb;border-radius:12px;padding:12px;font:inherit;resize:vertical;background:#fff}
+.answerbox:focus{outline:3px solid rgba(42,167,201,.15);border-color:var(--cyan)}
+.hint{margin-top:8px;border-left:4px solid var(--cyan);padding:8px 11px;background:#f3fbfd;border-radius:8px;color:#425767;font-size:13px}
+.note{border-left:5px solid #a16a12;background:#fff7e5;border-radius:10px;padding:12px 14px;margin:14px 0}
+
+/* Only drag-and-drop activity: hardware image matching */
+.draglayout{display:grid;grid-template-columns:1fr 1.55fr;gap:18px;align-items:start}
+.bank{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+.bank h4{margin:0;color:var(--navy)}
+.drag{padding:11px 12px;border-radius:11px;border:1px solid #9bc7da;background:#e9f6fb;font-weight:700;cursor:grab;user-select:none}
+.targets{display:grid;gap:12px}
+.targetrow{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}
+.hwicon{min-height:92px;border:1px solid var(--line);border-radius:13px;display:flex;align-items:center;justify-content:center;background:#fff;font-size:48px}
+.drop{min-height:58px;border:2px dashed #b6c8d5;border-radius:12px;padding:9px;background:#fff}
+.drop.over{border-color:var(--cyan);background:#f1fbfe}
+
+/* Software type drag-and-drop */
+.software-type-bank,.software-example-bank{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--soft);
+}
+.software-type-bank{margin-bottom:14px}
+.software-example-bank{margin-top:14px}
+.software-type-bank h4,.software-example-bank h4{width:100%;margin:0;color:var(--navy)}
+.software-pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.software-box{border:1px solid var(--line);border-radius:16px;background:#fff;padding:14px;min-height:220px}
+.type-slot{
+  min-height:52px;border:2px dashed #8fb7cf;border-radius:12px;
+  padding:8px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;
+  background:#f8fcfe;
+}
+.type-slot.over,.example-zone.over{border-color:var(--cyan);background:#eefbff}
+.software-desc{
+  min-height:70px;border-radius:12px;background:#f3f7fa;padding:12px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  color:#425767;line-height:1.4;font-weight:700;
+}
+.example-zone{
+  margin-top:12px;min-height:82px;border:2px dashed #b8c9d5;border-radius:12px;
+  padding:9px;background:#fbfdfe;
+}
+.example-zone .small{display:block;margin-bottom:6px}
+.example-zone .drag{margin:6px 6px 0 0}
+
+/* compact MCQ grids */
+.mcqgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mcqcard{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px}
+.mcqcard p{margin:0 0 10px;line-height:1.4}
+.mcqcard .choices{gap:7px}
+
+/* network visual */
+.netmodel{display:grid;grid-template-columns:1fr 55px 1fr 55px 1fr;gap:7px;align-items:center;margin:12px 0}
+.netbox{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;text-align:center;font-weight:700;color:var(--navy)}
+.arr{text-align:center;font-size:28px;color:var(--blue)}
+
+/* Cycle MCQ */
+.cycle-wrap{max-width:1000px;margin:8px auto 0}
+.cycle-title{text-align:center;margin-bottom:14px}
+.cycle-title h3{margin:0;color:var(--navy);font-size:24px}
+.cycle-title p{margin:6px 0 0;color:var(--muted)}
+.cycle-row{display:grid;grid-template-columns:1.1fr .65fr 1.1fr .65fr 1.1fr;gap:10px;align-items:center}
+.cycle-node{border:2px solid #8eb8d1;border-radius:17px;background:#fff;padding:13px;min-height:188px}
+.cycle-node.anchor{border-color:#4a9d6b;background:#f2fbf6;display:flex;flex-direction:column;justify-content:center;min-height:120px}
+.cycle-node h4{margin:0 0 8px;color:var(--navy)}
+.route{border:2px dashed #b7c8d4;border-radius:12px;padding:9px;text-align:center;font-size:12.5px;line-height:1.35;color:#425767;background:#fff}
+.route .arrowbig{display:block;color:var(--blue);font-size:25px;line-height:1;margin-bottom:4px}
+.cycle-middle{display:grid;grid-template-columns:1fr 300px 1fr;gap:12px;align-items:center;margin:12px 0}
+.line{border-top:2px dashed #8eb8d1}
+.cycle-bottom{margin-top:0}
+
+/* ethics */
+.ethicskeys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.ethic{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.ethic strong{display:block;color:var(--navy);margin-bottom:4px}
+
+
+/* Interactive self-protection phone */
+.phone-section{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:24px;align-items:start;margin-top:14px}
+.phone{
+  border:10px solid #111923;border-radius:34px;background:#fff;overflow:hidden;
+  min-height:610px;box-shadow:0 16px 34px rgba(14,31,48,.16)
+}
+.phone-top{background:#0f2239;color:#fff;text-align:center;padding:10px;font-weight:700;font-size:14px}
+.phone-screen{padding:14px}
+.phone-home{display:block}
+.phone-apps{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.phone-app{
+  min-height:96px;border:1px solid var(--line);border-radius:16px;background:#f8fbfd;
+  color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;padding:12px
+}
+.phone-app:hover{background:#eef7fb}
+.phone-app span{display:block;font-size:30px;margin-bottom:7px}
+.phone-panel{display:none}
+.phone-panel.active{display:block}
+.phone-back{
+  border:0;background:#e8f1f6;color:var(--navy);border-radius:10px;padding:8px 11px;
+  font-weight:700;cursor:pointer;margin-bottom:12px
+}
+.phone-card{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:#fff;line-height:1.45}
+.phone-warning{background:#fff7e5;border-color:#d7b26b}
+.phone-danger{background:#fff5f5;border-color:#d89c9c}
+.phone-safe{background:#eefaf3;border-color:#a8d3b9}
+.phone-task{border:1px solid var(--line);border-radius:16px;background:#fff;padding:17px}
+.phone-task h3{margin:0 0 6px;color:var(--navy)}
+.phone-step{padding:14px 0;border-top:1px solid #e7edf2}
+.phone-step:first-of-type{border-top:0}
+.phone-tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;background:#eaf2f7;color:var(--blue)}
+.status-list{display:grid;gap:8px;margin-top:12px}
+.status-item{padding:9px 10px;border-radius:10px;background:#f4f7f9;color:#536675;font-size:13px}
+.status-item.done{background:#eaf7f1;color:#217a57;font-weight:700}
+@media(max-width:850px){
+  .phone-section{grid-template-columns:1fr}
+}
+
+
+/* Page-by-page module navigation */
+.module-page{display:none}
+.module-page.active{display:block}
+.module-nav{
+  max-width:1120px;margin:14px auto 0;padding:0 18px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px
+}
+.module-step{
+  font-size:13px;font-weight:700;color:var(--navy);
+  background:#e8f2f8;padding:7px 11px;border-radius:999px
+}
+.module-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.module-actions button:disabled,.phone-task-nav button:disabled{opacity:.45;cursor:not-allowed}
+
+/* Phone unread indicator + one-question-at-a-time task paging */
+.phone-app{position:relative}
+.unread-dot{
+  position:absolute;right:10px;top:10px;width:12px;height:12px;border-radius:50%;
+  background:#d53333;box-shadow:0 0 0 3px #fff
+}
+.phone-app.dimmed{opacity:.52}
+.phone-task-page{display:none}
+.phone-task-page.active{display:block}
+.phone-task-head{
+  display:flex;justify-content:space-between;gap:10px;align-items:center;
+  margin-bottom:10px
+}
+.phone-task-progress{
+  font-size:12px;font-weight:700;color:var(--blue);
+  background:#eaf2f7;padding:5px 9px;border-radius:999px;white-space:nowrap
+}
+.phone-instruction{
+  border-left:4px solid var(--red);background:#fff4f4;border-radius:10px;
+  padding:10px 12px;margin:10px 0 14px;line-height:1.45
+}
+.phone-task-nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+
+/* submit */
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button.primary,button.secondary{border:0;border-radius:11px;padding:12px 17px;font-size:15px;font-weight:700;cursor:pointer}
+button.primary{background:var(--navy);color:#fff}
+button.secondary{background:#e9eef3;color:var(--navy)}
+.review{display:none;background:#fff;border:2px solid var(--navy);border-radius:16px;padding:20px;margin-top:22px}
+.submitted{display:none;background:#eaf7f1;border:1px solid #abd6c5;border-radius:16px;padding:22px;margin-top:22px}
+.score{font-size:28px;font-weight:800;color:var(--navy)}
+.locked{pointer-events:none;opacity:.9}
+@media(max-width:850px){
+  .draglayout,.targetrow,.mcqgrid,.ethicskeys,.software-pair-grid{grid-template-columns:1fr}
+  .netmodel,.cycle-row{grid-template-columns:1fr}
+  .arr{transform:rotate(90deg)}
+  .cycle-middle{grid-template-columns:1fr}
+  .line{display:none}
+  .top{position:static}
+}
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>Year 8 Digital Technologies Test</h1><p>Hardware, Software, Networks and Cyber Security<br><strong id="studentname"></strong></p></div></header>
-<div class="top"><div class="topin"><div class="bar"><div id="bar"></div></div><div class="pill" id="savepill" aria-live="polite">Autosave on</div><div class="pill" id="pill">0% complete</div></div></div>
+<header>
+<div class="wrap">
+<h1>Year 8 Digital Technologies Test</h1>
+<p>Hardware · Software · Networks · Cyber Security<br><strong id="studentname"></strong></p>
+</div>
+</header>
+
+<div class="top"><div class="topin">
+<div class="bar"><div id="bar"></div></div>
+<div class="pill" id="savepill" aria-live="polite">Autosave on</div>
+<div class="pill" id="pill">0% complete</div>
+</div></div>
+
+<div class="module-nav">
+  <div class="module-step" id="moduleStep">Module 1 of 3</div>
+  <div class="small" id="moduleTitle">Hardware, Software & Networks</div>
+</div>
+
 <main id="root">
 
-<section class="module" id="m1"><div class="mh"><div><h2>Module 1 - Hardware, Software & Networks</h2><p>Recognise, classify and build the network model.</p></div><div class="meta">15 minutes · 15 marks</div></div><div class="content">
-
-<div class="q"><p class="qt"><strong>Q1. Hardware - What is it?</strong><br>Drag each hardware name to the correct image. <span class="small">(4 marks)</span></p>
-<div class="draglayout"><div class="bank" id="b1"><h4>Hardware names</h4><div class="drag" draggable="true" data-match="monitor" data-bank="b1">Monitor</div><div class="drag" draggable="true" data-match="ssd" data-bank="b1">SSD / Storage Drive</div><div class="drag" draggable="true" data-match="keyboard" data-bank="b1">Keyboard</div><div class="drag" draggable="true" data-match="mouse" data-bank="b1">Mouse</div></div>
-<div class="targets">
-<div class="targetrow"><div class="imgph"><!-- replace with keyboard image -->[HARDWARE IMAGE PLACEHOLDER 1]</div><div class="drop single scored" data-answer="keyboard"></div></div>
-<div class="targetrow"><div class="imgph"><!-- replace with monitor image -->[HARDWARE IMAGE PLACEHOLDER 2]</div><div class="drop single scored" data-answer="monitor"></div></div>
-<div class="targetrow"><div class="imgph"><!-- replace with mouse image -->[HARDWARE IMAGE PLACEHOLDER 3]</div><div class="drop single scored" data-answer="mouse"></div></div>
-<div class="targetrow"><div class="imgph"><!-- replace with SSD image -->[HARDWARE IMAGE PLACEHOLDER 4]</div><div class="drop single scored" data-answer="ssd"></div></div>
-</div></div></div>
-
-<div class="q"><p class="qt"><strong>Q2. Hardware - What does it do?</strong><br>Match each hardware item with its main function. <span class="small">(4 marks)</span></p>
-<div class="draglayout"><div class="bank" id="b2"><h4>Functions</h4><div class="drag" draggable="true" data-match="mouse" data-bank="b2">Point, click and select items</div><div class="drag" draggable="true" data-match="ssd" data-bank="b2">Store files and data</div><div class="drag" draggable="true" data-match="monitor" data-bank="b2">Display visual output</div><div class="drag" draggable="true" data-match="keyboard" data-bank="b2">Enter text and other input</div></div>
-<div class="targets"><div class="drop single scored" data-answer="keyboard"><strong>Keyboard</strong></div><div class="drop single scored" data-answer="monitor"><strong>Monitor</strong></div><div class="drop single scored" data-answer="mouse"><strong>Mouse</strong></div><div class="drop single scored" data-answer="ssd"><strong>SSD / Storage Drive</strong></div></div></div></div>
-
-<div class="q"><p class="qt"><strong>Q3. Types of Software</strong><br>Drag each example into the correct software type. <span class="small">(4 marks)</span></p>
-<div class="bank" id="b3" style="margin-bottom:12px"><h4>Software examples</h4><div class="drag" draggable="true" data-match="application" data-bank="b3">Microsoft Word</div><div class="drag" draggable="true" data-match="system" data-bank="b3">Windows</div><div class="drag" draggable="true" data-match="application" data-bank="b3">Google Chrome</div><div class="drag" draggable="true" data-match="system" data-bank="b3">Android</div></div>
-<div class="sortgrid"><div class="sort multi software" data-answer="application"><h4>Application Software</h4><div class="small">Software used by the user to complete a task.</div></div><div class="sort multi software" data-answer="system"><h4>System Software</h4><div class="small">Software that manages the computer and supports other software.</div></div></div></div>
-
-<div class="q"><p class="qt"><strong>Q4. Network Model</strong><br>A student sends a file from their laptop to the school server. Drag the items into the correct positions. <span class="small">(3 marks)</span></p>
-<div class="bank" id="b4"><h4>Network items</h4><div class="drag" draggable="true" data-match="network" data-bank="b4">Wi-Fi / Network</div><div class="drag" draggable="true" data-match="receiver" data-bank="b4">School server</div><div class="drag" draggable="true" data-match="sender" data-bank="b4">Student laptop</div></div>
-<div class="net"><div class="drop single scored netslot" data-answer="sender"><div class="role">Sender</div></div><div class="arrow">→</div><div class="drop single scored netslot" data-answer="network"><div class="role">Network</div></div><div class="arrow">→</div><div class="drop single scored netslot" data-answer="receiver"><div class="role">Receiver</div></div></div></div>
-</div></section>
-
-<section class="module" id="m2a"><div class="mh"><div><h2>Module 2A - Cyber Security Concepts</h2><p>Identify threats and match suitable protections.</p></div><div class="meta">15 minutes · 15 marks</div></div><div class="content">
-<div class="q"><p class="qt"><strong>Q5. Identify the Cyber Security Threat</strong> <span class="small">(6 marks)</span></p>
-<div class="scenario rq" data-answer="phishing"><p><strong>5A.</strong> A school-looking email says your account will be deleted unless you click a link and log in now.</p><div class="choices"><label class="choice"><input type="radio" name="q5a" value="scam">Scam</label><label class="choice"><input type="radio" name="q5a" value="phishing">Phishing</label><label class="choice"><input type="radio" name="q5a" value="malware">Malware</label><label class="choice"><input type="radio" name="q5a" value="identity">Identity Theft</label></div></div>
-<div class="scenario rq" data-answer="scam"><p><strong>5B.</strong> “Congratulations! You won a new phone. Pay a $20 processing fee to receive it.”</p><div class="choices"><label class="choice"><input type="radio" name="q5b" value="phishing">Phishing</label><label class="choice"><input type="radio" name="q5b" value="malware">Malware</label><label class="choice"><input type="radio" name="q5b" value="scam">Scam</label><label class="choice"><input type="radio" name="q5b" value="interception">Data Interception</label></div></div>
-<div class="scenario rq" data-answer="malware"><p><strong>5C.</strong> A free game mod from an unknown website causes strange programs to appear and information to leave your computer.</p><div class="choices"><label class="choice"><input type="radio" name="q5c" value="identity">Identity Theft</label><label class="choice"><input type="radio" name="q5c" value="malware">Malware</label><label class="choice"><input type="radio" name="q5c" value="scam">Scam</label><label class="choice"><input type="radio" name="q5c" value="interception">Data Interception</label></div></div>
-<div class="scenario rq" data-answer="password"><p><strong>5D.</strong> Alex uses <code>alex123</code> for school, gaming and social media.</p><div class="choices"><label class="choice"><input type="radio" name="q5d" value="malware">Malware</label><label class="choice"><input type="radio" name="q5d" value="phishing">Phishing</label><label class="choice"><input type="radio" name="q5d" value="password">Weak / Reused Password</label><label class="choice"><input type="radio" name="q5d" value="identity">Identity Theft</label></div></div>
-<div class="scenario rq" data-answer="identity"><p><strong>5E.</strong> Someone uses Jordan's personal information and sends messages while pretending to be Jordan.</p><div class="choices"><label class="choice"><input type="radio" name="q5e" value="scam">Scam</label><label class="choice"><input type="radio" name="q5e" value="malware">Malware</label><label class="choice"><input type="radio" name="q5e" value="identity">Identity Theft</label><label class="choice"><input type="radio" name="q5e" value="encryption">Encryption</label></div></div>
-<div class="scenario rq" data-answer="interception"><p><strong>5F.</strong> An unauthorised person secretly observes and copies data while it travels between a laptop and a server.</p><div class="choices"><label class="choice"><input type="radio" name="q5f" value="phishing">Phishing</label><label class="choice"><input type="radio" name="q5f" value="identity">Identity Theft</label><label class="choice"><input type="radio" name="q5f" value="interception">Data Interception</label><label class="choice"><input type="radio" name="q5f" value="password">Weak Password</label></div></div>
+<section class="module module-page active" id="m1" data-module-index="0">
+<div class="mh">
+<div><h2>Module 1 — Hardware, Software & Networks</h2><p>Recognise hardware and apply what you know about software and networks.</p></div>
+<div class="meta">15 minutes · 15 marks</div>
 </div>
-<div class="q"><p class="qt"><strong>Q6. Match the Threat to the Protection</strong> <span class="small">(6 marks)</span></p><div class="draglayout"><div class="bank" id="b5"><h4>Protection strategies</h4><div class="drag" draggable="true" data-match="interception" data-bank="b5">Use encryption</div><div class="drag" draggable="true" data-match="malware" data-bank="b5">Trusted downloads and software updates</div><div class="drag" draggable="true" data-match="identity" data-bank="b5">Protect personal information and secure/report compromised accounts</div><div class="drag" draggable="true" data-match="scam" data-bank="b5">Verify unusual offers before sending money or information</div><div class="drag" draggable="true" data-match="phishing" data-bank="b5">Check sender and links; use the official website</div><div class="drag" draggable="true" data-match="password" data-bank="b5">Strong, unique passwords and MFA</div></div><div class="targets"><div class="drop single scored" data-answer="phishing"><strong>Phishing</strong></div><div class="drop single scored" data-answer="scam"><strong>Scam</strong></div><div class="drop single scored" data-answer="malware"><strong>Malware</strong></div><div class="drop single scored" data-answer="password"><strong>Weak / Reused Password</strong></div><div class="drop single scored" data-answer="identity"><strong>Identity Theft</strong></div><div class="drop single scored" data-answer="interception"><strong>Data Interception</strong></div></div></div></div>
-<div class="q"><p class="qt"><strong>Q7. Think Carefully - True or False</strong> <span class="small">(3 marks)</span></p><div class="scenario rq" data-answer="false"><p><strong>7A.</strong> Encryption completely prevents an attacker from intercepting data.</p><div class="choices"><label class="choice"><input type="radio" name="q7a" value="true">True</label><label class="choice"><input type="radio" name="q7a" value="false">False</label></div></div><div class="scenario rq" data-answer="true"><p><strong>7B.</strong> If someone uses your personal information to pretend to be you, this can be Identity Theft.</p><div class="choices"><label class="choice"><input type="radio" name="q7b" value="true">True</label><label class="choice"><input type="radio" name="q7b" value="false">False</label></div></div><div class="scenario rq" data-answer="true"><p><strong>7C.</strong> A strong password can still create a security risk if you reuse it across many accounts.</p><div class="choices"><label class="choice"><input type="radio" name="q7c" value="true">True</label><label class="choice"><input type="radio" name="q7c" value="false">False</label></div></div></div>
-</div></section>
+<div class="content">
 
-<section class="module" id="m2b"><div class="mh"><div><h2>Module 2B - Interactive Cyber Security Scenario</h2><p>Investigate a fictional training phone and follow the cyber threat cycle.</p></div><div class="meta">10 minutes · 10 marks</div></div><div class="content"><div class="note"><strong>Simulation only:</strong> Everything in this phone is fictional. No real person, account or software is being accessed.</div>
-<div class="phonewrap"><div class="phone"><div class="ptop">Jordan's Training Phone</div><div class="screen"><div id="home"><div class="apps"><button type="button" class="app" data-app="social"><span>📱</span>Social</button><button type="button" class="app" data-app="messages"><span>💬</span>Messages</button><button type="button" class="app" data-app="downloads"><span>📁</span>Downloads</button><button type="button" class="app" data-app="network"><span>🌐</span>Network</button></div></div>
-<div class="panel" id="social"><button type="button" class="back">← Home</button><h3>Social</h3><div class="fake"><strong>Jordan Lee</strong><br>St George College<br>Birthday: 14 May</div><div class="fake">“Happy 5th birthday to Milo! 🐶”</div><div class="fake">Favourite colour: Blue</div></div>
-<div class="panel" id="messages"><button type="button" class="back">← Home</button><h3>Messages</h3><div class="fake">Friend: “Did you really send me that weird link?”</div><div class="fake">Jordan: “No. I think someone got into my account.”</div></div>
-<div class="panel" id="downloads"><button type="button" class="back">← Home</button><h3>Downloads</h3><div class="fake"><strong>Free_Game_Mod.exe</strong><br>Source: unknown-free-games.example<br><br>⚠ This program asks you to disable security protection before installation.</div><button type="button" class="danger" id="install">Install suspicious software (simulation)</button><div id="alert" style="display:none"><div class="fake" style="background:#fff5f5;border-color:#d89c9c"><strong>Security Alert</strong><br>Contacts accessed<br>Saved account information accessed<br>Files copied</div></div></div>
-<div class="panel" id="network"><button type="button" class="back">← Home</button><h3>Network</h3><div class="fake" style="text-align:center;line-height:1.8">Jordan's Phone<br>↓<br>Public Network<br>↓<br>School Server<br><br>👁 <strong>Attacker observing data</strong></div></div>
+<div class="q">
+<p class="qt"><strong>Q1. Match the hardware</strong> <span class="small">(4 marks)</span><br>
+Drag each hardware name to the correct picture.</p>
+<div class="draglayout">
+<div class="bank" id="hardwarebank">
+<h4>Hardware names</h4>
+<div class="drag" draggable="true" data-match="monitor" data-bank="hardwarebank">Monitor</div>
+<div class="drag" draggable="true" data-match="ssd" data-bank="hardwarebank">SSD / Storage Drive</div>
+<div class="drag" draggable="true" data-match="keyboard" data-bank="hardwarebank">Keyboard</div>
+<div class="drag" draggable="true" data-match="mouse" data-bank="hardwarebank">Mouse</div>
+</div>
+<div class="targets">
+<div class="targetrow"><div class="hwicon">⌨️</div><div class="drop scored" data-answer="keyboard"></div></div>
+<div class="targetrow"><div class="hwicon">🖥️</div><div class="drop scored" data-answer="monitor"></div></div>
+<div class="targetrow"><div class="hwicon">🖱️</div><div class="drop scored" data-answer="mouse"></div></div>
+<div class="targetrow"><div class="hwicon">💾</div><div class="drop scored" data-answer="ssd"></div></div>
+</div>
+</div>
+</div>
+
+<div class="q">
+<p class="qt"><strong>Q2. Hardware functions</strong> <span class="small">(4 marks)</span></p>
+<div class="mcqgrid">
+<div class="mcqcard rq" data-answer="input"><p><strong>2A.</strong> What is the main role of a keyboard?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q2a" value="storage">Store files</label>
+<label class="choice compact"><input type="radio" name="q2a" value="input">Enter text and commands</label>
+<label class="choice compact"><input type="radio" name="q2a" value="output">Display visual information</label>
 </div></div>
-<div class="task"><h3>Scenario Tasks</h3><p class="small">Complete all seven tasks.</p>
-<div class="step"><span class="tag">Task 1 · 3 marks</span><p><strong>Explore Social.</strong> Select exactly THREE pieces of personal information an attacker could potentially misuse.</p><div class="choices"><label class="choice"><input type="checkbox" class="clue" value="name">Full name</label><label class="choice"><input type="checkbox" class="clue" value="birthday">Birthday</label><label class="choice"><input type="checkbox" class="clue" value="school">School</label><label class="choice"><input type="checkbox" class="clue" value="colour">Favourite colour</label><label class="choice"><input type="checkbox" class="clue" value="likes">Number of likes</label></div><div class="small" id="cluecount" style="margin-top:7px">0 / 3 selected</div></div>
-<div class="step rq" data-answer="malware"><span class="tag">Task 2 · 1 mark</span><p>Jordan installs the suspicious game modification. What threat is most likely?</p><div class="choices"><label class="choice"><input type="radio" name="s2" value="phishing">Phishing</label><label class="choice"><input type="radio" name="s2" value="scam">Scam</label><label class="choice"><input type="radio" name="s2" value="malware">Malware</label><label class="choice"><input type="radio" name="s2" value="interception">Data Interception</label></div></div>
-<div class="step rq" data-answer="steal"><span class="tag">Task 3 · 1 mark</span><p>Why is the malware dangerous?</p><div class="choices"><label class="choice"><input type="radio" name="s3" value="battery">It makes the battery charge faster.</label><label class="choice"><input type="radio" name="s3" value="steal">It may steal or expose personal information.</label><label class="choice"><input type="radio" name="s3" value="password">It automatically creates a stronger password.</label><label class="choice"><input type="radio" name="s3" value="encrypt">It safely encrypts all network traffic.</label></div></div>
-<div class="step rq" data-answer="identity"><span class="tag">Task 4 · 1 mark</span><p>An attacker sends messages from Jordan's account while pretending to be Jordan. What is happening?</p><div class="choices"><label class="choice"><input type="radio" name="s4" value="interception">Data Interception</label><label class="choice"><input type="radio" name="s4" value="scam">Scam</label><label class="choice"><input type="radio" name="s4" value="identity">Identity Theft / Impersonation</label><label class="choice"><input type="radio" name="s4" value="encryption">Encryption</label></div></div>
-<div class="step rq" data-answer="phishing"><span class="tag">Task 5 · 1 mark</span><p>Jordan's classmates receive: “Hey! Look at this photo 😂 Click here.” What new threat are they facing?</p><div class="choices"><label class="choice"><input type="radio" name="s5" value="malware">Malware</label><label class="choice"><input type="radio" name="s5" value="phishing">Phishing</label><label class="choice"><input type="radio" name="s5" value="password">Weak Password</label><label class="choice"><input type="radio" name="s5" value="encryption">Encryption</label></div></div>
-<div class="step"><span class="tag">Task 6 · 2 marks</span><p>Select TWO actions that would best help protect Jordan's account.</p><div class="choices"><label class="choice"><input type="checkbox" class="protect" value="change">Change the compromised password and use a unique password</label><label class="choice"><input type="checkbox" class="protect" value="mfa">Enable MFA</label><label class="choice"><input type="checkbox" class="protect" value="friend">Send the password to a trusted friend</label><label class="choice"><input type="checkbox" class="protect" value="old">Keep using the old password</label><label class="choice"><input type="checkbox" class="protect" value="ignore">Ignore the problem</label></div><div class="small" id="protectcount" style="margin-top:7px">0 / 2 selected</div></div>
-<div class="step rq" data-answer="encryption"><span class="tag">Task 7 · 1 mark</span><p>In Network, an attacker observes information while it travels. Which protection is most relevant?</p><div class="choices"><label class="choice"><input type="radio" name="s7" value="brightness">Strong screen brightness</label><label class="choice"><input type="radio" name="s7" value="uninstall">Software uninstall</label><label class="choice"><input type="radio" name="s7" value="encryption">Encryption</label><label class="choice"><input type="radio" name="s7" value="shorter">A shorter password</label></div></div>
-</div></div></div></section>
+<div class="mcqcard rq" data-answer="output"><p><strong>2B.</strong> What is the main role of a monitor?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q2b" value="input">Capture sound</label>
+<label class="choice compact"><input type="radio" name="q2b" value="output">Display visual information</label>
+<label class="choice compact"><input type="radio" name="q2b" value="storage">Store files</label>
+</div></div>
+<div class="mcqcard rq" data-answer="storage"><p><strong>2C.</strong> Which device is mainly used to keep files after the computer is turned off?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q2c" value="monitor">Monitor</label>
+<label class="choice compact"><input type="radio" name="q2c" value="storage">SSD / Storage Drive</label>
+<label class="choice compact"><input type="radio" name="q2c" value="mouse">Mouse</label>
+</div></div>
+<div class="mcqcard rq" data-answer="camera"><p><strong>2D.</strong> Which device captures visual information from the real world?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q2d" value="speaker">Speaker</label>
+<label class="choice compact"><input type="radio" name="q2d" value="camera">Camera / Webcam</label>
+<label class="choice compact"><input type="radio" name="q2d" value="projector">Projector</label>
+</div></div>
+</div>
+</div>
 
-<section class="module" id="m2c"><div class="mh"><div><h2>Module 2C - Responsible & Ethical Use</h2><p>Purpose, permission and harm.</p></div><div class="meta">5 minutes · 5 marks</div></div><div class="content">
-<div class="q"><p class="qt"><strong>Q8. Permission and purpose</strong> <span class="small">(2 marks)</span><br>Explain why testing a school system with permission is different from exploiting a weakness without permission.</p><label class="small" for="ethical-permission">Write about permission, purpose and possible harm.</label><textarea id="ethical-permission" class="short-answer" data-short-answer="ethical-permission" maxlength="2000" placeholder="Write your explanation here"></textarea></div>
-<div class="q"><p class="qt"><strong>Q9. Responsible response</strong> <span class="small">(3 marks)</span><br>You accidentally see another student's password and notice a security weakness. Describe three responsible actions you should take.</p><label class="small" for="responsible-response">Include what you would avoid doing and who you would tell.</label><textarea id="responsible-response" class="short-answer" data-short-answer="responsible-response" maxlength="2000" placeholder="Describe three actions here"></textarea></div>
-</div></section>
+<div class="q">
+<p class="qt"><strong>Q3. Software types</strong> <span class="small">(4 marks)</span><br>
+Drag the two software types to the correct descriptions. Then drag each example into the correct box.</p>
 
-<div class="btnrow" id="buttons"><button type="button" class="primary" id="reviewbtn">Review & Submit</button><button type="button" class="secondary" id="resetbtn">Reset Test</button></div>
-<div class="review" id="review"><h3 style="margin:0;color:var(--navy)">Review your test</h3><p id="reviewmsg">Check all sections before submitting.</p><div class="btnrow"><button type="button" class="secondary" id="backbtn">Review Answers</button><button type="button" class="primary" id="submitbtn">Submit Test</button></div></div>
-<div class="submitted" id="done"><h3>Test submitted</h3><p>Your answers have been recorded and are now locked. Your teacher will share results separately.</p></div>
+<div class="software-type-bank" id="softwaretypebank">
+<h4>Software types</h4>
+<div class="drag softdrag" draggable="true" data-kind="type" data-match="application" data-bank="softwaretypebank">Application Software</div>
+<div class="drag softdrag" draggable="true" data-kind="type" data-match="system" data-bank="softwaretypebank">System Software</div>
+</div>
+
+<div class="software-pair-grid">
+  <div class="software-box">
+    <div class="type-slot software-type-slot scored-type" data-answer="application"></div>
+    <div class="software-desc">Used by the user to complete a task.</div>
+    <div class="example-zone software-example-zone" data-answer="application">
+      <span class="small"><strong>Examples</strong></span>
+    </div>
+  </div>
+
+  <div class="software-box">
+    <div class="type-slot software-type-slot scored-type" data-answer="system"></div>
+    <div class="software-desc">Manages the computer and supports other software.</div>
+    <div class="example-zone software-example-zone" data-answer="system">
+      <span class="small"><strong>Examples</strong></span>
+    </div>
+  </div>
+</div>
+
+<div class="software-example-bank" id="softwareexamplebank">
+<h4>Examples</h4>
+<div class="drag softdrag" draggable="true" data-kind="example" data-match="application" data-bank="softwareexamplebank">Microsoft Word</div>
+<div class="drag softdrag" draggable="true" data-kind="example" data-match="system" data-bank="softwareexamplebank">Windows</div>
+<div class="drag softdrag" draggable="true" data-kind="example" data-match="application" data-bank="softwareexamplebank">Google Chrome</div>
+<div class="drag softdrag" draggable="true" data-kind="example" data-match="system" data-bank="softwareexamplebank">Android</div>
+</div>
+</div>
+
+<div class="q">
+<p class="qt"><strong>Q4. Network model</strong> <span class="small">(3 marks)</span></p>
+<div class="netmodel"><div class="netbox">Student laptop</div><div class="arr">→</div><div class="netbox">Wi-Fi / Network</div><div class="arr">→</div><div class="netbox">School server</div></div>
+<div class="mcqgrid">
+<div class="mcqcard rq" data-answer="sender"><p><strong>4A.</strong> The student laptop is the...</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q4a" value="sender">Sender</label>
+<label class="choice compact"><input type="radio" name="q4a" value="receiver">Receiver</label>
+<label class="choice compact"><input type="radio" name="q4a" value="attacker">Attacker</label>
+</div></div>
+<div class="mcqcard rq" data-answer="receiver"><p><strong>4B.</strong> The school server is the...</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q4b" value="sender">Sender</label>
+<label class="choice compact"><input type="radio" name="q4b" value="receiver">Receiver</label>
+<label class="choice compact"><input type="radio" name="q4b" value="network">Network</label>
+</div></div>
+<div class="mcqcard rq" data-answer="travel"><p><strong>4C.</strong> What is the main job of the network?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q4c" value="travel">Allow data to travel between devices</label>
+<label class="choice compact"><input type="radio" name="q4c" value="store">Store all files permanently</label>
+<label class="choice compact"><input type="radio" name="q4c" value="display">Display visual output</label>
+</div></div>
+</div>
+</div>
+
+</div>
+<div class="module-actions"><button type="button" class="primary next-module">Next Module →</button></div>
+</section>
+
+
+<section class="module module-page" id="m2a" data-module-index="1">
+<div class="mh">
+<div>
+<h2>Module 2A — Cyber Security</h2>
+<p>Part 1: Recall & recognition → Part 2: Short answer.</p>
+</div>
+<div class="meta">20 minutes · 20 marks</div>
+</div>
+<div class="content">
+
+<div class="q">
+<p class="qt"><strong>Q5. Identify the threat</strong> <span class="small">(4 marks)</span></p>
+<div class="mcqgrid">
+
+<div class="mcqcard rq" data-answer="phishing">
+<p><strong>5A.</strong> A school-looking email says your account will be deleted unless you click a link and log in now.</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q5a" value="phishing">Phishing</label>
+<label class="choice compact"><input type="radio" name="q5a" value="malware">Malware</label>
+<label class="choice compact"><input type="radio" name="q5a" value="identity">Identity Theft</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="scam">
+<p><strong>5B.</strong> “You won a new phone! Pay a $20 fee to receive it.”</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q5b" value="interception">Data Interception</label>
+<label class="choice compact"><input type="radio" name="q5b" value="scam">Scam</label>
+<label class="choice compact"><input type="radio" name="q5b" value="malware">Malware</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="malware">
+<p><strong>5C.</strong> A free game mod from an unknown website causes strange programs to appear and files to be copied.</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q5c" value="password">Weak Password</label>
+<label class="choice compact"><input type="radio" name="q5c" value="malware">Malware</label>
+<label class="choice compact"><input type="radio" name="q5c" value="phishing">Phishing</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="identity">
+<p><strong>5D.</strong> Someone uses Jordan's personal information and sends messages while pretending to be Jordan.</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q5d" value="identity">Identity Theft</label>
+<label class="choice compact"><input type="radio" name="q5d" value="scam">Scam</label>
+<label class="choice compact"><input type="radio" name="q5d" value="encryption">Encryption</label>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="q">
+<p class="qt"><strong>Q6. Choose the best protection</strong> <span class="small">(4 marks)</span></p>
+<div class="mcqgrid">
+
+<div class="mcqcard rq" data-answer="verify">
+<p><strong>6A.</strong> Which action best protects against a suspicious phishing message?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q6a" value="verify">Check the sender and link; use the official app/site</label>
+<label class="choice compact"><input type="radio" name="q6a" value="reply">Reply and ask if it is real</label>
+<label class="choice compact"><input type="radio" name="q6a" value="forward">Forward it to friends</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="trusted">
+<p><strong>6B.</strong> Which action best reduces malware risk?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q6b" value="trusted">Use trusted downloads and software updates</label>
+<label class="choice compact"><input type="radio" name="q6b" value="short">Use a shorter password</label>
+<label class="choice compact"><input type="radio" name="q6b" value="public">Use public Wi-Fi</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="unique">
+<p><strong>6C.</strong> Which action best reduces the risk from a reused password?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q6c" value="same">Use the same strong password everywhere</label>
+<label class="choice compact"><input type="radio" name="q6c" value="unique">Use strong, unique passwords for different accounts</label>
+<label class="choice compact"><input type="radio" name="q6c" value="share">Give the password to a trusted friend</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="encryption">
+<p><strong>6D.</strong> Which protection is most relevant when an attacker copies data while it travels across a network?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q6d" value="updates">Software updates</label>
+<label class="choice compact"><input type="radio" name="q6d" value="encryption">Encryption</label>
+<label class="choice compact"><input type="radio" name="q6d" value="brightness">Screen brightness</label>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="q">
+<p class="qt"><strong>Q7. Think carefully</strong> <span class="small">(2 marks)</span></p>
+<div class="mcqgrid">
+
+<div class="mcqcard rq" data-answer="meaning">
+<p><strong>7A.</strong> Which statement about encryption is correct?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q7a" value="stop">Encryption completely prevents interception</label>
+<label class="choice compact"><input type="radio" name="q7a" value="meaning">Encrypted data may still be intercepted, but its meaning is difficult to understand without the key</label>
+<label class="choice compact"><input type="radio" name="q7a" value="delete">Encryption deletes stolen data</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="factor">
+<p><strong>7B.</strong> An attacker already knows Jordan's password. How can MFA still help?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q7b" value="factor">The attacker still needs another form of authentication</label>
+<label class="choice compact"><input type="radio" name="q7b" value="vanish">The stolen password disappears</label>
+<label class="choice compact"><input type="radio" name="q7b" value="wifi">MFA encrypts network traffic</label>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<div class="q" style="border-top:3px solid #d4e0e8;margin-top:10px;padding-top:22px">
+  <p class="qt" style="font-size:21px"><strong>Module 2A — Short Answer</strong></p>
+  <p class="small">Now move from recognising the answer to explaining the ideas in your own words. Use the scenario evidence and your cheat sheet.</p>
+</div>
+<div class="q">
+<p class="qt"><strong>Q8. Data Interception</strong> <span class="small">(2 marks)</span></p>
+<div class="scenario">
+Mia sends a private message across a public network. An attacker copies the data while it is travelling.
+The copied message looks like <code>8F#1 XQ!7 92@</code>.
+</div>
+<p><strong>Explain what happened and why the message may still be protected.</strong></p>
+<textarea id="data-interception" class="answerbox shortanswer" data-short-answer="data-interception" data-marks="2" maxlength="2000" placeholder="Write 1–2 clear sentences."></textarea>
+<div class="hint">Think about: interception · encryption · what the attacker can understand</div>
+</div>
+
+<div class="q">
+<p class="qt"><strong>Q9. Phishing / Scam</strong> <span class="small">(2 marks)</span></p>
+<div class="scenario">
+Alex receives a message saying: “Your school account will be deleted today. Click this link and sign in now.”
+The sender address looks unusual.
+</div>
+<p><strong>Explain why this is phishing rather than just a general scam, and give one safe action Alex should take.</strong></p>
+<textarea id="phishing-response" class="answerbox shortanswer" data-short-answer="phishing-response" data-marks="2" maxlength="2000" placeholder="Write 1–2 clear sentences."></textarea>
+<div class="hint">Think about: pretending to be trusted · login information · Pause · Check · Verify · Report</div>
+</div>
+
+<div class="q">
+<p class="qt"><strong>Q10. Malware + Data Interception</strong> <span class="small">(3 marks)</span></p>
+<div class="scenario">
+Priya downloads a free editing program from an unknown website. After opening it, saved files are copied from her laptop.
+Later, an attacker also copies data while it travels across a public network.
+</div>
+<p><strong>Identify the TWO threats and explain one risk caused by either threat.</strong></p>
+<textarea id="malware-interception" class="answerbox shortanswer" data-short-answer="malware-interception" data-marks="3" maxlength="2000" placeholder="Name both threats, then explain one risk."></textarea>
+</div>
+
+<div class="q">
+<p class="qt"><strong>Q11. Weak Password + Identity Theft</strong> <span class="small">(3 marks)</span></p>
+<div class="scenario">
+Jordan uses the same password for school email, gaming and social media. One account is compromised.
+Later, someone logs into Jordan's social media and sends messages while pretending to be Jordan.
+</div>
+<p><strong>Explain the password problem, what happened next, and one suitable protection.</strong></p>
+<textarea id="password-identity" class="answerbox shortanswer" data-short-answer="password-identity" data-marks="3" maxlength="2000" placeholder="Write 2–3 clear sentences."></textarea>
+</div>
+
+</div>
+</div>
+<div class="module-actions">
+<button type="button" class="secondary prev-module">← Previous Module</button>
+<button type="button" class="primary next-module">Next Module →</button>
+</div>
+</section>
+
+<section class="module module-page" id="m2b" data-module-index="2">
+<div class="mh">
+<div>
+<h2>Module 2B — Protect Yourself</h2>
+<p>Part 1: Interactive phone protection → Part 2: Ethical use.</p>
+</div>
+<div class="meta">10 minutes · 10 marks</div>
+</div>
+<div class="content">
+
+<div class="note">
+<strong>Protect your own information.</strong> This is a fictional training phone.
+Explore the apps, notice the warning signs, and choose the safest action for yourself.
+</div>
+
+<div class="phone-section">
+
+<div class="phone">
+  <div class="phone-top">My Security Check</div>
+  <div class="phone-screen">
+
+    <div class="phone-home" id="phoneHome">
+      <div class="phone-card phone-safe">
+        <strong>Goal:</strong> Check your messages, downloads, account and network before something goes wrong.
+      </div>
+      <div class="phone-apps">
+        <button type="button" class="phone-app" data-phoneapp="social"><span class="unread-dot" data-dot="social" style="display:none"></span><span>📱</span>Social</button>
+        <button type="button" class="phone-app" data-phoneapp="messages"><span class="unread-dot" data-dot="messages" style="display:none"></span><span>💬</span>Messages</button>
+        <button type="button" class="phone-app" data-phoneapp="downloads"><span class="unread-dot" data-dot="downloads" style="display:none"></span><span>📁</span>Downloads</button>
+        <button type="button" class="phone-app" data-phoneapp="account"><span class="unread-dot" data-dot="account" style="display:none"></span><span>🔐</span>Account</button>
+        <button type="button" class="phone-app" data-phoneapp="network"><span class="unread-dot" data-dot="network" style="display:none"></span><span>🌐</span>Network</button>
+      </div>
+
+      <div class="status-list">
+        <div class="status-item" id="status-social">Social post checked</div>
+        <div class="status-item" id="status-messages">Suspicious message checked</div>
+        <div class="status-item" id="status-downloads">Download checked</div>
+        <div class="status-item" id="status-account">Account security checked</div>
+        <div class="status-item" id="status-network">Network security checked</div>
+      </div>
+    </div>
+
+    <div class="phone-panel" id="social">
+      <button type="button" class="phone-back">← Home</button>
+      <h3>Social — Draft Post</h3>
+      <div class="phone-card">
+        “Birthday party this Saturday! 🎉<br>
+        Year 8 at <strong>St George College</strong>.<br>
+        Party at <strong>my house in Mile End</strong>.<br>
+        Can't wait!”
+      </div>
+      <div class="phone-card phone-warning">
+        <strong>Post visibility:</strong> Public
+      </div>
+    </div>
+
+    <div class="phone-panel" id="messages">
+      <button type="button" class="phone-back">← Home</button>
+      <h3>Messages</h3>
+      <div class="phone-card phone-danger">
+        <strong>From:</strong> school-support@help-login.example<br><br>
+        “Your school account will be deleted TODAY.<br>
+        Click here and sign in immediately.”<br><br>
+        <strong>Link:</strong> school-login-help.example
+      </div>
+    </div>
+
+    <div class="phone-panel" id="downloads">
+      <button type="button" class="phone-back">← Home</button>
+      <h3>Downloads</h3>
+      <div class="phone-card phone-danger">
+        <strong>Free_Game_Mod.exe</strong><br>
+        Source: unknown-free-games.example<br><br>
+        ⚠ The installer asks you to <strong>disable security protection</strong>.
+      </div>
+      <div class="phone-card phone-warning">
+        <strong>Current choice:</strong> Ready to install
+      </div>
+    </div>
+
+    <div class="phone-panel" id="account">
+      <button type="button" class="phone-back">← Home</button>
+      <h3>Account Security</h3>
+      <div class="phone-card phone-warning">
+        <strong>Password setting:</strong> Same password for school, gaming and social media
+      </div>
+      <div class="phone-card phone-warning">
+        <strong>MFA:</strong> OFF
+      </div>
+      <div class="phone-card phone-danger">
+        <strong>Security alert:</strong> Login from an unknown device
+      </div>
+    </div>
+
+    <div class="phone-panel" id="network">
+      <button type="button" class="phone-back">← Home</button>
+      <h3>Network</h3>
+      <div class="phone-card" style="text-align:center;line-height:1.8">
+        My Phone<br>↓<br>Public Network<br>↓<br>School Server
+      </div>
+      <div class="phone-card phone-warning">
+        <strong>Encryption:</strong> OFF<br>
+        <strong>Key:</strong> stored with the message
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="phone-task">
+<div class="phone-task-head">
+  <div>
+    <h3 style="margin:0;color:var(--navy)">Q12. Fix the Security Problems on Your Phone</h3>
+    <p class="small" style="margin:5px 0 0">Open the app with the red unread dot, inspect the information, then make the required changes.</p>
+  </div>
+  <div class="phone-task-progress" id="phoneTaskProgress">Task 1 of 5</div>
+</div>
+
+<div class="phone-instruction">
+<strong>Instruction:</strong> For each task, the app you need to inspect will show a <strong>red unread dot</strong>.
+Click that app first, read the information on the phone, then answer the question on the right.
+</div>
+
+<div class="phone-task-page active multiq" data-task-index="0" data-app="social" data-correct="school,location,visibility" data-required="3">
+<span class="phone-tag">Social · 1 mark</span>
+<p><strong>12A.</strong> The draft post is currently public. Select exactly THREE changes you should make before posting.</p>
+<div class="choices">
+<label class="choice compact"><input type="checkbox" name="p1" value="school">Delete “St George College”</label>
+<label class="choice compact"><input type="checkbox" name="p1" value="location">Delete “my house in Mile End”</label>
+<label class="choice compact"><input type="checkbox" name="p1" value="visibility">Change visibility from Public to Friends / Private</label>
+<label class="choice compact"><input type="checkbox" name="p1" value="emoji">Delete the 🎉 emoji</label>
+<label class="choice compact"><input type="checkbox" name="p1" value="birthday">Delete “Birthday party this Saturday”</label>
+</div>
+</div>
+
+<div class="phone-task-page multiq" data-task-index="1" data-app="messages" data-correct="report,official" data-required="2">
+<span class="phone-tag">Messages · 1 mark</span>
+<p><strong>12B.</strong> Select exactly TWO changes to how you should respond to this message.</p>
+<div class="choices">
+<label class="choice compact"><input type="checkbox" name="p2" value="report">Delete / report the suspicious message instead of replying</label>
+<label class="choice compact"><input type="checkbox" name="p2" value="official">Open the official school app/site yourself instead of using the message link</label>
+<label class="choice compact"><input type="checkbox" name="p2" value="click">Use the link because the message says TODAY</label>
+<label class="choice compact"><input type="checkbox" name="p2" value="password">Reply with your password to prove your identity</label>
+</div>
+</div>
+
+<div class="phone-task-page multiq" data-task-index="2" data-app="downloads" data-correct="deletefile,securityon" data-required="2">
+<span class="phone-tag">Downloads · 1 mark</span>
+<p><strong>12C.</strong> The file is ready to install. Select exactly TWO changes you should make.</p>
+<div class="choices">
+<label class="choice compact"><input type="checkbox" name="p3" value="deletefile">Delete / do not install “Free_Game_Mod.exe”</label>
+<label class="choice compact"><input type="checkbox" name="p3" value="securityon">Keep security protection ON</label>
+<label class="choice compact"><input type="checkbox" name="p3" value="disable">Disable security protection as requested</label>
+<label class="choice compact"><input type="checkbox" name="p3" value="friend">Send the file to a friend to test it first</label>
+</div>
+</div>
+
+<div class="phone-task-page multiq" data-task-index="3" data-app="account" data-correct="unique,mfa" data-required="2">
+<span class="phone-tag">Account · 1 mark</span>
+<p><strong>12D.</strong> Select exactly TWO account settings you should change.</p>
+<div class="choices">
+<label class="choice compact"><input type="checkbox" name="p4" value="unique">Replace the reused password with different, unique passwords</label>
+<label class="choice compact"><input type="checkbox" name="p4" value="mfa">Turn MFA ON</label>
+<label class="choice compact"><input type="checkbox" name="p4" value="same">Keep the same password on all three accounts</label>
+<label class="choice compact"><input type="checkbox" name="p4" value="ignore">Ignore the unknown-login alert</label>
+</div>
+</div>
+
+<div class="phone-task-page multiq" data-task-index="4" data-app="network" data-correct="encrypt,key" data-required="2">
+<span class="phone-tag">Network · 1 mark</span>
+<p><strong>12E.</strong> The current network settings show Encryption OFF and the key stored with the message. Select exactly TWO changes.</p>
+<div class="choices">
+<label class="choice compact"><input type="checkbox" name="p5" value="encrypt">Turn encryption / a secure connection ON</label>
+<label class="choice compact"><input type="checkbox" name="p5" value="key">Keep the encryption key secure and separate</label>
+<label class="choice compact"><input type="checkbox" name="p5" value="off">Leave Encryption OFF</label>
+<label class="choice compact"><input type="checkbox" name="p5" value="sharekey">Send the key together with the encrypted message</label>
+</div>
+</div>
+
+<div class="phone-task-nav">
+<button type="button" class="secondary" id="prevPhoneTask" disabled>← Previous Task</button>
+<button type="button" class="primary" id="nextPhoneTask" disabled>Next Task →</button>
+</div>
+</div>
+</div>
+
+
+<div class="q" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
+  <p class="qt" style="font-size:21px"><strong>Module 2B — Ethical Use</strong></p>
+  <p class="small">After protecting your own information, apply Purpose · Permission · Harm to responsible technical use.</p>
+</div>
+
+
+<div class="mcqgrid">
+
+<div class="mcqcard rq" data-answer="wrong">
+<p><strong>Q13A.</strong> A student installs harmful software on a friend's laptop “as a joke” without asking.</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q8a" value="fine">Responsible because it is only a joke</label>
+<label class="choice compact"><input type="radio" name="q8a" value="wrong">Not responsible because there is no permission and harm could occur</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="permission">
+<p><strong>Q13B.</strong> A school asks a cyber security professional to test its system.</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q8b" value="permission">This can be responsible because there is permission and a legitimate purpose</label>
+<label class="choice compact"><input type="radio" name="q8b" value="anything">Professionals can access anything they want</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="dontuse">
+<p><strong>Q13C.</strong> You accidentally see another student's password. What is the most responsible action?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q8c" value="login">Try logging in once</label>
+<label class="choice compact"><input type="radio" name="q8c" value="dontuse">Do not use it; tell the student or teacher if appropriate</label>
+<label class="choice compact"><input type="radio" name="q8c" value="save">Save it in case you need it later</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="report">
+<p><strong>Q13D.</strong> You discover a security weakness in a school system. What should you do?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q8d" value="exploit">Try the weakness to see what you can access</label>
+<label class="choice compact"><input type="radio" name="q8d" value="public">Post it publicly</label>
+<label class="choice compact"><input type="radio" name="q8d" value="report">Report it to an appropriate teacher or staff member</label>
+</div>
+</div>
+
+<div class="mcqcard rq" data-answer="purpose">
+<p><strong>Q13E.</strong> Which THREE questions are most useful when deciding whether a technical action is responsible?</p>
+<div class="choices">
+<label class="choice compact"><input type="radio" name="q8e" value="purpose">What is the purpose? Do I have permission? Who could be harmed?</label>
+<label class="choice compact"><input type="radio" name="q8e" value="funny">Is it funny? Is it fast? Is it difficult?</label>
+<label class="choice compact"><input type="radio" name="q8e" value="hide">Can I hide it? Can I delete it? Will anyone notice?</label>
+</div>
+</div>
+
+</div>
+
+</div>
+<div class="module-actions">
+<button type="button" class="secondary prev-module">← Previous Module</button>
+<button type="button" class="primary next-module">Review & Submit →</button>
+</div>
+</section>
+
+<div class="btnrow" id="buttons" style="display:none">
+<button type="button" class="primary" id="reviewbtn">Review & Submit</button>
+<button type="button" class="secondary" id="resetbtn">Reset Test</button>
+</div>
+
+<div class="review" id="review">
+<h3 style="margin:0;color:var(--navy)">Review your test</h3>
+<p id="reviewmsg">Check all sections before submitting.</p>
+<div class="btnrow">
+<button type="button" class="secondary" id="backbtn">Review Answers</button>
+<button type="button" class="primary" id="submitbtn">Submit Test</button>
+</div>
+</div>
+
+<div class="submitted" id="done">
+<h3>Test submitted</h3>
+<p>Your answers have been recorded and are now locked.</p>
+<p><strong>Your teacher will mark the short-answer questions and share results separately.</strong></p>
+</div>
+
 </main>
+
 <script>
 (function(){
-const TEST_VERSION='year8-dt-45-v2';
+const TEST_VERSION='year8-dt-45-v3';
 let dragged=null,submitted=false,restoring=false;
 const root=document.getElementById('root');
 const savePill=document.getElementById('savepill');
+const access=window.year8TestAccessData;
 const currentStudent=(window.year8TestStudentName||'anonymous').trim();
 const storageKey='year8TestDraft:'+TEST_VERSION+':'+currentStudent.toLowerCase();
 const studentName=document.getElementById('studentname');
 if(studentName&&window.year8TestStudentName)studentName.textContent='Student: '+window.year8TestStudentName;
 
-const drags=[...document.querySelectorAll('.drag')];
-const single=[...document.querySelectorAll('.drop.single')];
-const multi=[...document.querySelectorAll('.multi')];
-const banks=[...document.querySelectorAll('.bank')];
-const clues=[...document.querySelectorAll('.clue')];
-const protect=[...document.querySelectorAll('.protect')];
-const shortAnswers=[...document.querySelectorAll('[data-short-answer]')];
-const alertBox=document.getElementById('alert');
+const allDrags=[...document.querySelectorAll('.drag')];
+const hwDrops=[...document.querySelectorAll('.drop')];
+const hwBank=document.getElementById('hardwarebank');
 
-drags.forEach((item,index)=>item.dataset.saveId='drag-'+index);
-banks.forEach(bank=>bank.dataset.saveZone='bank-'+bank.id);
-single.forEach((item,index)=>item.dataset.saveZone='single-'+index);
-multi.forEach((item,index)=>item.dataset.saveZone='multi-'+index);
+const softwareTypeSlots=[...document.querySelectorAll('.software-type-slot')];
+const softwareExampleZones=[...document.querySelectorAll('.software-example-zone')];
+const softwareTypeBank=document.getElementById('softwaretypebank');
+const softwareExampleBank=document.getElementById('softwareexamplebank');
+const allBanks=[hwBank,softwareTypeBank,softwareExampleBank];
+const shortAnswers=[...document.querySelectorAll('[data-short-answer]')];
+
+allDrags.forEach((item,index)=>item.dataset.saveId='drag-'+index);
+allBanks.forEach(bank=>bank.dataset.saveZone='bank-'+bank.id);
+hwDrops.forEach((zone,index)=>zone.dataset.saveZone='hardware-'+index);
+softwareTypeSlots.forEach((zone,index)=>zone.dataset.saveZone='software-type-'+index);
+softwareExampleZones.forEach((zone,index)=>zone.dataset.saveZone='software-example-'+index);
 
 function radioGroups(scope=document){
-const radios=[...scope.querySelectorAll('input[type=radio]')];
-return [...new Set(radios.map(radio=>radio.name))]
+  const radios=[...scope.querySelectorAll('input[type=radio]')];
+  return [...new Set(radios.map(radio=>radio.name))];
 }
 
 function checkboxId(checkbox){
-return (checkbox.classList.contains('clue')?'clue:':'protect:')+checkbox.value
+  return checkbox.name+':'+checkbox.value;
 }
 
 function captureAnswers(){
-const radios={};
-radioGroups().forEach(name=>{
-const selected=document.querySelector('input[name="'+name+'"]:checked');
-if(selected)radios[name]=selected.value
-});
-const placements={};
-drags.forEach(item=>{
-const parent=item.closest('[data-save-zone]');
-if(parent)placements[item.dataset.saveId]=parent.dataset.saveZone
-});
-const written={};
-shortAnswers.forEach(answer=>{
-const value=answer.value.trim();
-if(value)written[answer.dataset.shortAnswer]=value
-});
-return {
-radios,
-checkboxes:[...document.querySelectorAll('input[type=checkbox]:checked')].map(checkboxId),
-placements,
-shortAnswers:written
-}
+  const radios={};
+  radioGroups().forEach(name=>{
+    const selected=document.querySelector('input[name="'+name+'"]:checked');
+    if(selected)radios[name]=selected.value;
+  });
+  const placements={};
+  allDrags.forEach(item=>{
+    const parent=item.closest('[data-save-zone]');
+    if(parent)placements[item.dataset.saveId]=parent.dataset.saveZone;
+  });
+  const written={};
+  shortAnswers.forEach(answer=>{
+    const value=answer.value.trim();
+    if(value)written[answer.dataset.shortAnswer]=value;
+  });
+  return {
+    radios,
+    checkboxes:[...document.querySelectorAll('input[type=checkbox]:checked')].map(checkboxId),
+    placements,
+    shortAnswers:written
+  };
 }
 
 function saveState(){
-if(restoring)return;
-const answers=captureAnswers();
-const state={
-version:TEST_VERSION,
-radios:answers.radios,
-checkboxes:answers.checkboxes,
-placements:answers.placements,
-shortAnswers:answers.shortAnswers,
-installed:alertBox.style.display==='block',
-submitted,
-serverRecorded:submitted,
-updatedAt:new Date().toISOString()
-};
-try{
-localStorage.setItem(storageKey,JSON.stringify(state));
-savePill.textContent='Saved locally'
-}catch(error){
-savePill.textContent='Autosave unavailable'
-}
+  if(restoring)return;
+  const answers=captureAnswers();
+  const state={
+    version:TEST_VERSION,
+    ...answers,
+    moduleIndex:currentModule,
+    phoneTaskIndex:currentPhoneTask,
+    submitted,
+    serverRecorded:submitted,
+    updatedAt:new Date().toISOString()
+  };
+  try{
+    localStorage.setItem(storageKey,JSON.stringify(state));
+    savePill.textContent='Saved locally';
+  }catch(error){
+    savePill.textContent='Autosave unavailable';
+  }
 }
 
 function restoreState(){
-let state;
-try{state=JSON.parse(localStorage.getItem(storageKey)||'null')}catch(error){return false}
-if(!state||state.version!==TEST_VERSION)return false;
-restoring=true;
-const dragById=new Map(drags.map(item=>[item.dataset.saveId,item]));
-const zoneById=new Map([...banks,...single,...multi].map(item=>[item.dataset.saveZone,item]));
-Object.entries(state.placements||{}).forEach(([dragId,zoneId])=>{
-const item=dragById.get(dragId),target=zoneById.get(zoneId);
-if(item&&target)target.appendChild(item)
-});
-document.querySelectorAll('input[type=radio]').forEach(input=>{
-input.checked=state.radios&&state.radios[input.name]===input.value
-});
-const checked=new Set(Array.isArray(state.checkboxes)?state.checkboxes:[]);
-document.querySelectorAll('input[type=checkbox]').forEach(input=>input.checked=checked.has(checkboxId(input)));
-shortAnswers.forEach(answer=>answer.value=state.shortAnswers&&state.shortAnswers[answer.dataset.shortAnswer]||'');
-if(state.installed)alertBox.style.display='block';
-updateSelectionCounts();
-if(state.submitted&&state.serverRecorded){
-submitted=true;
-root.classList.add('locked');
-document.getElementById('review').style.display='none';
-document.getElementById('buttons').style.display='none';
-document.getElementById('done').style.display='block'
-}
-restoring=false;
-savePill.textContent='Progress restored';
-setTimeout(()=>{if(savePill.textContent==='Progress restored')savePill.textContent='Saved locally'},2500);
-return true
-}
-
-drags.forEach(item=>{
-item.addEventListener('dragstart',()=>{
-if(submitted)return;
-dragged=item;
-setTimeout(()=>item.style.opacity='.45',0)
-});
-item.addEventListener('dragend',()=>{
-item.style.opacity='1';
-dragged=null;
-progress()
-})
-});
-
-function zone(target,isMulti){
-target.addEventListener('dragover',event=>{
-if(submitted)return;
-event.preventDefault();
-target.classList.add('over')
-});
-target.addEventListener('dragleave',()=>target.classList.remove('over'));
-target.addEventListener('drop',event=>{
-if(submitted)return;
-event.preventDefault();
-target.classList.remove('over');
-if(!dragged)return;
-if(!isMulti){
-const old=target.querySelector('.drag');
-if(old)document.getElementById(old.dataset.bank).appendChild(old)
-}
-target.appendChild(dragged);
-progress()
-})
+  let state;
+  try{state=JSON.parse(localStorage.getItem(storageKey)||'null');}catch(error){return false;}
+  if(!state||state.version!==TEST_VERSION)return false;
+  restoring=true;
+  const dragById=new Map(allDrags.map(item=>[item.dataset.saveId,item]));
+  const zones=[...allBanks,...hwDrops,...softwareTypeSlots,...softwareExampleZones];
+  const zoneById=new Map(zones.map(zone=>[zone.dataset.saveZone,zone]));
+  Object.entries(state.placements||{}).forEach(([dragId,zoneId])=>{
+    const item=dragById.get(dragId);
+    const target=zoneById.get(zoneId);
+    if(item&&target)target.appendChild(item);
+  });
+  document.querySelectorAll('input[type=radio]').forEach(input=>{
+    input.checked=Boolean(state.radios&&state.radios[input.name]===input.value);
+  });
+  const checked=new Set(Array.isArray(state.checkboxes)?state.checkboxes:[]);
+  document.querySelectorAll('input[type=checkbox]').forEach(input=>{
+    input.checked=checked.has(checkboxId(input));
+  });
+  shortAnswers.forEach(answer=>{
+    answer.value=state.shortAnswers&&state.shortAnswers[answer.dataset.shortAnswer]||'';
+  });
+  showPhoneTask(Number.isInteger(state.phoneTaskIndex)?state.phoneTaskIndex:0);
+  showModule(Number.isInteger(state.moduleIndex)?state.moduleIndex:0);
+  if(state.submitted&&state.serverRecorded){
+    submitted=true;
+    root.classList.add('locked');
+    document.getElementById('review').style.display='none';
+    document.getElementById('buttons').style.display='none';
+    document.getElementById('done').style.display='block';
+  }
+  restoring=false;
+  savePill.textContent='Progress restored';
+  setTimeout(()=>{
+    if(savePill.textContent==='Progress restored')savePill.textContent='Saved locally';
+  },2500);
+  return true;
 }
 
-single.forEach(target=>zone(target,false));
-multi.forEach(target=>zone(target,true));
-banks.forEach(bank=>{
-bank.addEventListener('dragover',event=>{if(!submitted)event.preventDefault()});
-bank.addEventListener('drop',event=>{
-if(submitted)return;
-event.preventDefault();
-if(dragged)bank.appendChild(dragged);
-progress()
-})
+allDrags.forEach(x=>{
+  x.addEventListener('dragstart',()=>{
+    if(submitted)return;
+    dragged=x;
+    setTimeout(()=>x.style.opacity='.45',0);
+  });
+  x.addEventListener('dragend',()=>{
+    x.style.opacity='1';
+    dragged=null;
+    progress();updateModuleButton();
+  });
 });
 
-const home=document.getElementById('home');
-document.querySelectorAll('.app').forEach(button=>button.addEventListener('click',()=>{
-home.style.display='none';
-document.querySelectorAll('.panel').forEach(panel=>panel.classList.remove('active'));
-document.getElementById(button.dataset.app).classList.add('active')
-}));
-document.querySelectorAll('.back').forEach(button=>button.addEventListener('click',()=>{
-document.querySelectorAll('.panel').forEach(panel=>panel.classList.remove('active'));
-home.style.display='block'
-}));
-document.getElementById('install').addEventListener('click',()=>{
-alertBox.style.display='block';
-saveState()
+function returnToOwnBank(item){
+  const bank=document.getElementById(item.dataset.bank);
+  if(bank) bank.appendChild(item);
+}
+
+/* Hardware: one item per target */
+hwDrops.forEach(z=>{
+  z.addEventListener('dragover',e=>{
+    if(submitted || !dragged || dragged.classList.contains('softdrag'))return;
+    e.preventDefault();z.classList.add('over');
+  });
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{
+    if(submitted || !dragged || dragged.classList.contains('softdrag'))return;
+    e.preventDefault();z.classList.remove('over');
+    const old=z.querySelector('.drag');
+    if(old)returnToOwnBank(old);
+    z.appendChild(dragged);
+    progress();updateModuleButton();
+  });
+});
+hwBank.addEventListener('dragover',e=>{
+  if(!submitted && dragged && !dragged.classList.contains('softdrag'))e.preventDefault();
+});
+hwBank.addEventListener('drop',e=>{
+  if(submitted || !dragged || dragged.classList.contains('softdrag'))return;
+  e.preventDefault();returnToOwnBank(dragged);progress();
 });
 
-function updateSelectionCounts(){
-document.getElementById('cluecount').textContent=clues.filter(item=>item.checked).length+' / 3 selected';
-document.getElementById('protectcount').textContent=protect.filter(item=>item.checked).length+' / 2 selected'
+/* Software type labels: one per type slot */
+softwareTypeSlots.forEach(z=>{
+  z.addEventListener('dragover',e=>{
+    if(submitted || !dragged || dragged.dataset.kind!=='type')return;
+    e.preventDefault();z.classList.add('over');
+  });
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{
+    if(submitted || !dragged || dragged.dataset.kind!=='type')return;
+    e.preventDefault();z.classList.remove('over');
+    const old=z.querySelector('.drag');
+    if(old)returnToOwnBank(old);
+    z.appendChild(dragged);
+    progress();updateModuleButton();
+  });
+});
+
+/* Software examples: multiple examples per box */
+softwareExampleZones.forEach(z=>{
+  z.addEventListener('dragover',e=>{
+    if(submitted || !dragged || dragged.dataset.kind!=='example')return;
+    e.preventDefault();z.classList.add('over');
+  });
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{
+    if(submitted || !dragged || dragged.dataset.kind!=='example')return;
+    e.preventDefault();z.classList.remove('over');
+    z.appendChild(dragged);
+    progress();updateModuleButton();
+  });
+});
+
+[softwareTypeBank,softwareExampleBank].forEach(bank=>{
+  bank.addEventListener('dragover',e=>{
+    if(submitted || !dragged)return;
+    const correctKind = bank===softwareTypeBank ? 'type' : 'example';
+    if(dragged.dataset.kind===correctKind)e.preventDefault();
+  });
+  bank.addEventListener('drop',e=>{
+    if(submitted || !dragged)return;
+    const correctKind = bank===softwareTypeBank ? 'type' : 'example';
+    if(dragged.dataset.kind!==correctKind)return;
+    e.preventDefault();returnToOwnBank(dragged);progress();updateModuleButton();
+  });
+});
+
+
+/* Interactive phone navigation */
+const phoneHome=document.getElementById('phoneHome');
+document.querySelectorAll('.phone-app').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    phoneHome.style.display='none';
+    document.querySelectorAll('.phone-panel').forEach(p=>p.classList.remove('active'));
+    const panel=document.getElementById(btn.dataset.phoneapp);
+    if(panel)panel.classList.add('active');
+  });
+});
+document.querySelectorAll('.phone-back').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.phone-panel').forEach(p=>p.classList.remove('active'));
+    phoneHome.style.display='block';
+  });
+});
+
+
+
+
+/* Phone task paging: one question at a time, with one red-dot app cue */
+const phoneTaskPages=[...document.querySelectorAll('.phone-task-page')];
+let currentPhoneTask=0;
+const phonePrev=document.getElementById('prevPhoneTask');
+const phoneNext=document.getElementById('nextPhoneTask');
+const phoneTaskProgress=document.getElementById('phoneTaskProgress');
+
+function phoneTaskComplete(page){
+  const required=Number(page.dataset.required);
+  return page.querySelectorAll('input[type=checkbox]:checked').length===required;
 }
 
-function limit(list,max){
-list.forEach(checkbox=>checkbox.addEventListener('change',()=>{
-if(list.filter(item=>item.checked).length>max)checkbox.checked=false;
-updateSelectionCounts()
-}))
+function showPhoneTask(index){
+  currentPhoneTask=Math.max(0,Math.min(phoneTaskPages.length-1,index));
+  phoneTaskPages.forEach((p,i)=>p.classList.toggle('active',i===currentPhoneTask));
+  phoneTaskProgress.textContent='Task '+(currentPhoneTask+1)+' of '+phoneTaskPages.length;
+
+  // Show a red unread dot only on the app needed for the current question.
+  document.querySelectorAll('.unread-dot').forEach(d=>d.style.display='none');
+  document.querySelectorAll('.phone-app').forEach(b=>b.classList.add('dimmed'));
+  const currentApp=phoneTaskPages[currentPhoneTask].dataset.app;
+  const dot=document.querySelector('.unread-dot[data-dot="'+currentApp+'"]');
+  const appBtn=document.querySelector('.phone-app[data-phoneapp="'+currentApp+'"]');
+  if(dot)dot.style.display='block';
+  if(appBtn)appBtn.classList.remove('dimmed');
+
+  phonePrev.disabled=currentPhoneTask===0;
+  if(currentPhoneTask===phoneTaskPages.length-1){
+    phoneNext.textContent='Finish Phone Tasks';
+  }else{
+    phoneNext.textContent='Next Task →';
+  }
+  phoneNext.disabled=!phoneTaskComplete(phoneTaskPages[currentPhoneTask]);
+
+  // Return to phone home whenever the question changes so students see the red dot.
+  document.querySelectorAll('.phone-panel').forEach(p=>p.classList.remove('active'));
+  phoneHome.style.display='block';
 }
 
-limit(clues,3);
-limit(protect,2);
-document.querySelectorAll('input').forEach(input=>input.addEventListener('change',progress));
-shortAnswers.forEach(answer=>answer.addEventListener('input',progress));
+phoneTaskPages.forEach(page=>{
+  page.querySelectorAll('input[type=checkbox]').forEach(inp=>{
+    inp.addEventListener('change',()=>{
+      phoneNext.disabled=!phoneTaskComplete(page);
+      progress();
+    });
+  });
+});
+
+phonePrev.addEventListener('click',()=>showPhoneTask(currentPhoneTask-1));
+phoneNext.addEventListener('click',()=>{
+  if(!phoneTaskComplete(phoneTaskPages[currentPhoneTask]))return;
+  if(currentPhoneTask<phoneTaskPages.length-1){
+    showPhoneTask(currentPhoneTask+1);
+  }else{
+    // Final phone task complete: clear unread dot and keep the phone home visible.
+    document.querySelectorAll('.unread-dot').forEach(d=>d.style.display='none');
+    document.querySelectorAll('.phone-app').forEach(b=>b.classList.remove('dimmed'));
+    phoneNext.disabled=true;
+    phoneNext.textContent='Phone Tasks Complete ✓';
+  }
+});
+showPhoneTask(0);
+
+document.querySelectorAll('input,textarea').forEach(x=>{
+  x.addEventListener('input',()=>{progress();updateModuleButton();});
+  x.addEventListener('change',()=>{progress();updateModuleButton();});
+});
 
 function interactions(){
-const filledSingle=single.filter(target=>target.querySelector('.drag')).length;
-const software=[...document.querySelectorAll('.software .drag')].length;
-const radios=radioGroups().filter(name=>document.querySelector('input[name="'+name+'"]:checked')).length;
-const special=clues.filter(item=>item.checked).length+protect.filter(item=>item.checked).length;
-const written=shortAnswers.filter(answer=>answer.value.trim()).length;
-return filledSingle+software+radios+special+written
+  const hwDone=hwDrops.filter(d=>d.querySelector('.drag')).length;
+  const typeDone=softwareTypeSlots.filter(d=>d.querySelector('.drag')).length;
+  const exampleDone=[...document.querySelectorAll('.software-example-zone .drag')].length;
+  const radios=radioGroups().filter(n=>document.querySelector('input[name="'+n+'"]:checked')).length;
+  const multiDone=[...document.querySelectorAll('.multiq')].filter(q=>{
+    const required=Number(q.dataset.required);
+    return q.querySelectorAll('input[type=checkbox]:checked').length===required;
+  }).length;
+  const shorts=shortAnswers.filter(t=>t.value.trim().length>=4).length;
+  return hwDone+typeDone+exampleDone+radios+multiDone+shorts;
 }
-
-const interactionTarget=single.length+document.querySelectorAll('#b3 .drag').length+radioGroups().length+5+shortAnswers.length;
 
 function progress(){
-const percentage=Math.min(100,Math.round(interactions()/interactionTarget*100));
-document.getElementById('bar').style.width=percentage+'%';
-document.getElementById('pill').textContent=percentage+'% complete';
-saveState()
+  const max=41; // hardware + software matching + MCQs + 4 short answers
+  const p=Math.min(100,Math.round(interactions()/max*100));
+  document.getElementById('bar').style.width=p+'%';
+  document.getElementById('pill').textContent=p+'% complete';
+  saveState();
 }
 
-function complete(){return interactions()>=interactionTarget}
+function scoreHardware(){
+  let s=0;
+  hwDrops.forEach(z=>{
+    const d=z.querySelector('.drag');
+    if(d&&d.dataset.match===z.dataset.answer)s++;
+  });
+  return s;
+}
+
+/* Q3 = 4 marks:
+   1 mark for each correct type label (2),
+   1 mark for each example group if both examples in that box are correct (2). */
+function scoreSoftware(){
+  let s=0;
+  softwareTypeSlots.forEach(z=>{
+    const d=z.querySelector('.drag');
+    if(d&&d.dataset.match===z.dataset.answer)s++;
+  });
+  softwareExampleZones.forEach(z=>{
+    const items=[...z.querySelectorAll('.drag')];
+    if(items.length===2 && items.every(i=>i.dataset.match===z.dataset.answer))s++;
+  });
+  return s;
+}
+
+function scoreRadios(){
+  let s=0;
+  document.querySelectorAll('.rq').forEach(q=>{
+    const checked=q.querySelector('input[type=radio]:checked');
+    if(checked && checked.value===q.dataset.answer)s++;
+  });
+  return s;
+}
+
+function scoreMulti(){
+  let s=0;
+  document.querySelectorAll('.multiq').forEach(q=>{
+    const correct=new Set(q.dataset.correct.split(','));
+    const selected=new Set([...q.querySelectorAll('input[type=checkbox]:checked')].map(x=>x.value));
+    if(selected.size===correct.size && [...correct].every(v=>selected.has(v)))s++;
+  });
+  return s;
+}
+
+function blankShort(){
+  return [...document.querySelectorAll('.shortanswer')].filter(t=>!t.value.trim()).length;
+}
+
+
+/* Module paging */
+const modulePages=[...document.querySelectorAll('.module-page')];
+const moduleNames=[
+  'Hardware, Software & Networks',
+  'Cyber Security: Recall → Short Answer',
+  'Protect Yourself → Ethical Use'
+];
+let currentModule=0;
+
+
+function allRadiosAnswered(scope){
+  const groups=[...new Set([...scope.querySelectorAll('input[type=radio]')].map(r=>r.name))];
+  return groups.every(name=>scope.querySelector('input[name="'+name+'"]:checked'));
+}
+
+function moduleComplete(index){
+  const m=modulePages[index];
+  if(index===0){
+    const hardwareDone=[...m.querySelectorAll('.drop')].every(z=>z.querySelector('.drag'));
+    const typeDone=[...m.querySelectorAll('.software-type-slot')].every(z=>z.querySelector('.drag'));
+    const examplesDone=m.querySelectorAll('.software-example-zone .drag').length===4;
+    return hardwareDone && typeDone && examplesDone && allRadiosAnswered(m);
+  }
+  if(index===1){
+    const shortDone=[...m.querySelectorAll('.shortanswer')].every(t=>t.value.trim().length>=4);
+    return allRadiosAnswered(m) && shortDone;
+  }
+  if(index===2){
+    const phoneDone=[...m.querySelectorAll('.multiq')].every(q=>{
+      const required=Number(q.dataset.required);
+      return q.querySelectorAll('input[type=checkbox]:checked').length===required;
+    });
+    return phoneDone && allRadiosAnswered(m);
+  }
+  return true;
+}
+
+function updateModuleButton(){
+  modulePages.forEach((m,i)=>{
+    const btn=m.querySelector('.next-module');
+    if(btn)btn.disabled=!moduleComplete(i);
+  });
+}
+
+function showModule(index){
+  currentModule=Math.max(0,Math.min(modulePages.length-1,index));
+  modulePages.forEach((m,i)=>m.classList.toggle('active',i===currentModule));
+  document.getElementById('moduleStep').textContent='Module '+(currentModule+1)+' of '+modulePages.length;
+  document.getElementById('moduleTitle').textContent=moduleNames[currentModule];
+  updateModuleButton();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.querySelectorAll('.next-module').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(currentModule<modulePages.length-1){
+      showModule(currentModule+1);
+    }else{
+      document.getElementById('buttons').style.display='flex';
+      document.getElementById('review').style.display='block';
+      document.getElementById('review').scrollIntoView({behavior:'smooth'});
+    }
+  });
+});
+document.querySelectorAll('.prev-module').forEach(btn=>{
+  btn.addEventListener('click',()=>showModule(currentModule-1));
+});
+showModule(0);
+updateModuleButton();
 
 document.getElementById('reviewbtn').addEventListener('click',()=>{
-document.getElementById('review').style.display='block';
-document.getElementById('reviewmsg').textContent=complete()?'All sections appear complete. Submit when ready.':'Some items appear unanswered. Review before submitting.';
-document.getElementById('review').scrollIntoView({behavior:'smooth'})
+  document.getElementById('review').style.display='block';
+  const blanks=blankShort();
+  document.getElementById('reviewmsg').textContent=blanks===0
+    ? 'All short-answer boxes have responses. Check your multiple-choice, multi-select and matching answers before submitting.'
+    : blanks+' short-answer box(es) are still blank.';
+  document.getElementById('review').scrollIntoView({behavior:'smooth'});
 });
+
 document.getElementById('backbtn').addEventListener('click',()=>document.getElementById('m1').scrollIntoView({behavior:'smooth'}));
+
 document.getElementById('submitbtn').addEventListener('click',async()=>{
-if(submitted)return;
-const submitButton=document.getElementById('submitbtn');
-const reviewMessage=document.getElementById('reviewmsg');
-const access=window.year8TestAccessData;
-submitButton.disabled=true;
-submitButton.textContent='Submitting...';
-reviewMessage.textContent='Sending your answers securely. Keep this page open.';
-try{
-const response=await fetch('/api/assessments/submit',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-attemptId:access.attemptId,
-clientAttemptId:access.clientAttemptId,
-answers:captureAnswers()
-})
+  if(submitted)return;
+  const submitButton=document.getElementById('submitbtn');
+  const reviewMessage=document.getElementById('reviewmsg');
+  submitButton.disabled=true;
+  submitButton.textContent='Submitting...';
+  reviewMessage.textContent='Sending your answers securely. Keep this page open.';
+  try{
+    const response=await fetch('/api/assessments/submit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        attemptId:access.attemptId,
+        clientAttemptId:access.clientAttemptId,
+        answers:captureAnswers()
+      })
+    });
+    const result=await response.json();
+    if(!response.ok)throw new Error(result.message||'Submission failed. Please try again.');
+    submitted=true;
+    root.classList.add('locked');
+    document.getElementById('review').style.display='none';
+    document.getElementById('buttons').style.display='none';
+    document.getElementById('done').style.display='block';
+    saveState();
+    document.getElementById('done').scrollIntoView({behavior:'smooth'});
+  }catch(error){
+    submitButton.disabled=false;
+    submitButton.textContent='Submit Test';
+    reviewMessage.textContent=error instanceof Error?error.message:'Submission failed. Please try again.';
+  }
 });
-const result=await response.json();
-if(!response.ok)throw new Error(result.message||'Submission failed. Please try again.');
-submitted=true;
-root.classList.add('locked');
-document.getElementById('review').style.display='none';
-document.getElementById('buttons').style.display='none';
-document.getElementById('done').style.display='block';
-saveState();
-document.getElementById('done').scrollIntoView({behavior:'smooth'})
-}catch(error){
-submitButton.disabled=false;
-submitButton.textContent='Submit Test';
-reviewMessage.textContent=error instanceof Error?error.message:'Submission failed. Please try again.'
-}
-});
+
 document.getElementById('resetbtn').addEventListener('click',()=>{
-if(confirm('Reset the entire test? All answers will be cleared.')){
-try{localStorage.removeItem(storageKey)}catch(error){}
-location.reload()
-}
+  if(confirm('Reset the entire test? All answers will be cleared.')){
+    try{localStorage.removeItem(storageKey);}catch(error){}
+    location.reload();
+  }
 });
 window.addEventListener('pagehide',saveState);
 restoreState();
-if(!submitted&&window.year8TestAccessData.status==='submitted'){
-submitted=true;
-root.classList.add('locked');
-document.getElementById('review').style.display='none';
-document.getElementById('buttons').style.display='none';
-document.getElementById('done').style.display='block'
+if(!submitted&&access.status==='submitted'){
+  submitted=true;
+  root.classList.add('locked');
+  document.getElementById('review').style.display='none';
+  document.getElementById('buttons').style.display='none';
+  document.getElementById('done').style.display='block';
 }
 progress();
 })();
