@@ -103,7 +103,6 @@ export async function startAttempt(
     assessmentVersion: session.assessment_version,
     studentName: input.studentName,
     status: attempt.status,
-    score: attempt.score,
     maxScore: attempt.max_score,
   };
 }
@@ -138,9 +137,6 @@ export async function submitAttempt(
   if (attempt.status === "submitted") {
     return {
       attemptId: attempt.attempt_public_id,
-      score: attempt.score ?? 0,
-      maxScore: attempt.max_score,
-      breakdown: {},
       submittedAt: attempt.submitted_at?.toISOString() ?? new Date().toISOString(),
       duplicate: true,
     };
@@ -193,9 +189,6 @@ export async function submitAttempt(
     if (existing?.status === "submitted") {
       return {
         attemptId: existing.attempt_public_id,
-        score: existing.score ?? 0,
-        maxScore: existing.max_score,
-        breakdown: {},
         submittedAt: existing.submitted_at?.toISOString() ?? new Date().toISOString(),
         duplicate: true,
       };
@@ -205,9 +198,6 @@ export async function submitAttempt(
 
   return {
     attemptId: submittedAttempt.attempt_public_id,
-    score: result.score,
-    maxScore: result.maxScore,
-    breakdown: result.breakdown,
     submittedAt: submittedAttempt.submitted_at?.toISOString() ?? new Date().toISOString(),
     duplicate: false,
   };

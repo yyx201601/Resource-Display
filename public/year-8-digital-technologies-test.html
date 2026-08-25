@@ -24,7 +24,7 @@ main{padding:22px 18px 70px}.module{background:var(--card);border:1px solid var(
 .draglayout{display:grid;grid-template-columns:1fr 1.55fr;gap:18px;align-items:start}.bank{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.bank h4{margin:0;color:var(--navy)}.drag{padding:11px 12px;border-radius:11px;border:1px solid #9bc7da;background:#e9f6fb;font-weight:700;cursor:grab;user-select:none}.targets{display:grid;gap:12px}.targetrow{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:center}.imgph{min-height:92px;border:2px dashed #adc2d1;border-radius:13px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fafcfd;color:#5c7384;font-weight:700;padding:10px}.drop{min-height:58px;border:2px dashed #b6c8d5;border-radius:12px;padding:9px;background:#fff}.drop strong{display:block;color:var(--navy);margin-bottom:5px}.drop.over{border-color:var(--cyan);background:#f1fbfe}.drop .drag{margin-top:5px}.sortgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.sort{min-height:130px;border:2px dashed #b6c8d5;border-radius:14px;padding:12px;background:#fbfdfe}.sort h4{margin:0 0 7px;color:var(--navy)}
 .net{display:grid;grid-template-columns:1fr 44px 1fr 44px 1fr;align-items:center;gap:6px;margin-top:12px}.arrow{text-align:center;font-size:30px;color:var(--blue)}.netslot{min-height:92px}.role{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:8px}
 .scenario{border:1px solid var(--line);background:var(--soft);border-radius:14px;padding:15px;margin:12px 0}.phonewrap{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:24px;align-items:start}.phone{border:10px solid #111923;border-radius:34px;background:#fff;min-height:560px;overflow:hidden;box-shadow:0 16px 34px rgba(14,31,48,.16)}.ptop{background:#0f2239;color:#fff;text-align:center;padding:10px;font-weight:700;font-size:14px}.screen{padding:14px}.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.app{min-height:90px;border:1px solid var(--line);border-radius:16px;background:#f8fbfd;color:var(--navy);font-size:16px;font-weight:700;cursor:pointer;padding:12px}.app span{display:block;font-size:30px;margin-bottom:7px}.panel{display:none}.panel.active{display:block}.back{border:0;background:#e8f1f6;color:var(--navy);border-radius:10px;padding:8px 11px;font-weight:700;cursor:pointer;margin-bottom:12px}.fake{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:#fff}.task{border:1px solid var(--line);border-radius:15px;padding:17px;background:#fff}.task h3{margin:0 0 6px;color:var(--navy)}.step{border-top:1px solid #e6edf2;padding:15px 0}.step:first-of-type{border-top:0}.tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;background:#eaf2f7;color:var(--blue)}.note{border-left:5px solid #a16a12;background:#fff7e5;border-radius:10px;padding:12px 14px;margin:14px 0}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}button.primary,button.secondary,button.danger{border:0;border-radius:11px;padding:12px 17px;font-size:15px;font-weight:700;cursor:pointer}button.primary{background:var(--navy);color:#fff}button.secondary{background:#e9eef3;color:var(--navy)}button.danger{background:#8f2f2f;color:#fff}.review{display:none;background:#fff;border:2px solid var(--navy);border-radius:16px;padding:20px;margin-top:22px}.submitted{display:none;background:#eaf7f1;border:1px solid #abd6c5;border-radius:16px;padding:22px;margin-top:22px}.submitted h3{margin:0 0 7px;color:var(--green)}.score{font-size:34px;font-weight:800;color:var(--navy)}.locked{pointer-events:none;opacity:.84}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}button.primary,button.secondary,button.danger{border:0;border-radius:11px;padding:12px 17px;font-size:15px;font-weight:700;cursor:pointer}button.primary{background:var(--navy);color:#fff}button.secondary{background:#e9eef3;color:var(--navy)}button.danger{background:#8f2f2f;color:#fff}.review{display:none;background:#fff;border:2px solid var(--navy);border-radius:16px;padding:20px;margin-top:22px}.submitted{display:none;background:#eaf7f1;border:1px solid #abd6c5;border-radius:16px;padding:22px;margin-top:22px}.submitted h3{margin:0 0 7px;color:var(--green)}.locked{pointer-events:none;opacity:.84}
 @media(max-width:820px){.draglayout,.phonewrap,.sortgrid,.targetrow{grid-template-columns:1fr}.net{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.top{position:static}}
 </style>
 </head>
@@ -97,12 +97,12 @@ main{padding:22px 18px 70px}.module{background:var(--card);border:1px solid var(
 
 <div class="btnrow" id="buttons"><button type="button" class="primary" id="reviewbtn">Review & Submit</button><button type="button" class="secondary" id="resetbtn">Reset Test</button></div>
 <div class="review" id="review"><h3 style="margin:0;color:var(--navy)">Review your test</h3><p id="reviewmsg">Check all sections before submitting.</p><div class="btnrow"><button type="button" class="secondary" id="backbtn">Review Answers</button><button type="button" class="primary" id="submitbtn">Submit Test</button></div></div>
-<div class="submitted" id="done"><h3>Test submitted</h3><div class="score" id="score">Score: - / 45</div><p>Your answers are now locked.</p></div>
+<div class="submitted" id="done"><h3>Test submitted</h3><p>Your answers have been recorded and are now locked. Your teacher will share results separately.</p></div>
 </main>
 <script>
 (function(){
 const TEST_VERSION='year8-dt-45-v1';
-let dragged=null,submitted=false,submittedScore=null,restoring=false;
+let dragged=null,submitted=false,restoring=false;
 const root=document.getElementById('root');
 const savePill=document.getElementById('savepill');
 const currentStudent=(window.year8TestStudentName||'anonymous').trim();
@@ -161,7 +161,6 @@ placements:answers.placements,
 installed:alertBox.style.display==='block',
 submitted,
 serverRecorded:submitted,
-score:submitted?submittedScore:null,
 updatedAt:new Date().toISOString()
 };
 try{
@@ -192,12 +191,10 @@ if(state.installed)alertBox.style.display='block';
 updateSelectionCounts();
 if(state.submitted&&state.serverRecorded){
 submitted=true;
-submittedScore=Number.isFinite(state.score)?state.score:total();
 root.classList.add('locked');
 document.getElementById('review').style.display='none';
 document.getElementById('buttons').style.display='none';
-document.getElementById('done').style.display='block';
-document.getElementById('score').textContent='Score: '+submittedScore+' / 45'
+document.getElementById('done').style.display='block'
 }
 restoring=false;
 savePill.textContent='Progress restored';
@@ -297,44 +294,6 @@ document.getElementById('pill').textContent=percentage+'% complete';
 saveState()
 }
 
-function scoreSingle(scope){
-let score=0;
-[...scope.querySelectorAll('.scored')].forEach(target=>{
-const item=target.querySelector('.drag');
-if(item&&item.dataset.match===target.dataset.answer)score++
-});
-return score
-}
-
-function scoreSoft(){
-let score=0;
-document.querySelectorAll('.software').forEach(target=>[...target.querySelectorAll('.drag')].forEach(item=>{
-if(item.dataset.match===target.dataset.answer)score++
-}));
-return score
-}
-
-function scoreRadio(scope){
-let score=0;
-scope.querySelectorAll('.rq').forEach(question=>{
-const selected=question.querySelector('input[type=radio]:checked');
-if(selected&&selected.value===question.dataset.answer)score++
-});
-return score
-}
-
-function total(){
-const m1=scoreSingle(document.getElementById('m1'))+scoreSoft();
-const m2a=scoreSingle(document.getElementById('m2a'))+scoreRadio(document.getElementById('m2a'));
-const goodClues=new Set(['name','birthday','school']);
-const clueScore=clues.filter(item=>item.checked&&goodClues.has(item.value)).length;
-const goodProtections=new Set(['change','mfa']);
-const protectionScore=protect.filter(item=>item.checked&&goodProtections.has(item.value)).length;
-const m2b=scoreRadio(document.getElementById('m2b'))+clueScore+protectionScore;
-const m2c=scoreRadio(document.getElementById('m2c'));
-return m1+m2a+m2b+m2c
-}
-
 function complete(){return interactions()>=44}
 
 document.getElementById('reviewbtn').addEventListener('click',()=>{
@@ -364,12 +323,10 @@ answers:captureAnswers()
 const result=await response.json();
 if(!response.ok)throw new Error(result.message||'Submission failed. Please try again.');
 submitted=true;
-submittedScore=result.score;
 root.classList.add('locked');
 document.getElementById('review').style.display='none';
 document.getElementById('buttons').style.display='none';
 document.getElementById('done').style.display='block';
-document.getElementById('score').textContent='Score: '+result.score+' / '+result.maxScore;
 saveState();
 document.getElementById('done').scrollIntoView({behavior:'smooth'})
 }catch(error){
@@ -386,14 +343,12 @@ location.reload()
 });
 window.addEventListener('pagehide',saveState);
 restoreState();
-if(!submitted&&window.year8TestAccessData.status==='submitted'&&Number.isFinite(window.year8TestAccessData.score)){
+if(!submitted&&window.year8TestAccessData.status==='submitted'){
 submitted=true;
-submittedScore=window.year8TestAccessData.score;
 root.classList.add('locked');
 document.getElementById('review').style.display='none';
 document.getElementById('buttons').style.display='none';
-document.getElementById('done').style.display='block';
-document.getElementById('score').textContent='Score: '+submittedScore+' / '+window.year8TestAccessData.maxScore
+document.getElementById('done').style.display='block'
 }
 progress();
 })();

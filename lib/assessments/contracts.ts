@@ -20,7 +20,6 @@ export type StartAssessmentResult = {
   assessmentVersion: string;
   studentName: string;
   status: "started" | "submitted";
-  score: number | null;
   maxScore: number;
 };
 
@@ -36,7 +35,7 @@ export type ScoreResult = {
   breakdown: Record<string, number>;
 };
 
-export type SubmitAssessmentResult = ScoreResult & {
+export type SubmitAssessmentResult = {
   attemptId: string;
   submittedAt: string;
   duplicate: boolean;
