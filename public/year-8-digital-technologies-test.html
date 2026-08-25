@@ -243,7 +243,10 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 .review{display:none;background:#fff;border:2px solid var(--navy);border-radius:16px;padding:20px;margin-top:22px}
 .submitted{display:none;background:#eaf7f1;border:1px solid #abd6c5;border-radius:16px;padding:22px;margin-top:22px}
 .score{font-size:28px;font-weight:800;color:var(--navy)}
-.locked{pointer-events:none;opacity:.9}
+.locked input:disabled{opacity:1;cursor:not-allowed}
+.locked textarea[readonly]{background:#f4f7f9;color:var(--ink);cursor:text}
+.locked .drag{cursor:default}
+.locked .choice{background:#f8fbfd}
 @media(max-width:850px){
   .draglayout,.targetrow,.mcqgrid,.ethicskeys,.software-pair-grid{grid-template-columns:1fr}
   .netmodel,.cycle-row{grid-template-columns:1fr}
@@ -853,6 +856,7 @@ Click that app first, read the information on the phone, then answer the questio
 <h3>Test submitted</h3>
 <p>Your answers have been recorded and are now locked.</p>
 <p><strong>Your teacher will mark the short-answer questions and share results separately.</strong></p>
+<p class="small">You can use the question directory and module buttons to review your submitted answers.</p>
 </div>
 
 </div>
@@ -980,11 +984,7 @@ function restoreState(){
     });
   }
   if(state.submitted&&state.serverRecorded){
-    submitted=true;
-    root.classList.add('locked');
-    document.getElementById('review').style.display='none';
-    document.getElementById('buttons').style.display='none';
-    document.getElementById('done').style.display='block';
+    showSubmittedView();
   }
   restoring=false;
   savePill.textContent='Progress restored';
@@ -1131,11 +1131,13 @@ function showPhoneTask(index){
 
   phonePrev.disabled=currentPhoneTask===0;
   if(currentPhoneTask===phoneTaskPages.length-1){
-    phoneNext.textContent='Finish Phone Tasks';
+    phoneNext.textContent=submitted?'End of Phone Tasks':'Finish Phone Tasks';
   }else{
     phoneNext.textContent='Next Task →';
   }
-  phoneNext.disabled=!phoneTaskComplete(phoneTaskPages[currentPhoneTask]);
+  phoneNext.disabled=submitted
+    ? currentPhoneTask===phoneTaskPages.length-1
+    : !phoneTaskComplete(phoneTaskPages[currentPhoneTask]);
 
   // Return to phone home whenever the question changes so students see the red dot.
   document.querySelectorAll('.phone-panel').forEach(p=>p.classList.remove('active'));
@@ -1153,10 +1155,10 @@ phoneTaskPages.forEach(page=>{
 
 phonePrev.addEventListener('click',()=>showPhoneTask(currentPhoneTask-1));
 phoneNext.addEventListener('click',()=>{
-  if(!phoneTaskComplete(phoneTaskPages[currentPhoneTask]))return;
+  if(!submitted&&!phoneTaskComplete(phoneTaskPages[currentPhoneTask]))return;
   if(currentPhoneTask<phoneTaskPages.length-1){
     showPhoneTask(currentPhoneTask+1);
-  }else{
+  }else if(!submitted){
     // Final phone task complete: clear unread dot and keep the phone home visible.
     document.querySelectorAll('.unread-dot').forEach(d=>d.style.display='none');
     document.querySelectorAll('.phone-app').forEach(b=>b.classList.remove('dimmed'));
@@ -1389,6 +1391,28 @@ document.getElementById('reviewbtn').addEventListener('click',()=>{
 
 document.getElementById('backbtn').addEventListener('click',()=>jumpToQuestion('q1',0));
 
+function showSubmittedView(scrollToConfirmation=false){
+  submitted=true;
+  root.classList.add('locked');
+  document.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(input=>{
+    input.disabled=true;
+  });
+  shortAnswers.forEach(answer=>{
+    answer.readOnly=true;
+  });
+  allDrags.forEach(item=>{
+    item.draggable=false;
+  });
+  document.getElementById('review').style.display='none';
+  document.getElementById('buttons').style.display='none';
+  document.getElementById('done').style.display='block';
+  showPhoneTask(currentPhoneTask);
+  updateQuestionDirectory();
+  if(scrollToConfirmation){
+    document.getElementById('done').scrollIntoView({behavior:preferredScrollBehavior()});
+  }
+}
+
 document.getElementById('submitbtn').addEventListener('click',async()=>{
   if(submitted)return;
   const submitButton=document.getElementById('submitbtn');
@@ -1408,13 +1432,8 @@ document.getElementById('submitbtn').addEventListener('click',async()=>{
     });
     const result=await response.json();
     if(!response.ok)throw new Error(result.message||'Submission failed. Please try again.');
-    submitted=true;
-    root.classList.add('locked');
-    document.getElementById('review').style.display='none';
-    document.getElementById('buttons').style.display='none';
-    document.getElementById('done').style.display='block';
+    showSubmittedView(true);
     saveState();
-    document.getElementById('done').scrollIntoView({behavior:'smooth'});
   }catch(error){
     submitButton.disabled=false;
     submitButton.textContent='Submit Test';
@@ -1431,11 +1450,7 @@ document.getElementById('resetbtn').addEventListener('click',()=>{
 window.addEventListener('pagehide',saveState);
 restoreState();
 if(!submitted&&access.status==='submitted'){
-  submitted=true;
-  root.classList.add('locked');
-  document.getElementById('review').style.display='none';
-  document.getElementById('buttons').style.display='none';
-  document.getElementById('done').style.display='block';
+  showSubmittedView();
 }
 progress();
 })();
