@@ -29,7 +29,7 @@ try{
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
 header{background:linear-gradient(120deg,var(--navy),#144c78);color:#fff;padding:26px 18px}
-header .wrap,main{max-width:1120px;margin:auto}
+header .wrap{max-width:1120px;margin:auto}
 h1{margin:0 0 6px;font-size:clamp(28px,4vw,44px)}
 header p{margin:0;color:#d9edf8}
 .top{position:sticky;top:0;z-index:9;background:rgba(244,248,251,.96);border-bottom:1px solid #e1e9ef}
@@ -37,7 +37,7 @@ header p{margin:0;color:#d9edf8}
 .bar{height:9px;background:#dce8ef;border-radius:999px;overflow:hidden;flex:1}
 .bar>div{height:100%;width:0;background:var(--cyan)}
 .pill{font-size:13px;font-weight:700;color:var(--navy);background:#e8f2f8;padding:7px 10px;border-radius:999px;white-space:nowrap}
-main{padding:22px 18px 70px}
+main{max-width:1420px;margin:auto;padding:22px 18px 70px}
 .module{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:20px 0;overflow:hidden;box-shadow:0 8px 22px rgba(28,66,96,.05)}
 .mh{padding:18px 20px;background:linear-gradient(90deg,#f3f8fb,#fff);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .mh h2{margin:0;color:var(--navy);font-size:25px}
@@ -183,6 +183,35 @@ input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
 .module-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
 .module-actions button:disabled,.phone-task-nav button:disabled{opacity:.45;cursor:not-allowed}
 
+/* Question directory */
+.assessment-layout{display:grid;grid-template-columns:230px minmax(0,1120px);gap:24px;align-items:start;justify-content:center}
+.assessment-content{min-width:0}
+.question-directory{position:sticky;top:64px;max-height:calc(100dvh - 82px);overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff;padding:15px;box-shadow:0 8px 22px rgba(28,66,96,.05)}
+.question-directory-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
+.question-directory-title{margin:0;color:var(--navy);font-size:17px}
+.question-directory-summary{font-size:12px;color:var(--muted);white-space:nowrap}
+.question-directory-body{display:grid;gap:14px}
+.question-group-title{margin:0 0 6px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.question-links{display:grid;gap:5px}
+.question-jump{width:100%;min-height:42px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--ink);padding:7px 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;cursor:pointer}
+.question-jump:hover{background:#f3f8fb;border-color:#c7d9e4}
+.question-jump:focus-visible{outline:3px solid rgba(42,167,201,.25);outline-offset:1px}
+.question-jump.current{background:#e8f2f8;border-color:#72abc8;color:var(--navy);font-weight:700}
+.question-label{font-size:13px;font-weight:700}
+.question-state{font-size:11px;color:var(--muted);white-space:nowrap}
+.question-jump.answered .question-state{color:var(--green);font-weight:700}
+.question-jump.in-progress .question-state{color:#8a5b0c;font-weight:700}
+[data-question-anchor]{scroll-margin-top:82px}
+@media(max-width:1050px){
+  .assessment-layout{grid-template-columns:1fr}
+  .question-directory{position:static;max-height:none;overflow:visible;padding:13px}
+  .question-directory-head{margin-bottom:10px}
+  .question-directory-body{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;scrollbar-width:thin}
+  .question-group,.question-links{display:contents}
+  .question-group-title{display:none}
+  .question-jump{width:auto;min-width:96px;flex:0 0 auto}
+}
+
 /* Phone unread indicator + one-question-at-a-time task paging */
 .phone-app{position:relative}
 .unread-dot{
@@ -246,6 +275,46 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 
 <main id="root">
 
+<div class="assessment-layout">
+<aside class="question-directory" aria-label="Question directory">
+  <div class="question-directory-head">
+    <h2 class="question-directory-title">Questions</h2>
+    <span class="question-directory-summary" id="questionDirectorySummary">0 of 13 answered</span>
+  </div>
+  <nav class="question-directory-body">
+    <div class="question-group">
+      <p class="question-group-title">Module 1</p>
+      <div class="question-links">
+        <button type="button" class="question-jump current" data-question="q1" data-module="0" aria-current="step"><span class="question-label">Q1</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q2" data-module="0"><span class="question-label">Q2</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q3" data-module="0"><span class="question-label">Q3</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q4" data-module="0"><span class="question-label">Q4</span><span class="question-state">Not answered</span></button>
+      </div>
+    </div>
+    <div class="question-group">
+      <p class="question-group-title">Module 2A</p>
+      <div class="question-links">
+        <button type="button" class="question-jump" data-question="q5" data-module="1"><span class="question-label">Q5</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q6" data-module="1"><span class="question-label">Q6</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q7" data-module="1"><span class="question-label">Q7</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q8" data-module="1"><span class="question-label">Q8</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q9" data-module="1"><span class="question-label">Q9</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q10" data-module="1"><span class="question-label">Q10</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q11" data-module="1"><span class="question-label">Q11</span><span class="question-state">Not answered</span></button>
+      </div>
+    </div>
+    <div class="question-group">
+      <p class="question-group-title">Module 2B</p>
+      <div class="question-links">
+        <button type="button" class="question-jump" data-question="q12" data-module="2"><span class="question-label">Q12</span><span class="question-state">Not answered</span></button>
+        <button type="button" class="question-jump" data-question="q13" data-module="2"><span class="question-label">Q13</span><span class="question-state">Not answered</span></button>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<div class="assessment-content">
+
 <section class="module module-page active" id="m1" data-module-index="0">
 <div class="mh">
 <div><h2>Module 1 — Hardware, Software & Networks</h2><p>Recognise hardware and apply what you know about software and networks.</p></div>
@@ -253,7 +322,7 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 </div>
 <div class="content">
 
-<div class="q">
+<div class="q" id="question-q1" data-question-anchor="q1">
 <p class="qt"><strong>Q1. Match the hardware</strong> <span class="small">(4 marks)</span><br>
 Drag each hardware name to the correct picture.</p>
 <div class="draglayout">
@@ -273,7 +342,7 @@ Drag each hardware name to the correct picture.</p>
 </div>
 </div>
 
-<div class="q">
+<div class="q" id="question-q2" data-question-anchor="q2">
 <p class="qt"><strong>Q2. Hardware functions</strong> <span class="small">(4 marks)</span></p>
 <div class="mcqgrid">
 <div class="mcqcard rq" data-answer="input"><p><strong>2A.</strong> What is the main role of a keyboard?</p>
@@ -303,7 +372,7 @@ Drag each hardware name to the correct picture.</p>
 </div>
 </div>
 
-<div class="q">
+<div class="q" id="question-q3" data-question-anchor="q3">
 <p class="qt"><strong>Q3. Software types</strong> <span class="small">(4 marks)</span><br>
 Drag the two software types to the correct descriptions. Then drag each example into the correct box.</p>
 
@@ -340,7 +409,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 </div>
 
-<div class="q">
+<div class="q" id="question-q4" data-question-anchor="q4">
 <p class="qt"><strong>Q4. Network model</strong> <span class="small">(3 marks)</span></p>
 <div class="netmodel"><div class="netbox">Student laptop</div><div class="arr">→</div><div class="netbox">Wi-Fi / Network</div><div class="arr">→</div><div class="netbox">School server</div></div>
 <div class="mcqgrid">
@@ -380,7 +449,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 <div class="content">
 
-<div class="q">
+<div class="q" id="question-q5" data-question-anchor="q5">
 <p class="qt"><strong>Q5. Identify the threat</strong> <span class="small">(4 marks)</span></p>
 <div class="mcqgrid">
 
@@ -423,7 +492,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 </div>
 
-<div class="q">
+<div class="q" id="question-q6" data-question-anchor="q6">
 <p class="qt"><strong>Q6. Choose the best protection</strong> <span class="small">(4 marks)</span></p>
 <div class="mcqgrid">
 
@@ -466,7 +535,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 </div>
 
-<div class="q">
+<div class="q" id="question-q7" data-question-anchor="q7">
 <p class="qt"><strong>Q7. Think carefully</strong> <span class="small">(2 marks)</span></p>
 <div class="mcqgrid">
 
@@ -496,7 +565,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
   <p class="qt" style="font-size:21px"><strong>Module 2A — Short Answer</strong></p>
   <p class="small">Now move from recognising the answer to explaining the ideas in your own words. Use the scenario evidence and your cheat sheet.</p>
 </div>
-<div class="q">
+<div class="q" id="question-q8" data-question-anchor="q8">
 <p class="qt"><strong>Q8. Data Interception</strong> <span class="small">(2 marks)</span></p>
 <div class="scenario">
 Mia sends a private message across a public network. An attacker copies the data while it is travelling.
@@ -507,7 +576,7 @@ The copied message looks like <code>8F#1 XQ!7 92@</code>.
 <div class="hint">Think about: interception · encryption · what the attacker can understand</div>
 </div>
 
-<div class="q">
+<div class="q" id="question-q9" data-question-anchor="q9">
 <p class="qt"><strong>Q9. Phishing / Scam</strong> <span class="small">(2 marks)</span></p>
 <div class="scenario">
 Alex receives a message saying: “Your school account will be deleted today. Click this link and sign in now.”
@@ -518,7 +587,7 @@ The sender address looks unusual.
 <div class="hint">Think about: pretending to be trusted · login information · Pause · Check · Verify · Report</div>
 </div>
 
-<div class="q">
+<div class="q" id="question-q10" data-question-anchor="q10">
 <p class="qt"><strong>Q10. Malware + Data Interception</strong> <span class="small">(3 marks)</span></p>
 <div class="scenario">
 Priya downloads a free editing program from an unknown website. After opening it, saved files are copied from her laptop.
@@ -528,7 +597,7 @@ Later, an attacker also copies data while it travels across a public network.
 <textarea id="malware-interception" class="answerbox shortanswer" data-short-answer="malware-interception" data-marks="3" maxlength="2000" placeholder="Name both threats, then explain one risk."></textarea>
 </div>
 
-<div class="q">
+<div class="q" id="question-q11" data-question-anchor="q11">
 <p class="qt"><strong>Q11. Weak Password + Identity Theft</strong> <span class="small">(3 marks)</span></p>
 <div class="scenario">
 Jordan uses the same password for school email, gaming and social media. One account is compromised.
@@ -655,7 +724,7 @@ Explore the apps, notice the warning signs, and choose the safest action for you
   </div>
 </div>
 
-<div class="phone-task">
+<div class="phone-task" id="question-q12" data-question-anchor="q12">
 <div class="phone-task-head">
   <div>
     <h3 style="margin:0;color:var(--navy)">Q12. Fix the Security Problems on Your Phone</h3>
@@ -733,7 +802,7 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 
-<div class="q" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
+<div class="q" id="question-q13" data-question-anchor="q13" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
   <p class="qt" style="font-size:21px"><strong>Module 2B — Ethical Use</strong></p>
   <p class="small">After protecting your own information, apply Purpose · Permission · Harm to responsible technical use.</p>
 </div>
@@ -813,6 +882,9 @@ Click that app first, read the information on the phone, then answer the questio
 <p><strong>Your teacher will mark the short-answer questions and share results separately.</strong></p>
 </div>
 
+</div>
+</div>
+
 </main>
 
 <script>
@@ -885,6 +957,7 @@ function saveState(){
     ...answers,
     moduleIndex:currentModule,
     phoneTaskIndex:currentPhoneTask,
+    questionId:currentQuestionId,
     submitted,
     serverRecorded:submitted,
     updatedAt:new Date().toISOString()
@@ -921,7 +994,18 @@ function restoreState(){
     answer.value=state.shortAnswers&&state.shortAnswers[answer.dataset.shortAnswer]||'';
   });
   showPhoneTask(Number.isInteger(state.phoneTaskIndex)?state.phoneTaskIndex:0);
-  showModule(Number.isInteger(state.moduleIndex)?state.moduleIndex:0);
+  const restoredModule=Number.isInteger(state.moduleIndex)?state.moduleIndex:0;
+  showModule(restoredModule,false);
+  const restoredQuestion=questionDefinitions.find(question=>
+    question.id===state.questionId&&question.module===restoredModule
+  );
+  if(restoredQuestion){
+    setCurrentQuestion(restoredQuestion.id);
+    requestAnimationFrame(()=>{
+      const target=document.getElementById('question-'+restoredQuestion.id);
+      if(target)target.scrollIntoView({behavior:'auto',block:'start'});
+    });
+  }
   if(state.submitted&&state.serverRecorded){
     submitted=true;
     root.classList.add('locked');
@@ -1132,6 +1216,7 @@ function progress(){
   const p=Math.min(100,Math.round(interactions()/max*100));
   document.getElementById('bar').style.width=p+'%';
   document.getElementById('pill').textContent=p+'% complete';
+  updateQuestionDirectory();
   saveState();
 }
 
@@ -1150,48 +1235,125 @@ const moduleNames=[
 let currentModule=0;
 
 
-function allRadiosAnswered(scope){
-  const groups=[...new Set([...scope.querySelectorAll('input[type=radio]')].map(r=>r.name))];
-  return groups.every(name=>scope.querySelector('input[name="'+name+'"]:checked'));
+function stateFromCounts(answered,total,started=answered){
+  if(answered===total)return 'answered';
+  if(started>0)return 'in-progress';
+  return 'unanswered';
 }
 
-function moduleComplete(index){
-  const m=modulePages[index];
-  if(index===0){
-    const hardwareDone=[...m.querySelectorAll('.drop')].every(z=>z.querySelector('.drag'));
-    const typeDone=[...m.querySelectorAll('.software-type-slot')].every(z=>z.querySelector('.drag'));
-    const examplesDone=m.querySelectorAll('.software-example-zone .drag').length===4;
-    return hardwareDone && typeDone && examplesDone && allRadiosAnswered(m);
-  }
-  if(index===1){
-    const shortDone=[...m.querySelectorAll('.shortanswer')].every(t=>t.value.trim().length>=4);
-    return allRadiosAnswered(m) && shortDone;
-  }
-  if(index===2){
-    const phoneDone=[...m.querySelectorAll('.multiq')].every(q=>{
-      const required=Number(q.dataset.required);
-      return q.querySelectorAll('input[type=checkbox]:checked').length===required;
-    });
-    return phoneDone && allRadiosAnswered(m);
-  }
-  return true;
+function radioNamesState(names){
+  const answered=names.filter(name=>document.querySelector('input[name="'+name+'"]:checked')).length;
+  return stateFromCounts(answered,names.length);
 }
 
-function updateModuleButton(){
-  modulePages.forEach((m,i)=>{
-    const btn=m.querySelector('.next-module');
-    if(btn)btn.disabled=!moduleComplete(i);
+function shortAnswerState(questionKey){
+  const answer=document.querySelector('[data-short-answer="'+questionKey+'"]');
+  const length=answer.value.trim().length;
+  if(length>=4)return 'answered';
+  return length>0?'in-progress':'unanswered';
+}
+
+const questionDefinitions=[
+  {
+    id:'q1',module:0,
+    state:()=>stateFromCounts(hwDrops.filter(drop=>drop.querySelector('.drag')).length,hwDrops.length)
+  },
+  {id:'q2',module:0,state:()=>radioNamesState(['q2a','q2b','q2c','q2d'])},
+  {
+    id:'q3',module:0,
+    state:()=>{
+      const typeCount=softwareTypeSlots.filter(slot=>slot.querySelector('.drag')).length;
+      const exampleCount=document.querySelectorAll('.software-example-zone .drag').length;
+      return stateFromCounts(typeCount+exampleCount,6);
+    }
+  },
+  {id:'q4',module:0,state:()=>radioNamesState(['q4a','q4b','q4c'])},
+  {id:'q5',module:1,state:()=>radioNamesState(['q5a','q5b','q5c','q5d'])},
+  {id:'q6',module:1,state:()=>radioNamesState(['q6a','q6b','q6c','q6d'])},
+  {id:'q7',module:1,state:()=>radioNamesState(['q7a','q7b'])},
+  {id:'q8',module:1,state:()=>shortAnswerState('data-interception')},
+  {id:'q9',module:1,state:()=>shortAnswerState('phishing-response')},
+  {id:'q10',module:1,state:()=>shortAnswerState('malware-interception')},
+  {id:'q11',module:1,state:()=>shortAnswerState('password-identity')},
+  {
+    id:'q12',module:2,
+    state:()=>{
+      const answered=phoneTaskPages.filter(phoneTaskComplete).length;
+      const started=phoneTaskPages.filter(page=>page.querySelector('input[type=checkbox]:checked')).length;
+      return stateFromCounts(answered,phoneTaskPages.length,started);
+    }
+  },
+  {id:'q13',module:2,state:()=>radioNamesState(['q13a','q13b','q13c','q13d','q13e'])}
+];
+const questionButtons=[...document.querySelectorAll('.question-jump')];
+let currentQuestionId='q1';
+
+function updateQuestionDirectory(){
+  let answeredCount=0;
+  questionDefinitions.forEach(question=>{
+    const state=question.state();
+    const button=document.querySelector('.question-jump[data-question="'+question.id+'"]');
+    const stateLabel=button.querySelector('.question-state');
+    button.classList.toggle('answered',state==='answered');
+    button.classList.toggle('in-progress',state==='in-progress');
+    stateLabel.textContent=state==='answered'?'Answered':state==='in-progress'?'In progress':'Not answered';
+    if(state==='answered')answeredCount++;
+  });
+  document.getElementById('questionDirectorySummary').textContent=answeredCount+' of '+questionDefinitions.length+' answered';
+}
+
+function setCurrentQuestion(questionId){
+  currentQuestionId=questionId;
+  questionButtons.forEach(button=>{
+    const isCurrent=button.dataset.question===currentQuestionId;
+    button.classList.toggle('current',isCurrent);
+    if(isCurrent)button.setAttribute('aria-current','step');
+    else button.removeAttribute('aria-current');
   });
 }
 
-function showModule(index){
+function preferredScrollBehavior(){
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+}
+
+function updateModuleButton(){
+  modulePages.forEach(m=>{
+    const btn=m.querySelector('.next-module');
+    if(btn)btn.disabled=false;
+  });
+}
+
+function showModule(index,scrollToTop=true){
   currentModule=Math.max(0,Math.min(modulePages.length-1,index));
   modulePages.forEach((m,i)=>m.classList.toggle('active',i===currentModule));
   document.getElementById('moduleStep').textContent='Module '+(currentModule+1)+' of '+modulePages.length;
   document.getElementById('moduleTitle').textContent=moduleNames[currentModule];
   updateModuleButton();
-  window.scrollTo({top:0,behavior:'smooth'});
+  const firstQuestion=questionDefinitions.find(question=>question.module===currentModule);
+  if(firstQuestion)setCurrentQuestion(firstQuestion.id);
+  if(scrollToTop)window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
+
+function jumpToQuestion(questionId,moduleIndex){
+  showModule(moduleIndex,false);
+  setCurrentQuestion(questionId);
+  requestAnimationFrame(()=>{
+    const target=document.getElementById('question-'+questionId);
+    if(target)target.scrollIntoView({behavior:preferredScrollBehavior(),block:'start'});
+  });
+}
+
+questionButtons.forEach(button=>{
+  button.addEventListener('click',()=>jumpToQuestion(button.dataset.question,Number(button.dataset.module)));
+});
+
+const questionObserver=new IntersectionObserver(entries=>{
+  const visible=entries
+    .filter(entry=>entry.isIntersecting&&modulePages[currentModule].contains(entry.target))
+    .sort((left,right)=>left.boundingClientRect.top-right.boundingClientRect.top);
+  if(visible.length)setCurrentQuestion(visible[0].target.dataset.questionAnchor);
+},{rootMargin:'-90px 0px -60% 0px',threshold:0});
+document.querySelectorAll('[data-question-anchor]').forEach(question=>questionObserver.observe(question));
 
 document.querySelectorAll('.next-module').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -1219,7 +1381,7 @@ document.getElementById('reviewbtn').addEventListener('click',()=>{
   document.getElementById('review').scrollIntoView({behavior:'smooth'});
 });
 
-document.getElementById('backbtn').addEventListener('click',()=>document.getElementById('m1').scrollIntoView({behavior:'smooth'}));
+document.getElementById('backbtn').addEventListener('click',()=>jumpToQuestion('q1',0));
 
 document.getElementById('submitbtn').addEventListener('click',async()=>{
   if(submitted)return;
