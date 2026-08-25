@@ -867,7 +867,8 @@ Click that app first, read the information on the phone, then answer the questio
 <script>
 (function(){
 const TEST_VERSION='year8-dt-45-v3';
-let dragged=null,submitted=false,restoring=false;
+let dragged=null,submitted=false,restoring=false,submissionCheckPending=false;
+let localSubmissionRecorded=false;
 const root=document.getElementById('root');
 const savePill=document.getElementById('savepill');
 const access=window.year8TestAccessData;
@@ -926,8 +927,31 @@ function captureAnswers(){
   };
 }
 
+function applyAnswerSnapshot(answers){
+  const snapshot=answers&&typeof answers==='object'?answers:{};
+  const dragById=new Map(allDrags.map(item=>[item.dataset.saveId,item]));
+  const zones=[...allBanks,...hwDrops,...softwareTypeSlots,...softwareExampleZones];
+  const zoneById=new Map(zones.map(zone=>[zone.dataset.saveZone,zone]));
+  allDrags.forEach(returnToOwnBank);
+  Object.entries(snapshot.placements||{}).forEach(([dragId,zoneId])=>{
+    const item=dragById.get(dragId);
+    const target=zoneById.get(zoneId);
+    if(item&&target)target.appendChild(item);
+  });
+  document.querySelectorAll('input[type=radio]').forEach(input=>{
+    input.checked=Boolean(snapshot.radios&&snapshot.radios[input.name]===input.value);
+  });
+  const checked=new Set(Array.isArray(snapshot.checkboxes)?snapshot.checkboxes:[]);
+  document.querySelectorAll('input[type=checkbox]').forEach(input=>{
+    input.checked=checked.has(checkboxId(input));
+  });
+  shortAnswers.forEach(answer=>{
+    answer.value=snapshot.shortAnswers&&snapshot.shortAnswers[answer.dataset.shortAnswer]||'';
+  });
+}
+
 function saveState(){
-  if(restoring)return;
+  if(restoring||submissionCheckPending)return;
   const answers=captureAnswers();
   const state={
     version:TEST_VERSION,
@@ -951,25 +975,9 @@ function restoreState(){
   let state;
   try{state=JSON.parse(localStorage.getItem(storageKey)||'null');}catch(error){return false;}
   if(!state||state.version!==TEST_VERSION)return false;
+  localSubmissionRecorded=Boolean(state.submitted&&state.serverRecorded);
   restoring=true;
-  const dragById=new Map(allDrags.map(item=>[item.dataset.saveId,item]));
-  const zones=[...allBanks,...hwDrops,...softwareTypeSlots,...softwareExampleZones];
-  const zoneById=new Map(zones.map(zone=>[zone.dataset.saveZone,zone]));
-  Object.entries(state.placements||{}).forEach(([dragId,zoneId])=>{
-    const item=dragById.get(dragId);
-    const target=zoneById.get(zoneId);
-    if(item&&target)target.appendChild(item);
-  });
-  document.querySelectorAll('input[type=radio]').forEach(input=>{
-    input.checked=Boolean(state.radios&&state.radios[input.name]===input.value);
-  });
-  const checked=new Set(Array.isArray(state.checkboxes)?state.checkboxes:[]);
-  document.querySelectorAll('input[type=checkbox]').forEach(input=>{
-    input.checked=checked.has(checkboxId(input));
-  });
-  shortAnswers.forEach(answer=>{
-    answer.value=state.shortAnswers&&state.shortAnswers[answer.dataset.shortAnswer]||'';
-  });
+  applyAnswerSnapshot(state);
   showPhoneTask(Number.isInteger(state.phoneTaskIndex)?state.phoneTaskIndex:0);
   const restoredModule=Number.isInteger(state.moduleIndex)?state.moduleIndex:0;
   showModule(restoredModule,false);
@@ -983,7 +991,7 @@ function restoreState(){
       if(target)target.scrollIntoView({behavior:'auto',block:'start'});
     });
   }
-  if(state.submitted&&state.serverRecorded){
+  if(localSubmissionRecorded&&access.status==='submitted'){
     showSubmittedView();
   }
   restoring=false;
@@ -1367,6 +1375,8 @@ document.querySelectorAll('.next-module').forEach(btn=>{
   btn.addEventListener('click',()=>{
     if(currentModule<modulePages.length-1){
       showModule(currentModule+1);
+    }else if(submitted){
+      showSubmittedView(true);
     }else{
       document.getElementById('buttons').style.display='flex';
       document.getElementById('review').style.display='block';
@@ -1391,18 +1401,29 @@ document.getElementById('reviewbtn').addEventListener('click',()=>{
 
 document.getElementById('backbtn').addEventListener('click',()=>jumpToQuestion('q1',0));
 
-function showSubmittedView(scrollToConfirmation=false){
-  submitted=true;
-  root.classList.add('locked');
+function setAnswerControlsLocked(locked){
+  root.classList.toggle('locked',locked);
   document.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(input=>{
-    input.disabled=true;
+    input.disabled=locked;
   });
   shortAnswers.forEach(answer=>{
-    answer.readOnly=true;
+    answer.readOnly=locked;
   });
   allDrags.forEach(item=>{
-    item.draggable=false;
+    item.draggable=!locked;
   });
+  ['reviewbtn','resetbtn','submitbtn'].forEach(id=>{
+    document.getElementById(id).disabled=locked;
+  });
+}
+
+function showSubmittedView(scrollToConfirmation=false){
+  submitted=true;
+  access.status='submitted';
+  try{
+    sessionStorage.setItem('year8TestAccess',JSON.stringify(access));
+  }catch(error){}
+  setAnswerControlsLocked(true);
   document.getElementById('review').style.display='none';
   document.getElementById('buttons').style.display='none';
   document.getElementById('done').style.display='block';
@@ -1410,6 +1431,50 @@ function showSubmittedView(scrollToConfirmation=false){
   updateQuestionDirectory();
   if(scrollToConfirmation){
     document.getElementById('done').scrollIntoView({behavior:preferredScrollBehavior()});
+  }
+}
+
+async function restoreSubmittedAnswers(){
+  const serverAlreadyConfirmed=access.status==='submitted';
+  submissionCheckPending=true;
+  if(serverAlreadyConfirmed)showSubmittedView();
+  else setAnswerControlsLocked(true);
+  savePill.textContent=serverAlreadyConfirmed?'Loading submitted answers...':'Checking submitted answers...';
+  try{
+    const response=await fetch('/api/assessments/review',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        attemptId:access.attemptId,
+        clientAttemptId:access.clientAttemptId
+      })
+    });
+    const result=await response.json();
+    if(!response.ok){
+      if(response.status===409&&!serverAlreadyConfirmed){
+        submissionCheckPending=false;
+        setAnswerControlsLocked(false);
+        savePill.textContent='Progress restored';
+        progress();
+        return;
+      }
+      throw new Error(result.message||'Submitted answers could not be loaded.');
+    }
+    restoring=true;
+    applyAnswerSnapshot(result.answers);
+    restoring=false;
+    progress();
+    submissionCheckPending=false;
+    showSubmittedView();
+    saveState();
+    savePill.textContent='Submitted answers restored';
+  }catch(error){
+    restoring=false;
+    if(serverAlreadyConfirmed){
+      savePill.textContent='Using saved submitted answers';
+    }else{
+      savePill.textContent='Submission check unavailable — reload to retry';
+    }
   }
 }
 
@@ -1432,6 +1497,10 @@ document.getElementById('submitbtn').addEventListener('click',async()=>{
     });
     const result=await response.json();
     if(!response.ok)throw new Error(result.message||'Submission failed. Please try again.');
+    if(!result.answers)throw new Error('The submitted answers could not be confirmed. Please reload this page.');
+    restoring=true;
+    applyAnswerSnapshot(result.answers);
+    restoring=false;
     showSubmittedView(true);
     saveState();
   }catch(error){
@@ -1442,6 +1511,7 @@ document.getElementById('submitbtn').addEventListener('click',async()=>{
 });
 
 document.getElementById('resetbtn').addEventListener('click',()=>{
+  if(submitted)return;
   if(confirm('Reset the entire test? All answers will be cleared.')){
     try{localStorage.removeItem(storageKey);}catch(error){}
     location.reload();
@@ -1449,8 +1519,8 @@ document.getElementById('resetbtn').addEventListener('click',()=>{
 });
 window.addEventListener('pagehide',saveState);
 restoreState();
-if(!submitted&&access.status==='submitted'){
-  showSubmittedView();
+if(access.status==='submitted'||localSubmissionRecorded){
+  restoreSubmittedAnswers();
 }
 progress();
 })();

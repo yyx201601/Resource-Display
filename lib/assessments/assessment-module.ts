@@ -3,10 +3,13 @@ import type {
   StartAssessmentResult,
   SubmitAssessmentInput,
   SubmitAssessmentResult,
+  ReviewAssessmentInput,
+  ReviewAssessmentResult,
 } from "./contracts";
 import { getDatabase } from "./database";
 import { AssessmentError } from "./errors";
 import { scoreAssessment } from "./scorers";
+import { parseAnswerSnapshot } from "./validation";
 
 type SessionRow = {
   session_id: number;
@@ -28,6 +31,13 @@ type AttemptRow = {
   manual_max_score: number;
   grading_status: "not_required" | "pending" | "graded";
   submitted_at: Date | null;
+  answers?: unknown;
+};
+
+type ReviewAttemptRow = {
+  attempt_public_id: string;
+  status: "started" | "submitted";
+  answers: unknown;
 };
 
 export async function startAttempt(
@@ -132,6 +142,7 @@ export async function submitAttempt(
       assessment_attempts.manual_max_score,
       assessment_attempts.grading_status,
       assessment_attempts.submitted_at,
+      assessment_attempts.answers,
       assessment_definitions.scorer_key
     from assessment_attempts
     join assessment_sessions
@@ -152,6 +163,7 @@ export async function submitAttempt(
       attemptId: attempt.attempt_public_id,
       submittedAt: attempt.submitted_at?.toISOString() ?? new Date().toISOString(),
       duplicate: true,
+      answers: parseAnswerSnapshot(attempt.answers),
     };
   }
 
@@ -206,7 +218,8 @@ export async function submitAttempt(
         max_score,
         manual_max_score,
         grading_status,
-        submitted_at
+        submitted_at,
+        answers
       from assessment_attempts
       where id = ${attempt.attempt_id}
       limit 1
@@ -217,6 +230,7 @@ export async function submitAttempt(
         attemptId: existing.attempt_public_id,
         submittedAt: existing.submitted_at?.toISOString() ?? new Date().toISOString(),
         duplicate: true,
+        answers: parseAnswerSnapshot(existing.answers),
       };
     }
     throw new AssessmentError("submission_conflict", "The test could not be submitted.", 409);
@@ -226,5 +240,40 @@ export async function submitAttempt(
     attemptId: submittedAttempt.attempt_public_id,
     submittedAt: submittedAttempt.submitted_at?.toISOString() ?? new Date().toISOString(),
     duplicate: false,
+    answers: input.answers,
+  };
+}
+
+export async function reviewAttempt(
+  input: ReviewAssessmentInput,
+): Promise<ReviewAssessmentResult> {
+  const sql = getDatabase();
+  const attempts = await sql<ReviewAttemptRow[]>`
+    select
+      public_id as attempt_public_id,
+      status,
+      answers
+    from assessment_attempts
+    where public_id = ${input.attemptId}
+      and client_attempt_id = ${input.clientAttemptId}
+    limit 1
+  `;
+  const attempt = attempts[0];
+
+  if (!attempt) {
+    throw new AssessmentError("attempt_not_found", "This test attempt was not found.", 404);
+  }
+  if (attempt.status !== "submitted" || !attempt.answers) {
+    throw new AssessmentError(
+      "attempt_not_submitted",
+      "Submitted answers are not available for this test attempt.",
+      409,
+    );
+  }
+
+  return {
+    attemptId: attempt.attempt_public_id,
+    status: "submitted",
+    answers: parseAnswerSnapshot(attempt.answers),
   };
 }

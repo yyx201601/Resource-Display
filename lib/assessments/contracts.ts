@@ -31,6 +31,17 @@ export type SubmitAssessmentInput = {
   answers: AnswerSnapshot;
 };
 
+export type ReviewAssessmentInput = {
+  attemptId: string;
+  clientAttemptId: string;
+};
+
+export type ReviewAssessmentResult = {
+  attemptId: string;
+  status: "submitted";
+  answers: AnswerSnapshot;
+};
+
 export type ScoreResult = {
   automaticScore: number;
   automaticMaxScore: number;
@@ -43,6 +54,7 @@ export type SubmitAssessmentResult = {
   attemptId: string;
   submittedAt: string;
   duplicate: boolean;
+  answers: AnswerSnapshot;
 };
 
 export type TeacherQuestionMarkInput = {

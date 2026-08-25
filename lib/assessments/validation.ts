@@ -1,5 +1,6 @@
 import type {
   AnswerSnapshot,
+  ReviewAssessmentInput,
   StartAssessmentInput,
   SubmitAssessmentInput,
   TeacherMarkInput,
@@ -53,7 +54,7 @@ function stringRecord(
   );
 }
 
-function answerSnapshot(value: unknown): AnswerSnapshot {
+export function parseAnswerSnapshot(value: unknown): AnswerSnapshot {
   const input = objectValue(value, "answers");
   if (!Array.isArray(input.checkboxes) || input.checkboxes.length > 80) {
     throw new AssessmentError("invalid_request", "answers.checkboxes is invalid.", 400);
@@ -107,7 +108,21 @@ export function parseSubmitAssessmentInput(value: unknown): SubmitAssessmentInpu
       max: 36,
       pattern: UUID_PATTERN,
     }),
-    answers: answerSnapshot(input.answers),
+    answers: parseAnswerSnapshot(input.answers),
+  };
+}
+
+export function parseReviewAssessmentInput(value: unknown): ReviewAssessmentInput {
+  const input = objectValue(value, "request");
+  return {
+    attemptId: stringValue(input.attemptId, "attemptId", {
+      max: 36,
+      pattern: UUID_PATTERN,
+    }),
+    clientAttemptId: stringValue(input.clientAttemptId, "clientAttemptId", {
+      max: 36,
+      pattern: UUID_PATTERN,
+    }),
   };
 }
 
