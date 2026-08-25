@@ -174,6 +174,8 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 /* Page-by-page module navigation */
 .module-page{display:none}
 .module-page.active{display:block}
+.worksheet-page{display:none}
+.worksheet-page.active{display:block}
 .module-nav{
   max-width:1120px;margin:14px auto 0;padding:0 18px;
   display:flex;justify-content:space-between;align-items:center;gap:12px
@@ -283,8 +285,8 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 </div></div>
 
 <div class="module-nav">
-  <div class="module-step" id="moduleStep">Module 1 of 3</div>
-  <div class="small" id="moduleTitle">Hardware, Software & Networks</div>
+  <div class="module-step" id="moduleStep">Page 1 of 10</div>
+  <div class="small" id="moduleTitle">Q1-Q2 | Hardware, Software & Networks</div>
 </div>
 
 <main id="root">
@@ -306,6 +308,8 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 <div class="meta">15 minutes | 15 marks</div>
 </div>
 <div class="content">
+
+<div class="worksheet-page active" data-worksheet-page data-page-label="Q1-Q2">
 
 <div class="q" id="question-q1" data-question-anchor="q1">
 <p class="qt"><strong>Q1. Match the hardware</strong> <span class="small">(4 marks)</span><br>
@@ -357,6 +361,9 @@ Drag each hardware name to the correct picture.</p>
 </div>
 </div>
 
+</div>
+<div class="worksheet-page" data-worksheet-page data-page-label="Q3">
+
 <div class="q" id="question-q3" data-question-anchor="q3">
 <p class="qt"><strong>Q3. Software types</strong> <span class="small">(4 marks)</span><br>
 Drag the two software types to the correct descriptions. Then drag each example into the correct box.</p>
@@ -394,6 +401,9 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 </div>
 
+</div>
+<div class="worksheet-page" data-worksheet-page data-page-label="Q4">
+
 <div class="q" id="question-q4" data-question-anchor="q4">
 <p class="qt"><strong>Q4. Network model</strong> <span class="small">(3 marks)</span></p>
 <div class="netmodel"><div class="netbox">Student laptop</div><div class="arr">→</div><div class="netbox">Wi-Fi / Network</div><div class="arr">→</div><div class="netbox">School server</div></div>
@@ -420,7 +430,11 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 
 </div>
-<div class="module-actions"><button type="button" class="primary next-module">Next Module →</button></div>
+</div>
+<div class="module-actions">
+<button type="button" class="secondary prev-module" disabled>← Previous Page</button>
+<button type="button" class="primary next-module">Next Page →</button>
+</div>
 </section>
 
 
@@ -433,6 +447,8 @@ Drag the two software types to the correct descriptions. Then drag each example 
 <div class="meta">20 minutes | 20 marks</div>
 </div>
 <div class="content">
+
+<div class="worksheet-page" data-worksheet-page data-page-label="Q5-Q7">
 
 <div class="q" id="question-q5" data-question-anchor="q5">
 <p class="qt"><strong>Q5. Identify the threat</strong> <span class="small">(4 marks)</span></p>
@@ -546,6 +562,9 @@ Drag the two software types to the correct descriptions. Then drag each example 
 </div>
 
 
+</div>
+<div class="worksheet-page" data-worksheet-page data-page-label="Q8">
+
 <div class="q" style="border-top:3px solid #d4e0e8;margin-top:10px;padding-top:22px">
   <p class="qt" style="font-size:24px"><strong>Module 2A - Short Answer</strong></p>
   <p class="small">Now move from recognising the answer to explaining the ideas in your own words. Use the scenario evidence and your cheat sheet.</p>
@@ -561,6 +580,9 @@ The copied message looks like <code>8F#1 XQ!7 92@</code>.
 <div class="hint">Think about: interception, encryption and what the attacker can understand.</div>
 </div>
 
+</div>
+<div class="worksheet-page" data-worksheet-page data-page-label="Q9">
+
 <div class="q" id="question-q9" data-question-anchor="q9">
 <p class="qt"><strong>Q9. Phishing / Scam</strong> <span class="small">(2 marks)</span></p>
 <div class="scenario">
@@ -572,6 +594,9 @@ The sender address looks unusual.
 <div class="hint">Think about: pretending to be trusted, login information, pause, check, verify and report.</div>
 </div>
 
+</div>
+<div class="worksheet-page" data-worksheet-page data-page-label="Q10">
+
 <div class="q" id="question-q10" data-question-anchor="q10">
 <p class="qt"><strong>Q10. Malware + Data Interception</strong> <span class="small">(3 marks)</span></p>
 <div class="scenario">
@@ -581,6 +606,9 @@ Later, an attacker also copies data while it travels across a public network.
 <p><strong>Identify the TWO threats and explain one risk caused by either threat.</strong></p>
 <textarea id="malware-interception" class="answerbox shortanswer" data-short-answer="malware-interception" data-marks="3" maxlength="2000" placeholder="Name both threats, then explain one risk."></textarea>
 </div>
+
+</div>
+<div class="worksheet-page" data-worksheet-page data-page-label="Q11">
 
 <div class="q" id="question-q11" data-question-anchor="q11">
 <p class="qt"><strong>Q11. Weak Password + Identity Theft</strong> <span class="small">(3 marks)</span></p>
@@ -595,8 +623,8 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 </div>
 </div>
 <div class="module-actions">
-<button type="button" class="secondary prev-module">← Previous Module</button>
-<button type="button" class="primary next-module">Next Module →</button>
+<button type="button" class="secondary prev-module">← Previous Page</button>
+<button type="button" class="primary next-module">Next Page →</button>
 </div>
 </section>
 
@@ -609,6 +637,8 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 <div class="meta">10 minutes | 10 marks</div>
 </div>
 <div class="content">
+
+<div class="worksheet-page" data-worksheet-page data-page-label="Q12">
 
 <div class="note">
 <strong>Protect your own information.</strong> This is a fictional training phone.
@@ -787,6 +817,9 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 
+</div>
+<div class="worksheet-page" data-worksheet-page data-page-label="Q13">
+
 <div id="question-q13" data-question-anchor="q13">
 <div class="q" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
   <p class="qt" style="font-size:24px"><strong>Module 2B - Ethical Use</strong></p>
@@ -843,8 +876,9 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 </div>
+</div>
 <div class="module-actions">
-<button type="button" class="secondary prev-module">← Previous Module</button>
+<button type="button" class="secondary prev-module">← Previous Page</button>
 <button type="button" class="primary next-module">Review & Submit →</button>
 </div>
 </section>
@@ -966,6 +1000,7 @@ function saveState(){
     version:TEST_VERSION,
     ...answers,
     moduleIndex:currentModule,
+    worksheetPageIndex:currentWorksheetPage,
     phoneTaskIndex:currentPhoneTask,
     questionId:currentQuestionId,
     submitted,
@@ -989,10 +1024,13 @@ function restoreState(){
   applyAnswerSnapshot(state);
   showPhoneTask(Number.isInteger(state.phoneTaskIndex)?state.phoneTaskIndex:0);
   const restoredModule=Number.isInteger(state.moduleIndex)?state.moduleIndex:0;
-  showModule(restoredModule,false);
-  const restoredQuestion=questionDefinitions.find(question=>
-    question.id===state.questionId&&question.module===restoredModule
-  );
+  const restoredQuestion=questionDefinitions.find(question=>question.id===state.questionId);
+  const restoredPage=Number.isInteger(state.worksheetPageIndex)
+    ? state.worksheetPageIndex
+    : restoredQuestion
+      ? restoredQuestion.page
+      : worksheetPages.findIndex(page=>Number(page.closest('.module-page').dataset.moduleIndex)===restoredModule);
+  showWorksheetPage(restoredPage<0?0:restoredPage,false);
   if(restoredQuestion){
     setCurrentQuestion(restoredQuestion.id);
     requestAnimationFrame(()=>{
@@ -1020,7 +1058,7 @@ allDrags.forEach(x=>{
   x.addEventListener('dragend',()=>{
     x.style.opacity='1';
     dragged=null;
-    progress();updateModuleButton();
+    progress();updatePagingButtons();
   });
 });
 
@@ -1042,7 +1080,7 @@ hwDrops.forEach(z=>{
     const old=z.querySelector('.drag');
     if(old)returnToOwnBank(old);
     z.appendChild(dragged);
-    progress();updateModuleButton();
+    progress();updatePagingButtons();
   });
 });
 hwBank.addEventListener('dragover',e=>{
@@ -1066,7 +1104,7 @@ softwareTypeSlots.forEach(z=>{
     const old=z.querySelector('.drag');
     if(old)returnToOwnBank(old);
     z.appendChild(dragged);
-    progress();updateModuleButton();
+    progress();updatePagingButtons();
   });
 });
 
@@ -1081,7 +1119,7 @@ softwareExampleZones.forEach(z=>{
     if(submitted || !dragged || dragged.dataset.kind!=='example')return;
     e.preventDefault();z.classList.remove('over');
     z.appendChild(dragged);
-    progress();updateModuleButton();
+    progress();updatePagingButtons();
   });
 });
 
@@ -1095,7 +1133,7 @@ softwareExampleZones.forEach(z=>{
     if(submitted || !dragged)return;
     const correctKind = bank===softwareTypeBank ? 'type' : 'example';
     if(dragged.dataset.kind!==correctKind)return;
-    e.preventDefault();returnToOwnBank(dragged);progress();updateModuleButton();
+    e.preventDefault();returnToOwnBank(dragged);progress();updatePagingButtons();
   });
 });
 
@@ -1186,8 +1224,8 @@ phoneNext.addEventListener('click',()=>{
 showPhoneTask(0);
 
 document.querySelectorAll('input,textarea').forEach(x=>{
-  x.addEventListener('input',()=>{progress();updateModuleButton();});
-  x.addEventListener('change',()=>{progress();updateModuleButton();});
+  x.addEventListener('input',()=>{progress();updatePagingButtons();});
+  x.addEventListener('change',()=>{progress();updatePagingButtons();});
 });
 
 function interactions(){
@@ -1217,14 +1255,16 @@ function blankShort(){
 }
 
 
-/* Module paging */
+/* Worksheet paging */
 const modulePages=[...document.querySelectorAll('.module-page')];
+const worksheetPages=[...document.querySelectorAll('.worksheet-page')];
 const moduleNames=[
   'Hardware, Software & Networks',
   'Cyber Security: Recall → Short Answer',
   'Protect Yourself → Ethical Use'
 ];
 let currentModule=0;
+let currentWorksheetPage=0;
 
 
 function stateFromCounts(answered,total,started=answered){
@@ -1265,13 +1305,16 @@ function questionState(anchor){
 
 const questionDefinitions=[...document.querySelectorAll('[data-question-anchor]')].map(anchor=>{
   const modulePage=anchor.closest('.module-page');
+  const worksheetPage=anchor.closest('.worksheet-page');
   const module=Number(modulePage&&modulePage.dataset.moduleIndex);
-  if(!modulePage||!anchor.id.startsWith('question-q')||!Number.isInteger(module)){
+  const page=worksheetPages.indexOf(worksheetPage);
+  if(!modulePage||!worksheetPage||!anchor.id.startsWith('question-q')||!Number.isInteger(module)||page<0){
     throw new Error('Question directory configuration is invalid.');
   }
   return {
     id:anchor.id.slice('question-'.length),
     module,
+    page,
     anchor,
     button:null
   };
@@ -1338,26 +1381,32 @@ function preferredScrollBehavior(){
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
 }
 
-function updateModuleButton(){
-  modulePages.forEach(m=>{
-    const btn=m.querySelector('.next-module');
-    if(btn)btn.disabled=false;
+function updatePagingButtons(){
+  document.querySelectorAll('.prev-module').forEach(btn=>{
+    btn.disabled=currentWorksheetPage===0;
+  });
+  document.querySelectorAll('.next-module').forEach(btn=>{
+    btn.disabled=false;
+    btn.textContent=currentWorksheetPage===worksheetPages.length-1?'Review & Submit →':'Next Page →';
   });
 }
 
-function showModule(index,scrollToTop=true){
-  currentModule=Math.max(0,Math.min(modulePages.length-1,index));
+function showWorksheetPage(index,scrollToTop=true){
+  currentWorksheetPage=Math.max(0,Math.min(worksheetPages.length-1,index));
+  const activePage=worksheetPages[currentWorksheetPage];
+  currentModule=Number(activePage.closest('.module-page').dataset.moduleIndex);
   modulePages.forEach((m,i)=>m.classList.toggle('active',i===currentModule));
-  document.getElementById('moduleStep').textContent='Module '+(currentModule+1)+' of '+modulePages.length;
-  document.getElementById('moduleTitle').textContent=moduleNames[currentModule];
-  updateModuleButton();
-  const firstQuestion=questionDefinitions.find(question=>question.module===currentModule);
+  worksheetPages.forEach((page,i)=>page.classList.toggle('active',i===currentWorksheetPage));
+  document.getElementById('moduleStep').textContent='Page '+(currentWorksheetPage+1)+' of '+worksheetPages.length;
+  document.getElementById('moduleTitle').textContent=activePage.dataset.pageLabel+' | '+moduleNames[currentModule];
+  updatePagingButtons();
+  const firstQuestion=questionDefinitions.find(question=>question.page===currentWorksheetPage);
   if(firstQuestion)setCurrentQuestion(firstQuestion.id);
   if(scrollToTop)window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
 
-function jumpToQuestion(questionId,moduleIndex){
-  showModule(moduleIndex,false);
+function jumpToQuestion(questionId,pageIndex){
+  showWorksheetPage(pageIndex,false);
   setCurrentQuestion(questionId);
   requestAnimationFrame(()=>{
     const target=document.getElementById('question-'+questionId);
@@ -1368,7 +1417,7 @@ function jumpToQuestion(questionId,moduleIndex){
 questionButtons.forEach(button=>{
   button.addEventListener('click',()=>{
     const question=questionDefinitions.find(item=>item.id===button.dataset.question);
-    if(question)jumpToQuestion(question.id,question.module);
+    if(question)jumpToQuestion(question.id,question.page);
   });
 });
 
@@ -1382,8 +1431,8 @@ questionDefinitions.forEach(question=>questionObserver.observe(question.anchor))
 
 document.querySelectorAll('.next-module').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    if(currentModule<modulePages.length-1){
-      showModule(currentModule+1);
+    if(currentWorksheetPage<worksheetPages.length-1){
+      showWorksheetPage(currentWorksheetPage+1);
     }else if(submitted){
       showSubmittedView(true);
     }else{
@@ -1394,10 +1443,10 @@ document.querySelectorAll('.next-module').forEach(btn=>{
   });
 });
 document.querySelectorAll('.prev-module').forEach(btn=>{
-  btn.addEventListener('click',()=>showModule(currentModule-1));
+  btn.addEventListener('click',()=>showWorksheetPage(currentWorksheetPage-1));
 });
-showModule(0);
-updateModuleButton();
+showWorksheetPage(0);
+updatePagingButtons();
 
 document.getElementById('reviewbtn').addEventListener('click',()=>{
   document.getElementById('review').style.display='block';
