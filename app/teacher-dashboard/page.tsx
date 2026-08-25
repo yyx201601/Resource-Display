@@ -345,14 +345,13 @@ async function MarkView({ selectedAttemptId }: { selectedAttemptId: string | und
         </header>
 
         {selectedAttempt.automaticQuestions.length > 0 ? (
-          <section className="mb-5 overflow-hidden rounded-xl border border-[#d9e1ea] bg-white">
-            <div className="border-b border-[#d9e1ea] p-5">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <details className="mb-5 overflow-hidden rounded-xl border border-[#d9e1ea] bg-white">
+            <summary className="cursor-pointer list-none border-b border-[#d9e1ea] p-5 marker:hidden">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold">Submitted answers</h3>
+                  <h3 className="text-xl font-semibold">Automatic questions</h3>
                   <p className="mt-1 text-sm text-[#66788a]">
-                    Automatic questions show the student answer, correct answer,
-                    and mark for each item.
+                    Folded by default. Open to review question correctness.
                   </p>
                 </div>
                 <span className="rounded-lg bg-[#f5f7fa] px-3 py-2 text-sm font-semibold text-[#536579]">
@@ -360,7 +359,7 @@ async function MarkView({ selectedAttemptId }: { selectedAttemptId: string | und
                   {selectedAttempt.automaticMaxScore} automatic
                 </span>
               </div>
-            </div>
+            </summary>
 
             <div className="divide-y divide-[#e5ebf1]">
               {selectedAttempt.automaticQuestions.map((question) => {
@@ -376,24 +375,6 @@ async function MarkView({ selectedAttemptId }: { selectedAttemptId: string | und
                             {question.kind.replace("_", " ")}
                           </span>
                         </div>
-                        <dl className="mt-3 grid gap-3 lg:grid-cols-2">
-                          <div className="rounded-lg bg-[#f5f7fa] p-3">
-                            <dt className="text-xs font-bold uppercase text-[#66788a]">
-                              Student answer
-                            </dt>
-                            <dd className="mt-1 text-sm leading-6 text-[#25364a]">
-                              {question.studentAnswer}
-                            </dd>
-                          </div>
-                          <div className="rounded-lg bg-[#f5f7fa] p-3">
-                            <dt className="text-xs font-bold uppercase text-[#66788a]">
-                              Correct answer
-                            </dt>
-                            <dd className="mt-1 text-sm leading-6 text-[#25364a]">
-                              {question.correctAnswer}
-                            </dd>
-                          </div>
-                        </dl>
                       </div>
                       <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
                         <span className={`rounded-md px-2 py-1 text-xs font-bold ${status.classes}`}>
@@ -408,7 +389,7 @@ async function MarkView({ selectedAttemptId }: { selectedAttemptId: string | und
                 );
               })}
             </div>
-          </section>
+          </details>
         ) : null}
 
         <MarkingForm key={selectedAttempt.attemptId} attempt={selectedAttempt} />
