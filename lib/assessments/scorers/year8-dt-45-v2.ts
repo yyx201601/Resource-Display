@@ -15,11 +15,6 @@ const CORRECT_RADIOS: Record<string, string> = {
   s4: "identity",
   s5: "phishing",
   s7: "encryption",
-  q8: "responsible",
-  q9: "permission",
-  q10: "dontuse",
-  q11: "report",
-  q12: "purpose",
 };
 
 const CORRECT_CHECKBOXES = new Set([
@@ -54,9 +49,12 @@ const CORRECT_PLACEMENTS: Record<string, string> = {
   "drag-20": "single-14",
 };
 
-export function scoreYear8DigitalTechnologiesV1(answers: AnswerSnapshot): ScoreResult {
+export function scoreYear8DigitalTechnologiesV2(
+  answers: AnswerSnapshot,
+): ScoreResult {
   const radioScore = Object.entries(CORRECT_RADIOS).reduce(
-    (score, [question, answer]) => score + Number(answers.radios[question] === answer),
+    (score, [question, answer]) =>
+      score + Number(answers.radios[question] === answer),
     0,
   );
   const selectedCheckboxes = new Set(answers.checkboxes);
@@ -65,14 +63,15 @@ export function scoreYear8DigitalTechnologiesV1(answers: AnswerSnapshot): ScoreR
     0,
   );
   const placementScore = Object.entries(CORRECT_PLACEMENTS).reduce(
-    (score, [item, target]) => score + Number(answers.placements[item] === target),
+    (score, [item, target]) =>
+      score + Number(answers.placements[item] === target),
     0,
   );
 
   return {
     automaticScore: radioScore + checkboxScore + placementScore,
-    automaticMaxScore: 45,
-    manualMaxScore: 0,
+    automaticMaxScore: 40,
+    manualMaxScore: 5,
     totalMaxScore: 45,
     breakdown: {
       radio: radioScore,

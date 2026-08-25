@@ -6,8 +6,8 @@ The assessment module separates test definitions, classroom sessions, and studen
 
 1. Add a PostgreSQL integration from the Vercel Storage Marketplace.
 2. Use its pooled connection string as `DATABASE_URL`.
-3. Run [`database/assessment-schema.sql`](../database/assessment-schema.sql) in the provider SQL editor.
-4. Add a long random `MONITOR_API_KEY` in Vercel project environment variables.
+3. For a new database, run [`database/assessment-schema.sql`](../database/assessment-schema.sql). For an existing v1 database, run [`database/assessment-manual-marking-migration.sql`](../database/assessment-manual-marking-migration.sql).
+4. Add `TEACHER_DASHBOARD_CODE` and a long random `TEACHER_SESSION_SECRET` in Vercel project environment variables.
 5. Redeploy the project.
 
 Do not use a direct, unpooled database URL from a Vercel Function. The database adapter uses one connection per warm function instance and disables prepared statements for transaction pooler compatibility.
@@ -32,6 +32,7 @@ await submitAssessment({
     radios: { q5a: "phishing" },
     checkboxes: ["clue:name"],
     placements: { "drag-2": "single-0" },
+    shortAnswers: { "ethical-permission": "The school gave permission..." },
   },
 });
 ```
@@ -65,22 +66,22 @@ await submitAssessment({
   "answers": {
     "radios": {},
     "checkboxes": [],
-    "placements": {}
+    "placements": {},
+    "shortAnswers": {}
   }
 }
 ```
 
-The server selects the scorer from the database definition, calculates the score, and atomically changes the attempt from `started` to `submitted`. A retry returns the original saved score.
+The server selects the scorer from the database definition, calculates the automatic section, stores the short answers, and atomically changes the attempt from `started` to `submitted`. Tests with short answers enter `pending` grading and do not receive a final score until a teacher marks them. Submission retries remain idempotent.
 
-### Read Monitor results
+### Teacher dashboard
 
-`GET /api/assessments/results?sessionId=<session-public-uuid>`
+Open `/teacher-dashboard` and enter `TEACHER_DASHBOARD_CODE`. The server sets an 8-hour HttpOnly session cookie. The sidebar contains:
 
-```http
-Authorization: Bearer <MONITOR_API_KEY>
-```
+- **Test results**: started, submitted, pending-marking, and final-score views.
+- **Mark test**: short-answer queue, marking guide, per-question marks and feedback.
 
-The response includes session metadata and up to 500 started or submitted attempts. Use `Cache-Control: no-store` and poll every 3-5 seconds for a classroom Monitor.
+Teacher marking uses `PATCH /api/teacher/attempts/<attempt-id>/mark`. This endpoint requires the teacher session cookie and recalculates the final score inside a database transaction.
 
 ## Reuse for another class
 
@@ -90,5 +91,6 @@ Insert another `assessment_sessions` row with the same `assessment_id`, a unique
 
 1. Add a scorer under `lib/assessments/scorers/`.
 2. Register it in `lib/assessments/scorers/index.ts`.
-3. Add an `assessment_definitions` row whose `scorer_key` matches the registry key.
-4. Create one or more classroom sessions for the definition.
+3. If it has teacher-marked questions, register their prompts, mark limits, and marking guides in `lib/assessments/manual-questions.ts`.
+4. Add an `assessment_definitions` row whose `scorer_key` matches the registry key and whose `manual_max_score` matches the registered questions.
+5. Create one or more classroom sessions for the definition.

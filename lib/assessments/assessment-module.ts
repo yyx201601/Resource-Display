@@ -1,5 +1,4 @@
 import type {
-  MonitorResults,
   StartAssessmentInput,
   StartAssessmentResult,
   SubmitAssessmentInput,
@@ -16,6 +15,7 @@ type SessionRow = {
   assessment_version: string;
   scorer_key: string;
   max_score: number;
+  manual_max_score: number;
 };
 
 type AttemptRow = {
@@ -23,7 +23,10 @@ type AttemptRow = {
   attempt_public_id: string;
   status: "started" | "submitted";
   score: number | null;
+  automatic_score: number | null;
   max_score: number;
+  manual_max_score: number;
+  grading_status: "not_required" | "pending" | "graded";
   submitted_at: Date | null;
 };
 
@@ -38,7 +41,8 @@ export async function startAttempt(
       assessment_definitions.slug as assessment_slug,
       assessment_definitions.version as assessment_version,
       assessment_definitions.scorer_key,
-      assessment_definitions.max_score
+      assessment_definitions.max_score,
+      assessment_definitions.manual_max_score
     from assessment_sessions
     join assessment_definitions
       on assessment_definitions.id = assessment_sessions.assessment_id
@@ -67,13 +71,15 @@ export async function startAttempt(
       session_id,
       client_attempt_id,
       student_name,
-      max_score
+      max_score,
+      manual_max_score
     )
     values (
       ${session.session_id},
       ${input.clientAttemptId},
       ${input.studentName},
-      ${session.max_score}
+      ${session.max_score},
+      ${session.manual_max_score}
     )
     on conflict (session_id, client_attempt_id)
     do update set
@@ -90,7 +96,10 @@ export async function startAttempt(
       public_id as attempt_public_id,
       status,
       score,
+      automatic_score,
       max_score,
+      manual_max_score,
+      grading_status,
       submitted_at
   `;
   const attempt = attempts[0];
@@ -117,7 +126,10 @@ export async function submitAttempt(
       assessment_attempts.public_id as attempt_public_id,
       assessment_attempts.status,
       assessment_attempts.score,
+      assessment_attempts.automatic_score,
       assessment_attempts.max_score,
+      assessment_attempts.manual_max_score,
+      assessment_attempts.grading_status,
       assessment_attempts.submitted_at,
       assessment_definitions.scorer_key
     from assessment_attempts
@@ -143,7 +155,11 @@ export async function submitAttempt(
   }
 
   const result = scoreAssessment(attempt.scorer_key, input.answers);
-  if (result.maxScore !== attempt.max_score) {
+  if (
+    result.totalMaxScore !== attempt.max_score ||
+    result.manualMaxScore !== attempt.manual_max_score ||
+    result.automaticMaxScore !== attempt.max_score - attempt.manual_max_score
+  ) {
     throw new AssessmentError(
       "score_configuration_mismatch",
       "The scorer max score does not match the database definition.",
@@ -155,7 +171,10 @@ export async function submitAttempt(
     update assessment_attempts
     set
       answers = ${sql.json(input.answers)},
-      score = ${result.score},
+      automatic_score = ${result.automaticScore},
+      manual_score = null,
+      score = ${result.manualMaxScore === 0 ? result.automaticScore : null},
+      grading_status = ${result.manualMaxScore === 0 ? "not_required" : "pending"},
       score_breakdown = ${sql.json(result.breakdown)},
       status = 'submitted',
       submitted_at = now(),
@@ -167,7 +186,10 @@ export async function submitAttempt(
       public_id as attempt_public_id,
       status,
       score,
+      automatic_score,
       max_score,
+      manual_max_score,
+      grading_status,
       submitted_at
   `;
   const submittedAttempt = updated[0];
@@ -179,7 +201,10 @@ export async function submitAttempt(
         public_id as attempt_public_id,
         status,
         score,
+        automatic_score,
         max_score,
+        manual_max_score,
+        grading_status,
         submitted_at
       from assessment_attempts
       where id = ${attempt.attempt_id}
@@ -200,86 +225,5 @@ export async function submitAttempt(
     attemptId: submittedAttempt.attempt_public_id,
     submittedAt: submittedAttempt.submitted_at?.toISOString() ?? new Date().toISOString(),
     duplicate: false,
-  };
-}
-
-export async function getMonitorResults(sessionPublicId: string): Promise<MonitorResults> {
-  const sql = getDatabase();
-  const sessions = await sql<
-    {
-      session_public_id: string;
-      class_code: string;
-      class_name: string;
-      assessment_slug: string;
-      assessment_version: string;
-      assessment_title: string;
-      max_score: number;
-    }[]
-  >`
-    select
-      assessment_sessions.public_id as session_public_id,
-      assessment_sessions.class_code,
-      assessment_sessions.class_name,
-      assessment_definitions.slug as assessment_slug,
-      assessment_definitions.version as assessment_version,
-      assessment_definitions.title as assessment_title,
-      assessment_definitions.max_score
-    from assessment_sessions
-    join assessment_definitions
-      on assessment_definitions.id = assessment_sessions.assessment_id
-    where assessment_sessions.public_id = ${sessionPublicId}
-    limit 1
-  `;
-  const session = sessions[0];
-  if (!session) {
-    throw new AssessmentError("session_not_found", "This class session was not found.", 404);
-  }
-
-  const attempts = await sql<
-    {
-      attempt_public_id: string;
-      student_name: string;
-      status: "started" | "submitted";
-      score: number | null;
-      max_score: number;
-      started_at: Date;
-      submitted_at: Date | null;
-    }[]
-  >`
-    select
-      public_id as attempt_public_id,
-      student_name,
-      status,
-      score,
-      max_score,
-      started_at,
-      submitted_at
-    from assessment_attempts
-    where session_id = (
-      select id from assessment_sessions where public_id = ${sessionPublicId}
-    )
-    order by submitted_at desc nulls last, started_at asc
-    limit 500
-  `;
-
-  return {
-    session: {
-      sessionId: session.session_public_id,
-      classCode: session.class_code,
-      className: session.class_name,
-      assessmentSlug: session.assessment_slug,
-      assessmentVersion: session.assessment_version,
-      assessmentTitle: session.assessment_title,
-      maxScore: session.max_score,
-    },
-    attempts: attempts.map((attempt) => ({
-      attemptId: attempt.attempt_public_id,
-      studentName: attempt.student_name,
-      status: attempt.status,
-      score: attempt.score,
-      maxScore: attempt.max_score,
-      startedAt: attempt.started_at.toISOString(),
-      submittedAt: attempt.submitted_at?.toISOString() ?? null,
-    })),
   };
 }

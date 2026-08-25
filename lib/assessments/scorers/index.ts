@@ -1,11 +1,13 @@
 import type { AnswerSnapshot, ScoreResult } from "../contracts";
 import { AssessmentError } from "../errors";
 import { scoreYear8DigitalTechnologiesV1 } from "./year8-dt-45-v1";
+import { scoreYear8DigitalTechnologiesV2 } from "./year8-dt-45-v2";
 
 type Scorer = (answers: AnswerSnapshot) => ScoreResult;
 
 const SCORERS: Record<string, Scorer> = {
   "year8-dt-45-v1": scoreYear8DigitalTechnologiesV1,
+  "year8-dt-45-v2": scoreYear8DigitalTechnologiesV2,
 };
 
 export function scoreAssessment(scorerKey: string, answers: AnswerSnapshot) {

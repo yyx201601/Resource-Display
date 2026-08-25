@@ -31,7 +31,17 @@ function constantTimeEqual(left: string, right: string) {
 }
 
 function signSessionExpiry(expiresAt: string) {
-  const secret = getRequiredEnvironmentValue("MONITOR_API_KEY");
+  const secret =
+    process.env.TEACHER_SESSION_SECRET?.trim() ||
+    process.env.MONITOR_API_KEY?.trim();
+
+  if (!secret) {
+    throw new AssessmentError(
+      "teacher_access_not_configured",
+      "Teacher access is not configured. Add TEACHER_SESSION_SECRET to the server environment.",
+      503,
+    );
+  }
 
   return createHmac("sha256", secret)
     .update(`${SESSION_PURPOSE}:${expiresAt}`)

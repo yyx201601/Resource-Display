@@ -2,6 +2,7 @@ import type {
   AnswerSnapshot,
   StartAssessmentInput,
   SubmitAssessmentInput,
+  TeacherMarkInput,
 } from "./contracts";
 import { AssessmentError } from "./errors";
 
@@ -33,7 +34,12 @@ function stringValue(
   return result;
 }
 
-function stringRecord(value: unknown, field: string, maxEntries: number) {
+function stringRecord(
+  value: unknown,
+  field: string,
+  maxEntries: number,
+  maxValueLength = 100,
+) {
   const input = objectValue(value, field);
   const entries = Object.entries(input);
   if (entries.length > maxEntries) {
@@ -42,7 +48,7 @@ function stringRecord(value: unknown, field: string, maxEntries: number) {
   return Object.fromEntries(
     entries.map(([key, entry]) => [
       stringValue(key, `${field} key`, { max: 100 }),
-      stringValue(entry, `${field}.${key}`, { max: 100 }),
+      stringValue(entry, `${field}.${key}`, { max: maxValueLength }),
     ]),
   );
 }
@@ -58,6 +64,10 @@ function answerSnapshot(value: unknown): AnswerSnapshot {
       stringValue(entry, `answers.checkboxes.${index}`, { max: 100 }),
     ),
     placements: stringRecord(input.placements, "answers.placements", 120),
+    shortAnswers:
+      input.shortAnswers === undefined
+        ? {}
+        : stringRecord(input.shortAnswers, "answers.shortAnswers", 30, 4000),
   };
 }
 
@@ -96,6 +106,64 @@ export function parseSubmitAssessmentInput(value: unknown): SubmitAssessmentInpu
   };
 }
 
-export function parseSessionId(value: string | null) {
-  return stringValue(value, "sessionId", { max: 36, pattern: UUID_PATTERN });
+export function parseAttemptId(value: string) {
+  return stringValue(value, "attemptId", { max: 36, pattern: UUID_PATTERN });
+}
+
+export function parseTeacherMarkInput(value: unknown): TeacherMarkInput {
+  const input = objectValue(value, "request");
+
+  if (!Array.isArray(input.marks) || input.marks.length < 1 || input.marks.length > 30) {
+    throw new AssessmentError(
+      "invalid_request",
+      "marks must contain between 1 and 30 question marks.",
+      400,
+    );
+  }
+
+  if (typeof input.feedback !== "string" || input.feedback.length > 2000) {
+    throw new AssessmentError(
+      "invalid_request",
+      "feedback must be no longer than 2,000 characters.",
+      400,
+    );
+  }
+
+  return {
+    marks: input.marks.map((value, index) => {
+      const mark = objectValue(value, `marks.${index}`);
+      const questionKey = stringValue(mark.questionKey, `marks.${index}.questionKey`, {
+        max: 80,
+        pattern: SLUG_PATTERN,
+      });
+
+      if (
+        typeof mark.score !== "number" ||
+        !Number.isInteger(mark.score) ||
+        mark.score < 0 ||
+        mark.score > 32767
+      ) {
+        throw new AssessmentError(
+          "invalid_request",
+          `marks.${index}.score must be a whole number greater than or equal to zero.`,
+          400,
+        );
+      }
+
+      if (typeof mark.feedback !== "string" || mark.feedback.length > 2000) {
+        throw new AssessmentError(
+          "invalid_request",
+          `marks.${index}.feedback must be no longer than 2,000 characters.`,
+          400,
+        );
+      }
+
+      return {
+        questionKey,
+        score: mark.score,
+        feedback: mark.feedback.trim(),
+      };
+    }),
+    feedback: input.feedback.trim(),
+  };
 }

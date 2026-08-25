@@ -2,6 +2,7 @@ export type AnswerSnapshot = {
   radios: Record<string, string>;
   checkboxes: string[];
   placements: Record<string, string>;
+  shortAnswers: Record<string, string>;
 };
 
 export type StartAssessmentInput = {
@@ -30,8 +31,10 @@ export type SubmitAssessmentInput = {
 };
 
 export type ScoreResult = {
-  score: number;
-  maxScore: number;
+  automaticScore: number;
+  automaticMaxScore: number;
+  manualMaxScore: number;
+  totalMaxScore: number;
   breakdown: Record<string, number>;
 };
 
@@ -41,25 +44,13 @@ export type SubmitAssessmentResult = {
   duplicate: boolean;
 };
 
-export type AssessmentResultRow = {
-  attemptId: string;
-  studentName: string;
-  status: "started" | "submitted";
-  score: number | null;
-  maxScore: number;
-  startedAt: string;
-  submittedAt: string | null;
+export type TeacherQuestionMarkInput = {
+  questionKey: string;
+  score: number;
+  feedback: string;
 };
 
-export type MonitorResults = {
-  session: {
-    sessionId: string;
-    classCode: string;
-    className: string;
-    assessmentSlug: string;
-    assessmentVersion: string;
-    assessmentTitle: string;
-    maxScore: number;
-  };
-  attempts: AssessmentResultRow[];
+export type TeacherMarkInput = {
+  marks: TeacherQuestionMarkInput[];
+  feedback: string;
 };
