@@ -7,6 +7,7 @@ export type AnswerSnapshot = {
 
 export type StartAssessmentInput = {
   assessmentSlug: string;
+  assessmentVersion: string;
   classCode: string;
   accessCode: string;
   studentName: string;

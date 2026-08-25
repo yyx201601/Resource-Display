@@ -47,6 +47,7 @@ export async function startAttempt(
     join assessment_definitions
       on assessment_definitions.id = assessment_sessions.assessment_id
     where assessment_definitions.slug = ${input.assessmentSlug}
+      and assessment_definitions.version = ${input.assessmentVersion}
       and assessment_sessions.class_code = ${input.classCode}
       and assessment_sessions.status = 'active'
       and assessment_sessions.opens_at <= now()

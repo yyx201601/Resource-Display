@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { startAssessment } from "@/lib/assessments/client";
 
 const ASSESSMENT_SLUG = "year8-dt-45";
+const ASSESSMENT_VERSION = "v2";
 const CLASS_CODE = "year8-default";
 
 type FormErrors = {
@@ -44,6 +45,7 @@ export default function AccessForm() {
       const attemptStorageKey = [
         "assessmentClientAttempt",
         ASSESSMENT_SLUG,
+        ASSESSMENT_VERSION,
         CLASS_CODE,
         trimmedName.toLowerCase(),
       ].join(":");
@@ -54,6 +56,7 @@ export default function AccessForm() {
       }
       const access = await startAssessment({
         assessmentSlug: ASSESSMENT_SLUG,
+        assessmentVersion: ASSESSMENT_VERSION,
         classCode: CLASS_CODE,
         accessCode: code,
         studentName: trimmedName,

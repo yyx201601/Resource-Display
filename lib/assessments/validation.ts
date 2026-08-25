@@ -78,6 +78,11 @@ export function parseStartAssessmentInput(value: unknown): StartAssessmentInput 
       max: 80,
       pattern: SLUG_PATTERN,
     }).toLowerCase(),
+    assessmentVersion: stringValue(
+      input.assessmentVersion,
+      "assessmentVersion",
+      { max: 40, pattern: SLUG_PATTERN },
+    ).toLowerCase(),
     classCode: stringValue(input.classCode, "classCode", {
       max: 80,
       pattern: SLUG_PATTERN,

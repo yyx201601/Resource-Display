@@ -126,14 +126,6 @@ do update set
   max_score = excluded.max_score,
   manual_max_score = excluded.manual_max_score;
 
-update assessment_sessions
-set status = 'closed', closes_at = coalesce(closes_at, now()), updated_at = now()
-where status = 'active'
-  and assessment_id in (
-    select id from assessment_definitions
-    where slug = 'year8-dt-45' and version <> 'v2'
-  );
-
 insert into assessment_sessions (
   assessment_id, class_code, class_name, access_code_hash
 )
@@ -144,7 +136,7 @@ select
   previous_session.access_code_hash
 from assessment_definitions v2
 join lateral (
-  select
+  select distinct on (assessment_sessions.class_code)
     assessment_sessions.class_code,
     assessment_sessions.class_name,
     assessment_sessions.access_code_hash
@@ -153,8 +145,8 @@ join lateral (
     on previous_definition.id = assessment_sessions.assessment_id
   where previous_definition.slug = v2.slug
     and previous_definition.version <> v2.version
-  order by assessment_sessions.created_at desc
-  limit 1
+    and assessment_sessions.status = 'active'
+  order by assessment_sessions.class_code, assessment_sessions.created_at desc
 ) previous_session on true
 where v2.slug = 'year8-dt-45' and v2.version = 'v2'
   and not exists (
@@ -162,6 +154,14 @@ where v2.slug = 'year8-dt-45' and v2.version = 'v2'
     where existing_session.assessment_id = v2.id
       and existing_session.class_code = previous_session.class_code
       and existing_session.status = 'active'
+  );
+
+update assessment_sessions
+set status = 'closed', closes_at = coalesce(closes_at, now()), updated_at = now()
+where status = 'active'
+  and assessment_id in (
+    select id from assessment_definitions
+    where slug = 'year8-dt-45' and version <> 'v2'
   );
 
 commit;

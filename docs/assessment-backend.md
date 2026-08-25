@@ -19,6 +19,7 @@ Reusable browser functions live in `lib/assessments/client.ts`:
 ```ts
 await startAssessment({
   assessmentSlug: "year8-dt-45",
+  assessmentVersion: "v2",
   classCode: "year8-default",
   accessCode: "START",
   studentName: "Student name",
@@ -48,6 +49,7 @@ await submitAssessment({
 ```json
 {
   "assessmentSlug": "year8-dt-45",
+  "assessmentVersion": "v2",
   "classCode": "year8-default",
   "accessCode": "START",
   "studentName": "Student name",
