@@ -228,7 +228,7 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 .question-state{font-size:12px;color:var(--muted);white-space:nowrap}
 .question-jump.answered .question-state{color:var(--green);font-weight:700}
 .question-jump.in-progress .question-state{color:#8a5b0c;font-weight:700}
-[data-question-anchor]{scroll-margin-top:82px}
+.mh,[data-question-anchor]{scroll-margin-top:82px}
 @media(max-width:1050px){
   .assessment-layout{grid-template-columns:1fr}
   .question-directory{position:static;max-height:none;overflow:visible;padding:13px}
@@ -323,7 +323,7 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 <section class="module module-page active" id="m1" data-module-index="0">
 <div class="mh">
 <div><h2>Module 1 - Hardware, Software & Networks</h2><p>Complete each matching and multiple-choice question.</p></div>
-<div class="meta">15 minutes | 15 marks</div>
+<div class="meta">15 minutes | 18 marks</div>
 </div>
 <div class="content">
 
@@ -1045,10 +1045,7 @@ function restoreState(){
   showWorksheetPage(restoredPage<0?0:restoredPage,false);
   if(restoredQuestion){
     setCurrentQuestion(restoredQuestion.id);
-    requestAnimationFrame(()=>{
-      const target=document.getElementById('question-'+restoredQuestion.id);
-      if(target)target.scrollIntoView({behavior:'auto',block:'start'});
-    });
+    scrollQuestionIntoView(restoredQuestion,'auto');
   }
   if(localSubmissionRecorded&&access.status==='submitted'){
     showSubmittedView();
@@ -1399,7 +1396,10 @@ function updatePagingButtons(){
 }
 
 function scrollQuestionIntoView(question,behavior=preferredScrollBehavior()){
-  requestAnimationFrame(()=>question.anchor.scrollIntoView({behavior,block:'start'}));
+  const modulePage=question.anchor.closest('.module-page');
+  const firstModuleQuestion=questionDefinitions.find(item=>item.module===question.module);
+  const target=question===firstModuleQuestion?modulePage.querySelector('.mh'):question.anchor;
+  requestAnimationFrame(()=>(target||question.anchor).scrollIntoView({behavior,block:'start'}));
 }
 
 function showWorksheetPage(index,scrollToQuestion=true){
