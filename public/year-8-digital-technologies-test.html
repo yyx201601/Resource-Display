@@ -281,36 +281,7 @@ button.secondary{background:#e9eef3;color:var(--navy)}
     <h2 class="question-directory-title">Questions</h2>
     <span class="question-directory-summary" id="questionDirectorySummary">0 of 13 answered</span>
   </div>
-  <nav class="question-directory-body">
-    <div class="question-group">
-      <p class="question-group-title">Module 1</p>
-      <div class="question-links">
-        <button type="button" class="question-jump current" data-question="q1" data-module="0" aria-current="step"><span class="question-label">Q1</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q2" data-module="0"><span class="question-label">Q2</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q3" data-module="0"><span class="question-label">Q3</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q4" data-module="0"><span class="question-label">Q4</span><span class="question-state">Not answered</span></button>
-      </div>
-    </div>
-    <div class="question-group">
-      <p class="question-group-title">Module 2A</p>
-      <div class="question-links">
-        <button type="button" class="question-jump" data-question="q5" data-module="1"><span class="question-label">Q5</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q6" data-module="1"><span class="question-label">Q6</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q7" data-module="1"><span class="question-label">Q7</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q8" data-module="1"><span class="question-label">Q8</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q9" data-module="1"><span class="question-label">Q9</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q10" data-module="1"><span class="question-label">Q10</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q11" data-module="1"><span class="question-label">Q11</span><span class="question-state">Not answered</span></button>
-      </div>
-    </div>
-    <div class="question-group">
-      <p class="question-group-title">Module 2B</p>
-      <div class="question-links">
-        <button type="button" class="question-jump" data-question="q12" data-module="2"><span class="question-label">Q12</span><span class="question-state">Not answered</span></button>
-        <button type="button" class="question-jump" data-question="q13" data-module="2"><span class="question-label">Q13</span><span class="question-state">Not answered</span></button>
-      </div>
-    </div>
-  </nav>
+  <nav class="question-directory-body" id="questionDirectoryBody"></nav>
 </aside>
 
 <div class="assessment-content">
@@ -802,7 +773,8 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 
-<div class="q" id="question-q13" data-question-anchor="q13" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
+<div id="question-q13" data-question-anchor="q13">
+<div class="q" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
   <p class="qt" style="font-size:21px"><strong>Module 2B — Ethical Use</strong></p>
   <p class="small">After protecting your own information, apply Purpose · Permission · Harm to responsible technical use.</p>
 </div>
@@ -853,6 +825,7 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 </div>
 
+</div>
 </div>
 
 </div>
@@ -1241,58 +1214,88 @@ function stateFromCounts(answered,total,started=answered){
   return 'unanswered';
 }
 
-function radioNamesState(names){
-  const answered=names.filter(name=>document.querySelector('input[name="'+name+'"]:checked')).length;
-  return stateFromCounts(answered,names.length);
+function questionState(anchor){
+  const shortAnswer=anchor.querySelector('[data-short-answer]');
+  if(shortAnswer){
+    const length=shortAnswer.value.trim().length;
+    if(length>=4)return 'answered';
+    return length>0?'in-progress':'unanswered';
+  }
+
+  const taskPages=[...anchor.querySelectorAll('.phone-task-page')];
+  if(taskPages.length){
+    const answered=taskPages.filter(phoneTaskComplete).length;
+    const started=taskPages.filter(page=>page.querySelector('input[type=checkbox]:checked')).length;
+    return stateFromCounts(answered,taskPages.length,started);
+  }
+
+  const radioGroups=[...new Set([...anchor.querySelectorAll('input[type=radio]')].map(radio=>radio.name))];
+  if(radioGroups.length){
+    const answered=radioGroups.filter(name=>anchor.querySelector('input[name="'+name+'"]:checked')).length;
+    return stateFromCounts(answered,radioGroups.length);
+  }
+
+  const totalDrags=anchor.querySelectorAll('.drag').length;
+  if(totalDrags){
+    const answered=anchor.querySelectorAll('.drop .drag,.software-type-slot .drag,.software-example-zone .drag').length;
+    return stateFromCounts(answered,totalDrags);
+  }
+
+  return 'unanswered';
 }
 
-function shortAnswerState(questionKey){
-  const answer=document.querySelector('[data-short-answer="'+questionKey+'"]');
-  const length=answer.value.trim().length;
-  if(length>=4)return 'answered';
-  return length>0?'in-progress':'unanswered';
-}
+const questionDefinitions=[...document.querySelectorAll('[data-question-anchor]')].map(anchor=>{
+  const modulePage=anchor.closest('.module-page');
+  const module=Number(modulePage&&modulePage.dataset.moduleIndex);
+  if(!modulePage||!anchor.id.startsWith('question-q')||!Number.isInteger(module)){
+    throw new Error('Question directory configuration is invalid.');
+  }
+  return {
+    id:anchor.id.slice('question-'.length),
+    module,
+    anchor,
+    button:null
+  };
+});
+const moduleDirectoryLabels=['Module 1','Module 2A','Module 2B'];
+const questionDirectoryBody=document.getElementById('questionDirectoryBody');
 
-const questionDefinitions=[
-  {
-    id:'q1',module:0,
-    state:()=>stateFromCounts(hwDrops.filter(drop=>drop.querySelector('.drag')).length,hwDrops.length)
-  },
-  {id:'q2',module:0,state:()=>radioNamesState(['q2a','q2b','q2c','q2d'])},
-  {
-    id:'q3',module:0,
-    state:()=>{
-      const typeCount=softwareTypeSlots.filter(slot=>slot.querySelector('.drag')).length;
-      const exampleCount=document.querySelectorAll('.software-example-zone .drag').length;
-      return stateFromCounts(typeCount+exampleCount,6);
-    }
-  },
-  {id:'q4',module:0,state:()=>radioNamesState(['q4a','q4b','q4c'])},
-  {id:'q5',module:1,state:()=>radioNamesState(['q5a','q5b','q5c','q5d'])},
-  {id:'q6',module:1,state:()=>radioNamesState(['q6a','q6b','q6c','q6d'])},
-  {id:'q7',module:1,state:()=>radioNamesState(['q7a','q7b'])},
-  {id:'q8',module:1,state:()=>shortAnswerState('data-interception')},
-  {id:'q9',module:1,state:()=>shortAnswerState('phishing-response')},
-  {id:'q10',module:1,state:()=>shortAnswerState('malware-interception')},
-  {id:'q11',module:1,state:()=>shortAnswerState('password-identity')},
-  {
-    id:'q12',module:2,
-    state:()=>{
-      const answered=phoneTaskPages.filter(phoneTaskComplete).length;
-      const started=phoneTaskPages.filter(page=>page.querySelector('input[type=checkbox]:checked')).length;
-      return stateFromCounts(answered,phoneTaskPages.length,started);
-    }
-  },
-  {id:'q13',module:2,state:()=>radioNamesState(['q13a','q13b','q13c','q13d','q13e'])}
-];
+modulePages.forEach((modulePage,moduleIndex)=>{
+  const moduleQuestions=questionDefinitions.filter(question=>question.module===moduleIndex);
+  if(!moduleQuestions.length)return;
+  const group=document.createElement('div');
+  group.className='question-group';
+  const groupTitle=document.createElement('p');
+  groupTitle.className='question-group-title';
+  groupTitle.textContent=moduleDirectoryLabels[moduleIndex];
+  const links=document.createElement('div');
+  links.className='question-links';
+  moduleQuestions.forEach(question=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='question-jump';
+    button.dataset.question=question.id;
+    const label=document.createElement('span');
+    label.className='question-label';
+    label.textContent=question.id.toUpperCase();
+    const state=document.createElement('span');
+    state.className='question-state';
+    state.textContent='Not answered';
+    button.append(label,state);
+    links.appendChild(button);
+    question.button=button;
+  });
+  group.append(groupTitle,links);
+  questionDirectoryBody.appendChild(group);
+});
 const questionButtons=[...document.querySelectorAll('.question-jump')];
 let currentQuestionId='q1';
 
 function updateQuestionDirectory(){
   let answeredCount=0;
   questionDefinitions.forEach(question=>{
-    const state=question.state();
-    const button=document.querySelector('.question-jump[data-question="'+question.id+'"]');
+    const state=questionState(question.anchor);
+    const button=question.button;
     const stateLabel=button.querySelector('.question-state');
     button.classList.toggle('answered',state==='answered');
     button.classList.toggle('in-progress',state==='in-progress');
@@ -1344,7 +1347,10 @@ function jumpToQuestion(questionId,moduleIndex){
 }
 
 questionButtons.forEach(button=>{
-  button.addEventListener('click',()=>jumpToQuestion(button.dataset.question,Number(button.dataset.module)));
+  button.addEventListener('click',()=>{
+    const question=questionDefinitions.find(item=>item.id===button.dataset.question);
+    if(question)jumpToQuestion(question.id,question.module);
+  });
 });
 
 const questionObserver=new IntersectionObserver(entries=>{
@@ -1353,7 +1359,7 @@ const questionObserver=new IntersectionObserver(entries=>{
     .sort((left,right)=>left.boundingClientRect.top-right.boundingClientRect.top);
   if(visible.length)setCurrentQuestion(visible[0].target.dataset.questionAnchor);
 },{rootMargin:'-90px 0px -60% 0px',threshold:0});
-document.querySelectorAll('[data-question-anchor]').forEach(question=>questionObserver.observe(question));
+questionDefinitions.forEach(question=>questionObserver.observe(question.anchor));
 
 document.querySelectorAll('.next-module').forEach(btn=>{
   btn.addEventListener('click',()=>{
