@@ -158,13 +158,23 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 .phone-home{display:block}
 .phone-apps{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .phone-app{
-  min-height:78px;border:1px solid rgba(150,179,195,.72);border-radius:15px;
+  min-height:90px;border:1px solid rgba(150,179,195,.72);border-radius:15px;
   background:rgba(255,255,255,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
   color:var(--navy);font-size:14px;font-weight:700;cursor:pointer;padding:8px
 }
 .phone-app:hover{background:#fff;border-color:#6e9fbb}
 .phone-app:active{transform:translateY(1px)}
-.phone-app>span:not(.unread-dot){display:block;font-size:27px;line-height:1;margin-bottom:6px}
+.phone-app-icon{
+  display:block;width:50px;height:50px;margin:0 auto 6px;border-radius:12px;
+  background-image:url('/assets/year8-phone/security-phone-reference.png');
+  background-repeat:no-repeat;background-size:1388.889px 781.481px;
+  box-shadow:0 3px 8px rgba(15,34,57,.18)
+}
+.phone-app-icon-social{background-position:-563.889px -275px}
+.phone-app-icon-messages{background-position:-704.63px -648.148px}
+.phone-app-icon-downloads{background-position:-704.63px -426.852px}
+.phone-app-icon-account{background-position:-704.63px -503.704px}
+.phone-app-icon-network{background-position:-635.185px -648.148px}
 .phone-panel{display:none}
 .phone-panel.active{display:block}
 .phone-panel h3{margin:2px 0 9px;color:var(--navy);font-size:19px;line-height:1.25}
@@ -181,9 +191,6 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 .phone-step{padding:14px 0;border-top:1px solid #e7edf2}
 .phone-step:first-of-type{border-top:0}
 .phone-tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;background:#eaf2f7;color:var(--blue)}
-.status-list{display:grid;gap:6px;margin-top:9px}
-.status-item{padding:7px 9px;border-radius:9px;background:rgba(244,247,249,.88);color:#536675;font-size:12px;line-height:1.25}
-.status-item.done{background:#eaf7f1;color:#217a57;font-weight:700}
 @media(max-width:850px){
   .phone-section{grid-template-columns:1fr}
   .phone{width:min(100%,340px)}
@@ -192,11 +199,9 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
   .phone-top{font-size:11.5px}
   .phone-screen{padding:9px;border-radius:0 0 34px 34px}
   .phone-apps{gap:7px}
-  .phone-app{min-height:68px;border-radius:12px;padding:7px;font-size:12.5px}
-  .phone-app>span:not(.unread-dot){font-size:23px;margin-bottom:5px}
+  .phone-app{min-height:86px;border-radius:12px;padding:7px;font-size:12.5px}
+  .phone-app-icon{margin-bottom:5px}
   .phone-card{padding:8px;font-size:12px}
-  .status-list{gap:5px;margin-top:7px}
-  .status-item{padding:6px 7px;font-size:11px}
 }
 
 
@@ -670,20 +675,13 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 
     <div class="phone-home" id="phoneHome">
       <div class="phone-apps">
-        <button type="button" class="phone-app" data-phoneapp="social"><span class="unread-dot" data-dot="social" style="display:none"></span><span>📱</span>Social</button>
-        <button type="button" class="phone-app" data-phoneapp="messages"><span class="unread-dot" data-dot="messages" style="display:none"></span><span>💬</span>Messages</button>
-        <button type="button" class="phone-app" data-phoneapp="downloads"><span class="unread-dot" data-dot="downloads" style="display:none"></span><span>📁</span>Downloads</button>
-        <button type="button" class="phone-app" data-phoneapp="account"><span class="unread-dot" data-dot="account" style="display:none"></span><span>🔐</span>Account</button>
-        <button type="button" class="phone-app" data-phoneapp="network"><span class="unread-dot" data-dot="network" style="display:none"></span><span>🌐</span>Network</button>
+        <button type="button" class="phone-app" data-phoneapp="social"><span class="unread-dot" data-dot="social" style="display:none"></span><span class="phone-app-icon phone-app-icon-social" aria-hidden="true"></span>Social</button>
+        <button type="button" class="phone-app" data-phoneapp="messages"><span class="unread-dot" data-dot="messages" style="display:none"></span><span class="phone-app-icon phone-app-icon-messages" aria-hidden="true"></span>Messages</button>
+        <button type="button" class="phone-app" data-phoneapp="downloads"><span class="unread-dot" data-dot="downloads" style="display:none"></span><span class="phone-app-icon phone-app-icon-downloads" aria-hidden="true"></span>Downloads</button>
+        <button type="button" class="phone-app" data-phoneapp="account"><span class="unread-dot" data-dot="account" style="display:none"></span><span class="phone-app-icon phone-app-icon-account" aria-hidden="true"></span>Account</button>
+        <button type="button" class="phone-app" data-phoneapp="network"><span class="unread-dot" data-dot="network" style="display:none"></span><span class="phone-app-icon phone-app-icon-network" aria-hidden="true"></span>Network</button>
       </div>
 
-      <div class="status-list">
-        <div class="status-item" id="status-social">Social post checked</div>
-        <div class="status-item" id="status-messages">Suspicious message checked</div>
-        <div class="status-item" id="status-downloads">Download checked</div>
-        <div class="status-item" id="status-account">Account security checked</div>
-        <div class="status-item" id="status-network">Network security checked</div>
-      </div>
     </div>
 
     <div class="phone-panel" id="social">
