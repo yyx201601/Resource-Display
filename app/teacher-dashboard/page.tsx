@@ -56,6 +56,27 @@ function resultStatus(
   return { label: "Complete", classes: "bg-[#e6f5ee] text-[#157347]" };
 }
 
+function questionStatus(score: number, maxScore: number) {
+  if (score === maxScore) {
+    return {
+      label: "Correct",
+      classes: "bg-[#e6f5ee] text-[#157347]",
+    };
+  }
+
+  if (score === 0) {
+    return {
+      label: "Incorrect",
+      classes: "bg-[#fff2f2] text-[#a72b2b]",
+    };
+  }
+
+  return {
+    label: "Partial",
+    classes: "bg-[#fff6df] text-[#8a5a00]",
+  };
+}
+
 function Sidebar({ view, pendingCount }: { view: DashboardView; pendingCount: number }) {
   const links = [
     { view: "results" as const, label: "Test results", href: "/teacher-dashboard" },
@@ -322,6 +343,73 @@ async function MarkView({ selectedAttemptId }: { selectedAttemptId: string | und
             </div>
           </div>
         </header>
+
+        {selectedAttempt.automaticQuestions.length > 0 ? (
+          <section className="mb-5 overflow-hidden rounded-xl border border-[#d9e1ea] bg-white">
+            <div className="border-b border-[#d9e1ea] p-5">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold">Submitted answers</h3>
+                  <p className="mt-1 text-sm text-[#66788a]">
+                    Automatic questions show the student answer, correct answer,
+                    and mark for each item.
+                  </p>
+                </div>
+                <span className="rounded-lg bg-[#f5f7fa] px-3 py-2 text-sm font-semibold text-[#536579]">
+                  {selectedAttempt.automaticScore} /{" "}
+                  {selectedAttempt.automaticMaxScore} automatic
+                </span>
+              </div>
+            </div>
+
+            <div className="divide-y divide-[#e5ebf1]">
+              {selectedAttempt.automaticQuestions.map((question) => {
+                const status = questionStatus(question.score, question.maxScore);
+
+                return (
+                  <article key={question.key} className="p-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-semibold">{question.label}</p>
+                          <span className="rounded bg-[#f5f7fa] px-2 py-1 text-xs font-semibold text-[#66788a]">
+                            {question.kind.replace("_", " ")}
+                          </span>
+                        </div>
+                        <dl className="mt-3 grid gap-3 lg:grid-cols-2">
+                          <div className="rounded-lg bg-[#f5f7fa] p-3">
+                            <dt className="text-xs font-bold uppercase text-[#66788a]">
+                              Student answer
+                            </dt>
+                            <dd className="mt-1 text-sm leading-6 text-[#25364a]">
+                              {question.studentAnswer}
+                            </dd>
+                          </div>
+                          <div className="rounded-lg bg-[#f5f7fa] p-3">
+                            <dt className="text-xs font-bold uppercase text-[#66788a]">
+                              Correct answer
+                            </dt>
+                            <dd className="mt-1 text-sm leading-6 text-[#25364a]">
+                              {question.correctAnswer}
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
+                        <span className={`rounded-md px-2 py-1 text-xs font-bold ${status.classes}`}>
+                          {status.label}
+                        </span>
+                        <span className="text-sm font-semibold text-[#25364a]">
+                          {question.score} / {question.maxScore}
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         <MarkingForm key={selectedAttempt.attemptId} attempt={selectedAttempt} />
       </div>

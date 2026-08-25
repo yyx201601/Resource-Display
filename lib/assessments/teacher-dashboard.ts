@@ -56,6 +56,16 @@ export type ManualQuestionForMarking = {
   feedback: string;
 };
 
+export type AutomaticQuestionResult = {
+  key: string;
+  label: string;
+  kind: "multiple_choice" | "matching" | "multi_select";
+  studentAnswer: string;
+  correctAnswer: string;
+  score: number;
+  maxScore: number;
+};
+
 export type MarkingAttempt = {
   attemptId: string;
   studentName: string;
@@ -72,6 +82,7 @@ export type MarkingAttempt = {
   submittedAt: Date;
   markedAt: Date | null;
   teacherFeedback: string;
+  automaticQuestions: AutomaticQuestionResult[];
   questions: ManualQuestionForMarking[];
 };
 
@@ -111,6 +122,246 @@ function parseAnswers(value: unknown): AnswerSnapshot {
       ),
     ),
   };
+}
+
+const YEAR8_V3_RADIO_QUESTIONS = [
+  ["q2a", "2A. What is the main role of a keyboard?", "input", "Enter text and commands"],
+  ["q2b", "2B. What is the main role of a monitor?", "output", "Display visual information"],
+  ["q2c", "2C. Which device keeps files after the computer is turned off?", "storage", "SSD / Storage Drive"],
+  ["q2d", "2D. Which device captures visual information from the real world?", "camera", "Camera / Webcam"],
+  ["q4a", "4A. The student laptop is the...", "sender", "Sender"],
+  ["q4b", "4B. The printer is the...", "receiver", "Receiver"],
+  ["q4c", "4C. The Wi-Fi network helps data...", "travel", "Travel"],
+  ["q5a", "5A. Fake message trying to trick you", "phishing", "Phishing"],
+  ["q5b", "5B. A dishonest online trick", "scam", "Scam"],
+  ["q5c", "5C. Harmful software", "malware", "Malware"],
+  ["q5d", "5D. Information used to prove who you are", "identity", "Identity information"],
+  ["q6a", "6A. Check a message is real before acting", "verify", "Verify"],
+  ["q6b", "6B. Use official or known sources", "trusted", "Trusted"],
+  ["q6c", "6C. Use different passwords", "unique", "Unique"],
+  ["q6d", "6D. Scramble data so it cannot be easily read", "encryption", "Encryption"],
+  ["q7a", "7A. What does data need to be useful?", "meaning", "Meaning / context"],
+  ["q7b", "7B. What is one part of multi-factor authentication?", "factor", "A second factor"],
+  ["q13a", "13A. Is it okay to share someone else's private photo?", "wrong", "No, it is wrong"],
+  ["q13b", "13B. What should you get before using someone's work?", "permission", "Permission"],
+  ["q13c", "13C. What should you do with unreliable information?", "dontuse", "Do not use it"],
+  ["q13d", "13D. What should you do if something unsafe happens online?", "report", "Report it"],
+  ["q13e", "13E. What helps decide if data collection is appropriate?", "purpose", "Purpose"],
+] as const;
+
+const YEAR8_V3_PLACEMENT_QUESTIONS = [
+  ["drag-0", "1. Monitor", "hardware-1", "Monitor image"],
+  ["drag-1", "1. Speaker", "hardware-3", "Speaker image"],
+  ["drag-2", "1. Microphone", "hardware-4", "Microphone image"],
+  ["drag-3", "1. Projector", "hardware-5", "Projector image"],
+  ["drag-4", "1. Keyboard", "hardware-0", "Keyboard image"],
+  ["drag-5", "1. Mouse", "hardware-2", "Mouse image"],
+  ["drag-6", "1. Webcam / Camera", "hardware-6", "Webcam / Camera image"],
+  ["drag-7", "3. Application Software label", "software-type-0", "Application Software"],
+  ["drag-8", "3. System Software label", "software-type-1", "System Software"],
+] as const;
+
+const YEAR8_V3_EXAMPLE_GROUPS = [
+  {
+    key: "software-examples-application",
+    label: "3. Application software examples",
+    items: ["drag-9", "drag-11"],
+    target: "software-example-0",
+    correctAnswer: "Microsoft Word and Google Chrome",
+  },
+  {
+    key: "software-examples-system",
+    label: "3. System software examples",
+    items: ["drag-10", "drag-12"],
+    target: "software-example-1",
+    correctAnswer: "Windows and Android",
+  },
+] as const;
+
+const YEAR8_V3_DRAG_LABELS: Record<string, string> = {
+  "drag-0": "Monitor",
+  "drag-1": "Speaker",
+  "drag-2": "Microphone",
+  "drag-3": "Projector",
+  "drag-4": "Keyboard",
+  "drag-5": "Mouse",
+  "drag-6": "Webcam / Camera",
+  "drag-7": "Application Software",
+  "drag-8": "System Software",
+  "drag-9": "Microsoft Word",
+  "drag-10": "Windows",
+  "drag-11": "Google Chrome",
+  "drag-12": "Android",
+};
+
+const YEAR8_V3_ZONE_LABELS: Record<string, string> = {
+  "hardware-0": "Keyboard image",
+  "hardware-1": "Monitor image",
+  "hardware-2": "Mouse image",
+  "hardware-3": "Speaker image",
+  "hardware-4": "Microphone image",
+  "hardware-5": "Projector image",
+  "hardware-6": "Webcam / Camera image",
+  "software-type-0": "Application Software",
+  "software-type-1": "System Software",
+  "software-example-0": "Application Software examples",
+  "software-example-1": "System Software examples",
+};
+
+const YEAR8_V3_CHECKBOX_GROUPS = [
+  {
+    key: "p1",
+    label: "Phone task 1. Personal information risk",
+    correct: ["p1:school", "p1:location", "p1:visibility"],
+    labels: {
+      "p1:school": "School details",
+      "p1:location": "Location",
+      "p1:visibility": "Public visibility",
+    },
+  },
+  {
+    key: "p2",
+    label: "Phone task 2. Suspicious message response",
+    correct: ["p2:report", "p2:official"],
+    labels: {
+      "p2:report": "Report it",
+      "p2:official": "Check official sources",
+    },
+  },
+  {
+    key: "p3",
+    label: "Phone task 3. Malware response",
+    correct: ["p3:deletefile", "p3:securityon"],
+    labels: {
+      "p3:deletefile": "Delete the file",
+      "p3:securityon": "Keep security protection on",
+    },
+  },
+  {
+    key: "p4",
+    label: "Phone task 4. Account protection",
+    correct: ["p4:unique", "p4:mfa"],
+    labels: {
+      "p4:unique": "Use a unique password",
+      "p4:mfa": "Turn on MFA",
+    },
+  },
+  {
+    key: "p5",
+    label: "Phone task 5. Encryption",
+    correct: ["p5:encrypt", "p5:key"],
+    labels: {
+      "p5:encrypt": "Encrypt the data",
+      "p5:key": "Use the correct key",
+    },
+  },
+] as const;
+
+function formatAnswer(value: string | undefined, labels: Record<string, string>) {
+  if (!value) {
+    return "No answer";
+  }
+
+  return labels[value] ?? value;
+}
+
+function buildYear8V3AutomaticQuestions(
+  answers: AnswerSnapshot,
+): AutomaticQuestionResult[] {
+  const selectedCheckboxes = new Set(answers.checkboxes);
+
+  return [
+    ...YEAR8_V3_PLACEMENT_QUESTIONS.map(
+      ([key, label, correctZone, correctAnswer]) => {
+        const studentZone = answers.placements[key];
+        return {
+          key,
+          label,
+          kind: "matching" as const,
+          studentAnswer: formatAnswer(studentZone, YEAR8_V3_ZONE_LABELS),
+          correctAnswer,
+          score: Number(studentZone === correctZone),
+          maxScore: 1,
+        };
+      },
+    ),
+    ...YEAR8_V3_EXAMPLE_GROUPS.map((group) => {
+      const placedItems = group.items.filter(
+        (item) => answers.placements[item] === group.target,
+      );
+      return {
+        key: group.key,
+        label: group.label,
+        kind: "matching" as const,
+        studentAnswer:
+          placedItems.length > 0
+            ? placedItems.map((item) => YEAR8_V3_DRAG_LABELS[item]).join(", ")
+            : "No answer",
+        correctAnswer: group.correctAnswer,
+        score: Number(placedItems.length === group.items.length),
+        maxScore: 1,
+      };
+    }),
+    ...YEAR8_V3_RADIO_QUESTIONS.map(
+      ([key, label, correctValue, correctAnswer]) => {
+        const studentAnswer = answers.radios[key];
+        return {
+          key,
+          label,
+          kind: "multiple_choice" as const,
+          studentAnswer: studentAnswer ?? "No answer",
+          correctAnswer,
+          score: Number(studentAnswer === correctValue),
+          maxScore: 1,
+        };
+      },
+    ),
+    ...YEAR8_V3_CHECKBOX_GROUPS.map((group) => {
+      const correct = new Set<string>(group.correct);
+      const selected = answers.checkboxes.filter((answer) =>
+        answer.startsWith(`${group.key}:`),
+      );
+      const isExactMatch =
+        selected.length === correct.size &&
+        selected.every((answer) => correct.has(answer)) &&
+        [...correct].every((answer) => selectedCheckboxes.has(answer));
+
+      return {
+        key: group.key,
+        label: group.label,
+        kind: "multi_select" as const,
+        studentAnswer:
+          selected.length > 0
+            ? selected
+                .map(
+                  (answer) =>
+                    group.labels[answer as keyof typeof group.labels] ??
+                    answer,
+                )
+                .join(", ")
+            : "No answer",
+        correctAnswer: group.correct
+          .map(
+            (answer) =>
+              group.labels[answer as keyof typeof group.labels] ?? answer,
+          )
+          .join(", "),
+        score: Number(isExactMatch),
+        maxScore: 1,
+      };
+    }),
+  ];
+}
+
+function buildAutomaticQuestions(
+  scorerKey: string,
+  answers: AnswerSnapshot,
+): AutomaticQuestionResult[] {
+  if (scorerKey === "year8-dt-45-v3") {
+    return buildYear8V3AutomaticQuestions(answers);
+  }
+
+  return [];
 }
 
 export async function getAssessmentSummaries() {
@@ -365,6 +616,7 @@ export async function getMarkingAttempt(attemptId: string) {
     submittedAt: attempt.submitted_at,
     markedAt: attempt.marked_at,
     teacherFeedback: attempt.teacher_feedback,
+    automaticQuestions: buildAutomaticQuestions(attempt.scorer_key, answers),
     questions: definitions.map((definition): ManualQuestionForMarking => {
       const mark = marksByQuestion.get(definition.questionKey);
       return {
