@@ -57,7 +57,6 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 .answerbox{width:100%;min-height:130px;border:1px solid #91a7b5;border-radius:8px;padding:15px;font:inherit;font-size:17px;line-height:1.55;resize:vertical;background:#fff}
 .answerbox::placeholder{color:#667887;opacity:1}
 .answerbox:focus{outline:3px solid rgba(42,167,201,.15);border-color:var(--cyan)}
-.note{border-left:5px solid #a16a12;background:#fff7e5;border-radius:8px;padding:14px 16px;margin:14px 0;font-size:16px}
 
 /* Only drag-and-drop activity: hardware image matching */
 .draglayout{display:grid;grid-template-columns:1fr 1.55fr;gap:18px;align-items:start}
@@ -155,7 +154,6 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;fle
 .phone-card{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:#fff;line-height:1.45}
 .phone-warning{background:#fff7e5;border-color:#d7b26b}
 .phone-danger{background:#fff5f5;border-color:#d89c9c}
-.phone-safe{background:#eefaf3;border-color:#a8d3b9}
 .phone-task{border:1px solid var(--line);border-radius:16px;background:#fff;padding:17px}
 .phone-task h3{margin:0 0 6px;color:var(--navy)}
 .phone-task-page>p{font-size:18px;line-height:1.55}
@@ -303,7 +301,7 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 
 <section class="module module-page active" id="m1" data-module-index="0">
 <div class="mh">
-<div><h2>Module 1 - Hardware, Software & Networks</h2><p>Recognise hardware and apply what you know about software and networks.</p></div>
+<div><h2>Module 1 - Hardware, Software & Networks</h2><p>Complete each matching and multiple-choice question.</p></div>
 <div class="meta">15 minutes | 15 marks</div>
 </div>
 <div class="content">
@@ -441,7 +439,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
 <div class="mh">
 <div>
 <h2>Module 2A - Cyber Security</h2>
-<p>Part 1: Recall & recognition → Part 2: Short answer.</p>
+<p>Follow the instructions for each question.</p>
 </div>
 <div class="meta">20 minutes | 20 marks</div>
 </div>
@@ -566,7 +564,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
 
 <div class="q" style="border-top:3px solid #d4e0e8;margin-top:10px;padding-top:22px">
   <p class="qt" style="font-size:24px"><strong>Module 2A - Short Answer</strong></p>
-  <p class="small">Read each scenario and explain your answer in your own words.</p>
+  <p class="small">Use your own words. Give a brief explanation for each answer.</p>
 </div>
 <div class="q" id="question-q8" data-question-anchor="q8">
 <p class="qt"><strong>Q8. Mia's Private Message</strong> <span class="small">(2 marks)</span></p>
@@ -628,18 +626,13 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 <div class="mh">
 <div>
 <h2>Module 2B - Protect Yourself</h2>
-<p>Part 1: Interactive phone protection → Part 2: Ethical use.</p>
+<p>Follow each instruction and choose the safest action.</p>
 </div>
 <div class="meta">10 minutes | 10 marks</div>
 </div>
 <div class="content">
 
 <div class="worksheet-page" data-worksheet-page data-page-label="Q12">
-
-<div class="note">
-<strong>Protect your own information.</strong> This is a fictional training phone.
-Explore the apps, notice the warning signs, and choose the safest action for yourself.
-</div>
 
 <div class="phone-section">
 
@@ -648,9 +641,6 @@ Explore the apps, notice the warning signs, and choose the safest action for you
   <div class="phone-screen">
 
     <div class="phone-home" id="phoneHome">
-      <div class="phone-card phone-safe">
-        <strong>Goal:</strong> Check your messages, downloads, account and network before something goes wrong.
-      </div>
       <div class="phone-apps">
         <button type="button" class="phone-app" data-phoneapp="social"><span class="unread-dot" data-dot="social" style="display:none"></span><span>📱</span>Social</button>
         <button type="button" class="phone-app" data-phoneapp="messages"><span class="unread-dot" data-dot="messages" style="display:none"></span><span>💬</span>Messages</button>
@@ -739,14 +729,12 @@ Explore the apps, notice the warning signs, and choose the safest action for you
 <div class="phone-task-head">
   <div>
     <h3 style="margin:0;color:var(--navy)">Q12. Fix the Security Problems on Your Phone</h3>
-    <p class="small" style="margin:5px 0 0">Open the app with the red unread dot, inspect the information, then make the required changes.</p>
   </div>
   <div class="phone-task-progress" id="phoneTaskProgress">Task 1 of 5</div>
 </div>
 
 <div class="phone-instruction">
-<strong>Instruction:</strong> For each task, the app you need to inspect will show a <strong>red unread dot</strong>.
-Click that app first, read the information on the phone, then answer the question on the right.
+<strong>Instruction:</strong> Open the app with the <strong>red unread dot</strong>. Read the information, then answer the question on the right.
 </div>
 
 <div class="phone-task-page active multiq" data-task-index="0" data-app="social" data-correct="school,location,visibility" data-required="3">
@@ -819,7 +807,7 @@ Click that app first, read the information on the phone, then answer the questio
 <div id="question-q13" data-question-anchor="q13">
 <div class="q" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
   <p class="qt" style="font-size:24px"><strong>Module 2B - Ethical Use</strong></p>
-  <p class="small">After protecting your own information, apply purpose, permission and harm to responsible technical use.</p>
+  <p class="small">Choose the most responsible action in each scenario.</p>
 </div>
 
 
@@ -1256,8 +1244,8 @@ const modulePages=[...document.querySelectorAll('.module-page')];
 const worksheetPages=[...document.querySelectorAll('.worksheet-page')];
 const moduleNames=[
   'Hardware, Software & Networks',
-  'Cyber Security: Recall → Short Answer',
-  'Protect Yourself → Ethical Use'
+  'Cyber Security',
+  'Protect Yourself'
 ];
 let currentModule=0;
 let currentWorksheetPage=0;
