@@ -104,8 +104,8 @@ export function scoreYear8DigitalTechnologiesV3(
     automaticScore:
       radioScore + singlePlacementScore + exampleGroupScore + selectionScore,
     automaticMaxScore: 38,
-    manualMaxScore: 10,
-    totalMaxScore: 48,
+    manualMaxScore: 12,
+    totalMaxScore: 50,
     breakdown: {
       radio: radioScore,
       matching: singlePlacementScore + exampleGroupScore,

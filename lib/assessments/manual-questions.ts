@@ -39,21 +39,23 @@ const QUESTIONS_BY_SCORER: Record<string, ManualQuestionDefinition[]> = {
       questionKey: "data-interception",
       label: "Q8",
       prompt:
-        "Mia's private message is copied while travelling across a public network. Explain what happened and why the encrypted message may still be protected.",
-      maxScore: 2,
+        "Mia's private message is copied while travelling across a public network. Explain what happened, how encryption protects the message, and what is needed to read it.",
+      maxScore: 3,
       markingGuide: [
         "1 mark: identifies data interception or copying data while it travels.",
-        "1 mark: explains that encryption makes the content unreadable or difficult to understand without the key.",
+        "1 mark: explains that encryption makes the copied content unreadable or difficult to understand.",
+        "1 mark: explains that the correct decryption key is needed to read the message.",
       ],
     },
     {
       questionKey: "phishing-response",
       label: "Q9",
       prompt:
-        "Identify the specific threat in Alex's urgent school-account message and give one safe action Alex should take.",
-      maxScore: 2,
+        "Identify the specific threat in Alex's urgent school-account message, give one detail that supports your answer, and state one safe action Alex should take.",
+      maxScore: 3,
       markingGuide: [
         "1 mark: identifies phishing.",
+        "1 mark: uses scenario evidence such as the unusual sender, urgent warning, or sign-in link.",
         "1 mark: gives a safe action such as avoiding the link, checking the official site, or reporting the message.",
       ],
     },

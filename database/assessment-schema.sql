@@ -209,7 +209,7 @@ insert into assessment_definitions (
 )
 values (
   'year8-dt-45', 'v3', 'Year 8 Digital Technologies Test',
-  'year8-dt-45-v3', 48, 10
+  'year8-dt-45-v3', 50, 12
 )
 on conflict (slug, version)
 do update set
