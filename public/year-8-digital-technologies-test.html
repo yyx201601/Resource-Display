@@ -27,37 +27,38 @@ try{
   --ink:#172033;--muted:#647385;--line:#d4e0e8;--bg:#f4f8fb;--card:#fff;--soft:#f8fbfd;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:linear-gradient(120deg,var(--navy),#144c78);color:#fff;padding:26px 18px}
-header .wrap{max-width:1120px;margin:auto}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.55;background:#edf2f5;color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:26px 18px;border-bottom:5px solid var(--cyan)}
+header .wrap{max-width:1180px;margin:auto}
 h1{margin:0 0 6px;font-size:clamp(28px,4vw,44px)}
-header p{margin:0;color:#d9edf8}
+header p{margin:0;color:#d9edf8;font-size:16px}
 .top{position:sticky;top:0;z-index:9;background:rgba(244,248,251,.96);border-bottom:1px solid #e1e9ef}
 .topin{max-width:1120px;margin:auto;padding:10px 18px;display:flex;gap:14px;align-items:center}
 .bar{height:9px;background:#dce8ef;border-radius:999px;overflow:hidden;flex:1}
 .bar>div{height:100%;width:0;background:var(--cyan)}
 .pill{font-size:13px;font-weight:700;color:var(--navy);background:#e8f2f8;padding:7px 10px;border-radius:999px;white-space:nowrap}
-main{max-width:1420px;margin:auto;padding:22px 18px 70px}
-.module{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:20px 0;overflow:hidden;box-shadow:0 8px 22px rgba(28,66,96,.05)}
-.mh{padding:18px 20px;background:linear-gradient(90deg,#f3f8fb,#fff);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.mh h2{margin:0;color:var(--navy);font-size:25px}
-.mh p{margin:5px 0 0;color:var(--muted)}
-.meta{font-size:13px;color:var(--blue);font-weight:700}
-.content{padding:20px}
-.q{padding:18px 0;border-top:1px solid #e8eef3}
+main{max-width:1260px;margin:auto;padding:26px 18px 80px}
+.module{background:var(--card);border:1px solid #c8d5de;border-radius:10px;margin:20px 0;overflow:hidden;box-shadow:0 5px 16px rgba(28,66,96,.07)}
+.mh{padding:24px 28px;background:#f2f7fa;border-bottom:2px solid #bdced9;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.mh h2{margin:0;color:var(--navy);font-size:28px;line-height:1.25}
+.mh p{margin:7px 0 0;color:#536579;font-size:16px}
+.meta{font-size:15px;color:var(--blue);font-weight:700}
+.content{padding:28px 32px}
+.q{padding:28px 0;border-top:1px solid #dbe4ea}
 .q:first-child{border-top:0;padding-top:0}
-.qt{font-size:18px;line-height:1.45;margin:0 0 12px}
-.small{font-size:13px;color:var(--muted)}
-.choices{display:grid;gap:9px}
-.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff}
-.choice:hover{border-color:#96bdd1;background:#fbfdfe}
-.choice.compact{padding:9px 10px}
-input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
-.scenario{border:1px solid var(--line);background:var(--soft);border-radius:14px;padding:15px;margin:12px 0;line-height:1.5}
-.answerbox{width:100%;min-height:82px;border:1px solid #aebfcb;border-radius:12px;padding:12px;font:inherit;resize:vertical;background:#fff}
+.qt{font-size:22px;line-height:1.4;margin:0 0 18px}
+.small{font-size:15px;color:var(--muted)}
+.choices{display:grid;grid-template-columns:1fr;gap:10px}
+.choice{display:flex;gap:13px;align-items:flex-start;min-height:52px;border:1px solid #bdcbd5;border-radius:8px;padding:13px 15px;background:#fff;font-size:17px;line-height:1.45}
+.choice:hover{border-color:#6e9fbb;background:#f5fafc}
+.choice.compact{padding:13px 15px}
+input[type=radio],input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;flex:0 0 auto;accent-color:var(--blue)}
+.scenario{border:1px solid #c5d2da;background:#f5f8fa;border-radius:8px;padding:18px;margin:14px 0 16px;line-height:1.6;font-size:17px}
+.answerbox{width:100%;min-height:130px;border:1px solid #91a7b5;border-radius:8px;padding:15px;font:inherit;font-size:17px;line-height:1.55;resize:vertical;background:#fff}
+.answerbox::placeholder{color:#667887;opacity:1}
 .answerbox:focus{outline:3px solid rgba(42,167,201,.15);border-color:var(--cyan)}
-.hint{margin-top:8px;border-left:4px solid var(--cyan);padding:8px 11px;background:#f3fbfd;border-radius:8px;color:#425767;font-size:13px}
-.note{border-left:5px solid #a16a12;background:#fff7e5;border-radius:10px;padding:12px 14px;margin:14px 0}
+.hint{margin-top:10px;border-left:4px solid var(--cyan);padding:10px 13px;background:#f3fbfd;border-radius:6px;color:#425767;font-size:15px}
+.note{border-left:5px solid #a16a12;background:#fff7e5;border-radius:8px;padding:14px 16px;margin:14px 0;font-size:16px}
 
 /* Only drag-and-drop activity: hardware image matching */
 .draglayout{display:grid;grid-template-columns:1fr 1.55fr;gap:18px;align-items:start}
@@ -98,11 +99,11 @@ input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
 .example-zone .small{display:block;margin-bottom:6px}
 .example-zone .drag{margin:6px 6px 0 0}
 
-/* compact MCQ grids */
-.mcqgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.mcqcard{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px}
-.mcqcard p{margin:0 0 10px;line-height:1.4}
-.mcqcard .choices{gap:7px}
+/* Worksheet-style MCQs: one full-width question per row */
+.mcqgrid{display:grid;grid-template-columns:1fr;gap:20px}
+.mcqcard{border:1px solid #b9c9d3;border-left:5px solid var(--blue);background:#fff;border-radius:8px;padding:20px 22px}
+.mcqcard p{max-width:78ch;margin:0 0 15px;font-size:18px;line-height:1.55}
+.mcqcard .choices{gap:10px}
 
 /* network visual */
 .netmodel{display:grid;grid-template-columns:1fr 55px 1fr 55px 1fr;gap:7px;align-items:center;margin:12px 0}
@@ -158,6 +159,7 @@ input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
 .phone-safe{background:#eefaf3;border-color:#a8d3b9}
 .phone-task{border:1px solid var(--line);border-radius:16px;background:#fff;padding:17px}
 .phone-task h3{margin:0 0 6px;color:var(--navy)}
+.phone-task-page>p{font-size:18px;line-height:1.55}
 .phone-step{padding:14px 0;border-top:1px solid #e7edf2}
 .phone-step:first-of-type{border-top:0}
 .phone-tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;background:#eaf2f7;color:var(--blue)}
@@ -180,11 +182,11 @@ input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
   font-size:13px;font-weight:700;color:var(--navy);
   background:#e8f2f8;padding:7px 11px;border-radius:999px
 }
-.module-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.module-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding:0 32px 28px}
 .module-actions button:disabled,.phone-task-nav button:disabled{opacity:.45;cursor:not-allowed}
 
 /* Question directory */
-.assessment-layout{display:grid;grid-template-columns:230px minmax(0,1120px);gap:24px;align-items:start;justify-content:center}
+.assessment-layout{display:grid;grid-template-columns:230px minmax(0,960px);gap:24px;align-items:start;justify-content:center}
 .assessment-content{min-width:0}
 .question-directory{position:sticky;top:64px;max-height:calc(100dvh - 82px);overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff;padding:15px;box-shadow:0 8px 22px rgba(28,66,96,.05)}
 .question-directory-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
@@ -197,8 +199,8 @@ input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
 .question-jump:hover{background:#f3f8fb;border-color:#c7d9e4}
 .question-jump:focus-visible{outline:3px solid rgba(42,167,201,.25);outline-offset:1px}
 .question-jump.current{background:#e8f2f8;border-color:#72abc8;color:var(--navy);font-weight:700}
-.question-label{font-size:13px;font-weight:700}
-.question-state{font-size:11px;color:var(--muted);white-space:nowrap}
+.question-label{font-size:14px;font-weight:700}
+.question-state{font-size:12px;color:var(--muted);white-space:nowrap}
 .question-jump.answered .question-state{color:var(--green);font-weight:700}
 .question-jump.in-progress .question-state{color:#8a5b0c;font-weight:700}
 [data-question-anchor]{scroll-margin-top:82px}
@@ -237,7 +239,7 @@ input[type=radio],input[type=checkbox]{margin-top:3px;transform:scale(1.1)}
 
 /* submit */
 .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-button.primary,button.secondary{border:0;border-radius:11px;padding:12px 17px;font-size:15px;font-weight:700;cursor:pointer}
+button.primary,button.secondary{border:0;border-radius:8px;min-height:48px;padding:12px 18px;font-size:16px;font-weight:700;cursor:pointer}
 button.primary{background:var(--navy);color:#fff}
 button.secondary{background:#e9eef3;color:var(--navy)}
 .review{display:none;background:#fff;border:2px solid var(--navy);border-radius:16px;padding:20px;margin-top:22px}
@@ -254,6 +256,15 @@ button.secondary{background:#e9eef3;color:var(--navy)}
   .cycle-middle{grid-template-columns:1fr}
   .line{display:none}
   .top{position:static}
+  body{font-size:16px}
+  main{padding:18px 12px 60px}
+  .mh{padding:20px}
+  .mh h2{font-size:24px}
+  .content{padding:22px 18px}
+  .qt{font-size:20px}
+  .mcqcard{padding:17px 15px}
+  .mcqcard p,.choice{font-size:16px}
+  .module-actions{padding:0 18px 22px}
 }
 </style>
 </head>
@@ -261,7 +272,7 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 <header>
 <div class="wrap">
 <h1>Year 8 Digital Technologies Test</h1>
-<p>Hardware · Software · Networks · Cyber Security<br><strong id="studentname"></strong></p>
+<p>Hardware, Software, Networks and Cyber Security<br><strong id="studentname"></strong></p>
 </div>
 </header>
 
@@ -291,8 +302,8 @@ button.secondary{background:#e9eef3;color:var(--navy)}
 
 <section class="module module-page active" id="m1" data-module-index="0">
 <div class="mh">
-<div><h2>Module 1 — Hardware, Software & Networks</h2><p>Recognise hardware and apply what you know about software and networks.</p></div>
-<div class="meta">15 minutes · 15 marks</div>
+<div><h2>Module 1 - Hardware, Software & Networks</h2><p>Recognise hardware and apply what you know about software and networks.</p></div>
+<div class="meta">15 minutes | 15 marks</div>
 </div>
 <div class="content">
 
@@ -416,10 +427,10 @@ Drag the two software types to the correct descriptions. Then drag each example 
 <section class="module module-page" id="m2a" data-module-index="1">
 <div class="mh">
 <div>
-<h2>Module 2A — Cyber Security</h2>
+<h2>Module 2A - Cyber Security</h2>
 <p>Part 1: Recall & recognition → Part 2: Short answer.</p>
 </div>
-<div class="meta">20 minutes · 20 marks</div>
+<div class="meta">20 minutes | 20 marks</div>
 </div>
 <div class="content">
 
@@ -536,7 +547,7 @@ Drag the two software types to the correct descriptions. Then drag each example 
 
 
 <div class="q" style="border-top:3px solid #d4e0e8;margin-top:10px;padding-top:22px">
-  <p class="qt" style="font-size:21px"><strong>Module 2A — Short Answer</strong></p>
+  <p class="qt" style="font-size:24px"><strong>Module 2A - Short Answer</strong></p>
   <p class="small">Now move from recognising the answer to explaining the ideas in your own words. Use the scenario evidence and your cheat sheet.</p>
 </div>
 <div class="q" id="question-q8" data-question-anchor="q8">
@@ -546,8 +557,8 @@ Mia sends a private message across a public network. An attacker copies the data
 The copied message looks like <code>8F#1 XQ!7 92@</code>.
 </div>
 <p><strong>Explain what happened and why the message may still be protected.</strong></p>
-<textarea id="data-interception" class="answerbox shortanswer" data-short-answer="data-interception" data-marks="2" maxlength="2000" placeholder="Write 1–2 clear sentences."></textarea>
-<div class="hint">Think about: interception · encryption · what the attacker can understand</div>
+<textarea id="data-interception" class="answerbox shortanswer" data-short-answer="data-interception" data-marks="2" maxlength="2000" placeholder="Write 1-2 clear sentences."></textarea>
+<div class="hint">Think about: interception, encryption and what the attacker can understand.</div>
 </div>
 
 <div class="q" id="question-q9" data-question-anchor="q9">
@@ -557,8 +568,8 @@ Alex receives a message saying: “Your school account will be deleted today. Cl
 The sender address looks unusual.
 </div>
 <p><strong>Explain why this is phishing rather than just a general scam, and give one safe action Alex should take.</strong></p>
-<textarea id="phishing-response" class="answerbox shortanswer" data-short-answer="phishing-response" data-marks="2" maxlength="2000" placeholder="Write 1–2 clear sentences."></textarea>
-<div class="hint">Think about: pretending to be trusted · login information · Pause · Check · Verify · Report</div>
+<textarea id="phishing-response" class="answerbox shortanswer" data-short-answer="phishing-response" data-marks="2" maxlength="2000" placeholder="Write 1-2 clear sentences."></textarea>
+<div class="hint">Think about: pretending to be trusted, login information, pause, check, verify and report.</div>
 </div>
 
 <div class="q" id="question-q10" data-question-anchor="q10">
@@ -578,7 +589,7 @@ Jordan uses the same password for school email, gaming and social media. One acc
 Later, someone logs into Jordan's social media and sends messages while pretending to be Jordan.
 </div>
 <p><strong>Explain the password problem, what happened next, and one suitable protection.</strong></p>
-<textarea id="password-identity" class="answerbox shortanswer" data-short-answer="password-identity" data-marks="3" maxlength="2000" placeholder="Write 2–3 clear sentences."></textarea>
+<textarea id="password-identity" class="answerbox shortanswer" data-short-answer="password-identity" data-marks="3" maxlength="2000" placeholder="Write 2-3 clear sentences."></textarea>
 </div>
 
 </div>
@@ -592,10 +603,10 @@ Later, someone logs into Jordan's social media and sends messages while pretendi
 <section class="module module-page" id="m2b" data-module-index="2">
 <div class="mh">
 <div>
-<h2>Module 2B — Protect Yourself</h2>
+<h2>Module 2B - Protect Yourself</h2>
 <p>Part 1: Interactive phone protection → Part 2: Ethical use.</p>
 </div>
-<div class="meta">10 minutes · 10 marks</div>
+<div class="meta">10 minutes | 10 marks</div>
 </div>
 <div class="content">
 
@@ -633,7 +644,7 @@ Explore the apps, notice the warning signs, and choose the safest action for you
 
     <div class="phone-panel" id="social">
       <button type="button" class="phone-back">← Home</button>
-      <h3>Social — Draft Post</h3>
+      <h3>Social - Draft Post</h3>
       <div class="phone-card">
         “Birthday party this Saturday! 🎉<br>
         Year 8 at <strong>St George College</strong>.<br>
@@ -713,7 +724,7 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 <div class="phone-task-page active multiq" data-task-index="0" data-app="social" data-correct="school,location,visibility" data-required="3">
-<span class="phone-tag">Social · 1 mark</span>
+<span class="phone-tag">Social | 1 mark</span>
 <p><strong>12A.</strong> The draft post is currently public. Select exactly THREE changes you should make before posting.</p>
 <div class="choices">
 <label class="choice compact"><input type="checkbox" name="p1" value="school">Delete “St George College”</label>
@@ -725,7 +736,7 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 <div class="phone-task-page multiq" data-task-index="1" data-app="messages" data-correct="report,official" data-required="2">
-<span class="phone-tag">Messages · 1 mark</span>
+<span class="phone-tag">Messages | 1 mark</span>
 <p><strong>12B.</strong> Select exactly TWO changes to how you should respond to this message.</p>
 <div class="choices">
 <label class="choice compact"><input type="checkbox" name="p2" value="report">Delete / report the suspicious message instead of replying</label>
@@ -736,7 +747,7 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 <div class="phone-task-page multiq" data-task-index="2" data-app="downloads" data-correct="deletefile,securityon" data-required="2">
-<span class="phone-tag">Downloads · 1 mark</span>
+<span class="phone-tag">Downloads | 1 mark</span>
 <p><strong>12C.</strong> The file is ready to install. Select exactly TWO changes you should make.</p>
 <div class="choices">
 <label class="choice compact"><input type="checkbox" name="p3" value="deletefile">Delete / do not install “Free_Game_Mod.exe”</label>
@@ -747,7 +758,7 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 <div class="phone-task-page multiq" data-task-index="3" data-app="account" data-correct="unique,mfa" data-required="2">
-<span class="phone-tag">Account · 1 mark</span>
+<span class="phone-tag">Account | 1 mark</span>
 <p><strong>12D.</strong> Select exactly TWO account settings you should change.</p>
 <div class="choices">
 <label class="choice compact"><input type="checkbox" name="p4" value="unique">Replace the reused password with different, unique passwords</label>
@@ -758,7 +769,7 @@ Click that app first, read the information on the phone, then answer the questio
 </div>
 
 <div class="phone-task-page multiq" data-task-index="4" data-app="network" data-correct="encrypt,key" data-required="2">
-<span class="phone-tag">Network · 1 mark</span>
+<span class="phone-tag">Network | 1 mark</span>
 <p><strong>12E.</strong> The current network settings show Encryption OFF and the key stored with the message. Select exactly TWO changes.</p>
 <div class="choices">
 <label class="choice compact"><input type="checkbox" name="p5" value="encrypt">Turn encryption / a secure connection ON</label>
@@ -778,8 +789,8 @@ Click that app first, read the information on the phone, then answer the questio
 
 <div id="question-q13" data-question-anchor="q13">
 <div class="q" style="border-top:3px solid #d4e0e8;margin-top:20px;padding-top:22px">
-  <p class="qt" style="font-size:21px"><strong>Module 2B — Ethical Use</strong></p>
-  <p class="small">After protecting your own information, apply Purpose · Permission · Harm to responsible technical use.</p>
+  <p class="qt" style="font-size:24px"><strong>Module 2B - Ethical Use</strong></p>
+  <p class="small">After protecting your own information, apply purpose, permission and harm to responsible technical use.</p>
 </div>
 
 
@@ -855,8 +866,6 @@ Click that app first, read the information on the phone, then answer the questio
 <div class="submitted" id="done">
 <h3>Test submitted</h3>
 <p>Your answers have been recorded and are now locked.</p>
-<p><strong>Your teacher will mark the short-answer questions and share results separately.</strong></p>
-<p class="small">You can use the question directory and module buttons to review your submitted answers.</p>
 </div>
 
 </div>
@@ -1473,7 +1482,7 @@ async function restoreSubmittedAnswers(){
     if(serverAlreadyConfirmed){
       savePill.textContent='Using saved submitted answers';
     }else{
-      savePill.textContent='Submission check unavailable — reload to retry';
+      savePill.textContent='Submission check unavailable - reload to retry';
     }
   }
 }
