@@ -168,9 +168,9 @@ pre.code{margin:0;min-height:500px;padding:18px 22px 22px;overflow:auto;backgrou
         </div>
 
         <div class="bank" data-bank="structure">
-          <div class="token" draggable="true" data-value="EVENT_SENTENCE">TRIGGER_ID.EVENT = FUNCTION;</div>
+          <div class="token" draggable="true" data-value="EVENT_SENTENCE">EVENT STATEMENT</div>
           <div class="token" draggable="true" data-value="FUNCTION_NAME">FUNCTION_NAME</div>
-          <div class="token" draggable="true" data-value="SET_VALUE_SENTENCE">TARGET_ID.textContent = SOURCE_ID.value;</div>
+          <div class="token" draggable="true" data-value="SET_VALUE_SENTENCE">SET VALUE STATEMENT</div>
         </div>
 
         <div class="actions">
@@ -407,6 +407,53 @@ function checkContainers(containers,key){
   });
   return all;
 }
+function setCodeHoleGroupState(holes,ok){
+  holes.forEach(hole=>{
+    hole.classList.toggle('correct',ok);
+    hole.classList.toggle('wrong',!ok);
+  });
+}
+function functionBlockRole(values){
+  const [keyword,action,target,source,property]=values;
+  if(keyword!=='function'||source!=='nameInput'||property!=='value') return '';
+  if(action==='inputAction'&&target==='typingText') return 'input';
+  if(action==='clickAction'&&target==='savedText') return 'click';
+  return '';
+}
+function eventStatementRole(values){
+  const [trigger,event,action]=values;
+  if(trigger==='nameInput'&&event==='oninput'&&action==='inputAction') return 'input';
+  if(trigger==='saveButton'&&event==='onclick'&&action==='clickAction') return 'click';
+  return '';
+}
+function checkCodeGroups(groups,roleForValues){
+  const roles=groups.map(group=>roleForValues(group.map(tokenValue)));
+  let all=true;
+  groups.forEach((group,index)=>{
+    const role=roles[index];
+    const ok=role&&roles.filter(x=>x===role).length===1;
+    setCodeHoleGroupState(group,ok);
+    if(!ok) all=false;
+  });
+  return all;
+}
+function checkCodeAnswer(){
+  const holes=[...document.querySelectorAll('.code-hole')];
+  if(holes.length!==16) return checkContainers(holes,'codeExpected');
+
+  const functionBlocks=[
+    holes.slice(0,5),
+    holes.slice(5,10),
+  ];
+  const eventStatements=[
+    holes.slice(10,13),
+    holes.slice(13,16),
+  ];
+
+  const functionsOk=checkCodeGroups(functionBlocks,functionBlockRole);
+  const eventsOk=checkCodeGroups(eventStatements,eventStatementRole);
+  return functionsOk&&eventsOk;
+}
 function unlockStep(step){
   const section=document.querySelector(`.section[data-step="${step}"]`);
   if(!section)return;
@@ -450,8 +497,7 @@ document.querySelectorAll('.tab').forEach(btn=>{
 });
 
 document.getElementById('checkCode').addEventListener('click',()=>{
-  const holes=[...document.querySelectorAll('.code-hole')];
-  const ok=checkContainers(holes,'codeExpected');
+  const ok=checkCodeAnswer();
   const fb=document.getElementById('codeFeedback');
   fb.textContent=ok?'Correct — preview unlocked.':'Not yet — check the red blanks.';
   fb.className='feedback '+(ok?'good':'bad');
