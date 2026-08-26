@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Builder Examples</title>
+
+  <!-- =========================================================
+       CSS IS ONLY USED FOR THE ADVANCED EXAMPLES BELOW.
+       The two BASIC examples use normal browser styling.
+       ========================================================= -->
+  <style>
+    .advanced-wrap {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      border-radius: 18px;
+    }
+
+    .advanced-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .advanced-controls {
+      display: grid;
+      gap: 12px;
+    }
+
+    .advanced-controls label {
+      font-weight: bold;
+    }
+
+    .advanced-controls input,
+    .advanced-controls select,
+    .advanced-controls button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      margin-top: 4px;
+    }
+
+    .advanced-card {
+      padding: 24px;
+      border-radius: 18px;
+      border: 3px solid;
+      min-height: 240px;
+      transition: 0.25s;
+    }
+
+    .advanced-card h3 {
+      font-size: 30px;
+      margin: 0 0 10px;
+    }
+
+    .advanced-card .big-icon {
+      font-size: 64px;
+      margin: 8px 0;
+    }
+
+    /* Advanced Sample 1 themes */
+    .neon-blue {
+      background: #101a3a;
+      color: #dff7ff;
+      border-color: #48d9ff;
+    }
+
+    .neon-pink {
+      background: #32132e;
+      color: #ffe6fa;
+      border-color: #ff63cf;
+    }
+
+    .neon-green {
+      background: #102a21;
+      color: #e5fff3;
+      border-color: #56f09b;
+    }
+
+    /* Advanced Sample 2 themes */
+    .forest {
+      background: #edf7ec;
+      color: #18351c;
+      border-color: #4d8d55;
+    }
+
+    .ember {
+      background: #fff1e6;
+      color: #4a2115;
+      border-color: #d76631;
+    }
+
+    .frost {
+      background: #e9f7ff;
+      color: #17384a;
+      border-color: #4fa5d6;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid currentColor;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    /* Extra styling for Advanced Sample 2 */
+    .guild-card-layout {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .guild-symbol {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      border: 2px solid currentColor;
+      border-radius: 18px;
+      font-size: 42px;
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .guild-stat {
+      margin: 8px 0;
+    }
+
+    .guild-story {
+      margin-top: 18px;
+      padding: 14px;
+      border-left: 4px solid currentColor;
+      background: rgba(255, 255, 255, 0.35);
+      line-height: 1.55;
+    }
+
+    .quest-button-active {
+      transform: scale(1.03);
+      font-weight: bold;
+    }
+
+    @media (max-width: 700px) {
+      .advanced-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Character Builder Examples</h1>
+  <p>
+    Two basic examples use only HTML + JavaScript events:
+    <strong>oninput</strong>, <strong>onclick</strong> and <strong>onchange</strong>.
+    The advanced examples add CSS.
+  </p>
+
+  <hr>
+
+  <!-- =========================================================
+       BASIC SAMPLE 1
+       No CSS needed.
+       ========================================================= -->
+
+  <h2>Basic Sample 1 — Space Crew Builder</h2>
+
+  <p>
+    <label>
+      Character name:
+      <input id="spaceNameInput" type="text" placeholder="Type a name">
+    </label>
+  </p>
+
+  <p>
+    <label>
+      Home planet:
+      <select id="planetSelect">
+        <option value="Earth">Earth</option>
+        <option value="Mars">Mars</option>
+        <option value="Europa">Europa</option>
+      </select>
+    </label>
+  </p>
+
+  <p>
+    <label>
+      Crew role:
+      <select id="roleSelect">
+        <option value="Pilot">Pilot</option>
+        <option value="Engineer">Engineer</option>
+        <option value="Scientist">Scientist</option>
+      </select>
+    </label>
+  </p>
+
+  <button id="missionButton">Accept Mission</button>
+
+  <h3>Your Character</h3>
+  <p>Name: <span id="spaceName">Unknown</span></p>
+  <p>Planet: <span id="spacePlanet">Earth</span></p>
+  <p>Role: <span id="spaceRole">Pilot</span></p>
+  <p>Status: <span id="spaceStatus">Waiting...</span></p>
+
+  <script>
+    function spaceNameAction() {
+      spaceName.textContent = spaceNameInput.value;
+    }
+
+    function planetAction() {
+      spacePlanet.textContent = planetSelect.value;
+    }
+
+    function roleAction() {
+      spaceRole.textContent = roleSelect.value;
+    }
+
+    function missionAction() {
+      spaceStatus.textContent = "Mission accepted!";
+    }
+
+    spaceNameInput.oninput = spaceNameAction;
+    planetSelect.onchange = planetAction;
+    roleSelect.onchange = roleAction;
+    missionButton.onclick = missionAction;
+  </script>
+
+  <hr>
+
+  <!-- =========================================================
+       BASIC SAMPLE 2
+       No CSS needed.
+       ========================================================= -->
+
+  <h2>Basic Sample 2 — Hero Academy Builder</h2>
+
+  <p>
+    <label>
+      Hero name:
+      <input id="heroNameInput" type="text" placeholder="Type a hero name">
+    </label>
+  </p>
+
+  <p>
+    <label>
+      Super power:
+      <select id="powerSelect">
+        <option value="Super Speed">Super Speed</option>
+        <option value="Invisibility">Invisibility</option>
+        <option value="Telekinesis">Telekinesis</option>
+      </select>
+    </label>
+  </p>
+
+  <p>
+    <label>
+      Sidekick:
+      <select id="sidekickSelect">
+        <option value="Robot">Robot</option>
+        <option value="Falcon">Falcon</option>
+        <option value="Mini Dragon">Mini Dragon</option>
+      </select>
+    </label>
+  </p>
+
+  <p>
+    <label>
+      Hero reputation:
+      <select id="reputationSelect">
+        <option value=""></option>
+        <option value="They are famous for arriving just in time when a city is in danger.">Reliable</option>
+        <option value="They prefer solving problems with clever plans instead of brute force.">Strategic</option>
+        <option value="They are always the first person to step forward when someone needs help.">Brave</option>
+        <option value="They may cause a little chaos, but somehow the mission usually succeeds.">Unpredictable</option>
+      </select>
+    </label>
+  </p>
+
+  <button id="trainButton">Start Training</button>
+
+  <h3>Hero Profile</h3>
+  <p>
+    <span id="heroName">Unknown</span> is a hero with the power of
+    <span id="heroPower">Super Speed</span>.
+    Their trusted sidekick is a <span id="heroSidekick">Robot</span>.
+  </p>
+
+  <p id="heroDescription">
+    Choose a reputation to add a character description.
+  </p>
+
+  <p>Training: <span id="trainingStatus">Not started</span></p>
+
+  <script>
+    function heroNameAction() {
+      heroName.textContent = heroNameInput.value;
+    }
+
+    function powerAction() {
+      heroPower.textContent = powerSelect.value;
+    }
+
+    function sidekickAction() {
+      heroSidekick.textContent = sidekickSelect.value;
+    }
+
+    function reputationAction() {
+      heroDescription.textContent = reputationSelect.value;
+    }
+
+    function trainingAction() {
+      trainingStatus.textContent = "Training started!";
+    }
+
+    heroNameInput.oninput = heroNameAction;
+    powerSelect.onchange = powerAction;
+    sidekickSelect.onchange = sidekickAction;
+    reputationSelect.onchange = reputationAction;
+    trainButton.onclick = trainingAction;
+  </script>
+
+  <hr>
+
+  <!-- =========================================================
+       ADVANCED SAMPLE 1
+       Adds CSS + a changing card theme.
+       ========================================================= -->
+
+  <section class="advanced-wrap">
+    <h2>Advanced Sample 1 — Neon City Operative</h2>
+
+    <div class="advanced-grid">
+      <div class="advanced-controls">
+        <label>
+          Operative name
+          <input id="neonNameInput" type="text" placeholder="e.g. Nova">
+        </label>
+
+        <label>
+          Special skill
+          <select id="skillSelect">
+            <option value="Hacking">Hacking</option>
+            <option value="Stealth">Stealth</option>
+            <option value="Drone Control">Drone Control</option>
+          </select>
+        </label>
+
+        <label>
+          Suit colour
+          <select id="neonThemeSelect">
+            <option value="neon-blue">Electric Blue</option>
+            <option value="neon-pink">Cyber Pink</option>
+            <option value="neon-green">Toxic Green</option>
+          </select>
+        </label>
+
+        <button id="deployButton">Deploy Operative</button>
+      </div>
+
+      <div id="neonCard" class="advanced-card neon-blue">
+        <span class="badge">CITY NETWORK // ACTIVE</span>
+        <div class="big-icon">🕶️</div>
+        <h3 id="neonName">Unnamed Operative</h3>
+        <p>Special skill: <strong id="neonSkill">Hacking</strong></p>
+        <p>Mission: <strong id="deployStatus">Stand by</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function neonNameAction() {
+      neonName.textContent = neonNameInput.value;
+    }
+
+    function skillAction() {
+      neonSkill.textContent = skillSelect.value;
+    }
+
+    function neonThemeAction() {
+      neonCard.className = "advanced-card " + neonThemeSelect.value;
+    }
+
+    function deployAction() {
+      deployStatus.textContent = "DEPLOYED";
+    }
+
+    neonNameInput.oninput = neonNameAction;
+    skillSelect.onchange = skillAction;
+    neonThemeSelect.onchange = neonThemeAction;
+    deployButton.onclick = deployAction;
+  </script>
+
+  <hr>
+
+  <!-- =========================================================
+       ADVANCED SAMPLE 2
+       Adds CSS + a changing fantasy card theme.
+       ========================================================= -->
+
+  <section class="advanced-wrap">
+    <h2>Advanced Sample 2 — Fantasy Guild Character</h2>
+    <p>
+      This version combines several choices into a character card and a short story.
+      The CSS changes the visual theme, while JavaScript updates the character details.
+    </p>
+
+    <div class="advanced-grid">
+      <div class="advanced-controls">
+        <label>
+          Character name
+          <input id="guildNameInput" type="text" placeholder="e.g. Arin">
+        </label>
+
+        <label>
+          Character class
+          <select id="classSelect">
+            <option value="Ranger">Ranger</option>
+            <option value="Mage">Mage</option>
+            <option value="Knight">Knight</option>
+            <option value="Rogue">Rogue</option>
+          </select>
+        </label>
+
+        <label>
+          Realm
+          <select id="realmSelect">
+            <option value="forest">Forest Realm</option>
+            <option value="ember">Ember Realm</option>
+            <option value="frost">Frost Realm</option>
+          </select>
+        </label>
+
+        <label>
+          Companion
+          <select id="companionSelect">
+            <option value="a silver wolf">Silver Wolf</option>
+            <option value="a tiny dragon">Tiny Dragon</option>
+            <option value="an enchanted raven">Enchanted Raven</option>
+            <option value="a clockwork fox">Clockwork Fox</option>
+          </select>
+        </label>
+
+        <label>
+          Reputation
+          <select id="legendSelect">
+            <option value="They are known for helping travellers who become lost beyond the city walls.">Guardian</option>
+            <option value="Stories say they once entered a ruined tower alone and returned carrying a forgotten map.">Explorer</option>
+            <option value="Most enemies underestimate them once. Very few get the chance to do it twice.">Fearless</option>
+            <option value="They rarely reveal their full plan, but somehow they always seem to be three steps ahead.">Mysterious</option>
+          </select>
+        </label>
+
+        <button id="questButton">Begin Quest</button>
+      </div>
+
+      <div id="guildCard" class="advanced-card forest">
+        <span class="badge">GUILD MEMBER // LEVEL 01</span>
+
+        <div class="guild-card-layout">
+          <div id="guildSymbol" class="guild-symbol">🏹</div>
+
+          <div>
+            <h3 id="guildName">Unnamed Adventurer</h3>
+            <p class="guild-stat">Class: <strong id="guildClass">Ranger</strong></p>
+            <p class="guild-stat">Realm: <strong id="guildRealm">Forest Realm</strong></p>
+            <p class="guild-stat">Companion: <strong id="guildCompanion">a silver wolf</strong></p>
+            <p class="guild-stat">Quest: <strong id="questStatus">Not started</strong></p>
+          </div>
+        </div>
+
+        <div class="guild-story">
+          <strong>Character Story</strong>
+          <p>
+            <span id="storyName">This adventurer</span> is a
+            <span id="storyClass">Ranger</span> from the
+            <span id="storyRealm">Forest Realm</span>.
+            They travel with <span id="storyCompanion">a silver wolf</span>.
+          </p>
+          <p id="guildLegend">
+            They are known for helping travellers who become lost beyond the city walls.
+          </p>
+          <p id="questStory">
+            For now, their next chapter is still unwritten.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function guildNameAction() {
+      guildName.textContent = guildNameInput.value;
+      storyName.textContent = guildNameInput.value;
+    }
+
+    function classAction() {
+      guildClass.textContent = classSelect.value;
+      storyClass.textContent = classSelect.value;
+
+      if (classSelect.value == "Ranger") {
+        guildSymbol.textContent = "🏹";
+      }
+
+      if (classSelect.value == "Mage") {
+        guildSymbol.textContent = "🔮";
+      }
+
+      if (classSelect.value == "Knight") {
+        guildSymbol.textContent = "🛡️";
+      }
+
+      if (classSelect.value == "Rogue") {
+        guildSymbol.textContent = "🗡️";
+      }
+    }
+
+    function realmAction() {
+      guildCard.className = "advanced-card " + realmSelect.value;
+      guildRealm.textContent = realmSelect.options[realmSelect.selectedIndex].text;
+      storyRealm.textContent = realmSelect.options[realmSelect.selectedIndex].text;
+    }
+
+    function companionAction() {
+      guildCompanion.textContent = companionSelect.value;
+      storyCompanion.textContent = companionSelect.value;
+    }
+
+    function legendAction() {
+      guildLegend.textContent = legendSelect.value;
+    }
+
+    function questAction() {
+      questStatus.textContent = "ACTIVE";
+      questStory.textContent =
+        guildName.textContent +
+        " has received a sealed message from the Guild Master. Before sunrise, they must leave the realm and discover what is waiting beyond the old northern gate.";
+      questButton.className = "quest-button-active";
+      questButton.textContent = "Quest Started!";
+    }
+
+    guildNameInput.oninput = guildNameAction;
+    classSelect.onchange = classAction;
+    realmSelect.onchange = realmAction;
+    companionSelect.onchange = companionAction;
+    legendSelect.onchange = legendAction;
+    questButton.onclick = questAction;
+  </script>
+
+  <hr>
+
+  <h2>Student Challenge</h2>
+  <p>
+    Make your own character builder. Change the universe, labels, choices and output.
+    Start with the Basic version. If it works, add CSS to make your character card match your universe.
+  </p>
+
+</body>
+</html>

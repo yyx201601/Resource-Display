@@ -25,6 +25,12 @@ const resources = [
     description: "Practise connecting an input and button with JavaScript.",
     href: "/year9-w5-javascript-revision.html",
   },
+  {
+    week: "W6-A1",
+    title: "Example",
+    description: "Explore basic and advanced character builder examples.",
+    href: "/year9-w6-a1-character-builder-examples.html",
+  },
 ] as const;
 
 export default function Year9DigitalTechnologiesPage() {
@@ -52,7 +58,7 @@ export default function Year9DigitalTechnologiesPage() {
 
         <section
           aria-label="Year 9 resources"
-          className="mt-10 grid gap-5 md:grid-cols-3 md:gap-6"
+          className="mt-10 grid gap-5 md:grid-cols-2 md:gap-6"
         >
           {resources.map((resource) => (
             <a
