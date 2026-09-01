@@ -120,19 +120,6 @@ export function MarkingForm({ attempt }: MarkingFormProps) {
             </p>
           </div>
 
-          <details className="mt-4 text-sm text-[#536579]">
-            <summary className="cursor-pointer font-semibold text-[#286899]">
-              Marking guide
-            </summary>
-            <ul className="mt-2 space-y-1 pl-5">
-              {question.markingGuide.map((item) => (
-                <li className="list-disc" key={item}>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </details>
-
           <div className="mt-5 grid gap-4 sm:grid-cols-[150px_1fr]">
             <div>
               <label

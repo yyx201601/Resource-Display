@@ -25,6 +25,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 type DashboardView = "results" | "mark";
+type ResultsSort = "default" | "name" | "score";
+type SortDirection = "asc" | "desc";
 
 function formatDate(date: Date | null) {
   if (!date) {
@@ -75,6 +77,72 @@ function questionStatus(score: number, maxScore: number) {
     label: "Partial",
     classes: "bg-[#fff6df] text-[#8a5a00]",
   };
+}
+
+function sortResults<T extends { studentName: string; score: number | null }>(
+  results: T[],
+  sort: ResultsSort,
+  direction: SortDirection,
+) {
+  if (sort === "default") {
+    return results;
+  }
+
+  const multiplier = direction === "asc" ? 1 : -1;
+
+  return [...results].sort((left, right) => {
+    if (sort === "name") {
+      return (
+        left.studentName.localeCompare(right.studentName, "en-AU", {
+          sensitivity: "base",
+        }) * multiplier
+      );
+    }
+
+    const leftScore = left.score ?? -1;
+    const rightScore = right.score ?? -1;
+    if (leftScore === rightScore) {
+      return left.studentName.localeCompare(right.studentName, "en-AU", {
+        sensitivity: "base",
+      });
+    }
+
+    return (leftScore - rightScore) * multiplier;
+  });
+}
+
+function sortHref({
+  assessmentKey,
+  sort,
+  currentSort,
+  currentDirection,
+}: {
+  assessmentKey: string;
+  sort: Exclude<ResultsSort, "default">;
+  currentSort: ResultsSort;
+  currentDirection: SortDirection;
+}) {
+  const nextDirection =
+    currentSort === sort && currentDirection === "asc" ? "desc" : "asc";
+  const params = new URLSearchParams({
+    assessment: assessmentKey,
+    sort,
+    dir: nextDirection,
+  });
+
+  return `/teacher-dashboard?${params.toString()}`;
+}
+
+function sortLabel(
+  sort: Exclude<ResultsSort, "default">,
+  currentSort: ResultsSort,
+  currentDirection: SortDirection,
+) {
+  if (sort !== currentSort) {
+    return "↕";
+  }
+
+  return currentDirection === "asc" ? "↑" : "↓";
 }
 
 function Sidebar({ view, pendingCount }: { view: DashboardView; pendingCount: number }) {
@@ -130,20 +198,25 @@ function Sidebar({ view, pendingCount }: { view: DashboardView; pendingCount: nu
 async function ResultsView({
   assessments,
   selectedKey,
+  sort,
+  direction,
 }: {
   assessments: AssessmentSummary[];
   selectedKey: string | undefined;
+  sort: ResultsSort;
+  direction: SortDirection;
 }) {
   const selectedAssessment =
     assessments.find((assessment) => assessment.key === selectedKey) ??
     assessments[0] ??
     null;
-  const results = selectedAssessment
+  const unsortedResults = selectedAssessment
     ? await getStudentResults(
         selectedAssessment.slug,
         selectedAssessment.version,
       )
     : [];
+  const results = sortResults(unsortedResults, sort, direction);
 
   if (!selectedAssessment) {
     return (
@@ -171,7 +244,7 @@ async function ResultsView({
               {assessments.map((assessment) => (
                 <Link
                   key={assessment.key}
-                  href={`/teacher-dashboard?assessment=${encodeURIComponent(assessment.key)}`}
+                  href={`/teacher-dashboard?assessment=${encodeURIComponent(assessment.key)}&sort=${sort}&dir=${direction}`}
                   className={`rounded-lg border px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2aa7c9]/30 ${
                     assessment.key === selectedAssessment.key
                       ? "border-[#286899] bg-[#eaf5fb] text-[#174f78]"
@@ -217,10 +290,40 @@ async function ResultsView({
         <table className="w-full min-w-[820px] border-collapse text-left text-sm">
           <thead className="bg-[#f5f7fa] text-xs uppercase text-[#66788a]">
             <tr>
-              <th className="px-5 py-3 font-semibold">Student</th>
+              <th className="px-5 py-3 font-semibold">
+                <Link
+                  href={sortHref({
+                    assessmentKey: selectedAssessment.key,
+                    sort: "name",
+                    currentSort: sort,
+                    currentDirection: direction,
+                  })}
+                  className="inline-flex items-center gap-2 rounded px-1 py-0.5 transition hover:text-[#286899] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2aa7c9]/30"
+                >
+                  Student
+                  <span aria-hidden="true">
+                    {sortLabel("name", sort, direction)}
+                  </span>
+                </Link>
+              </th>
               <th className="px-5 py-3 font-semibold">Class</th>
               <th className="px-5 py-3 font-semibold">Status</th>
-              <th className="px-5 py-3 font-semibold">Final score</th>
+              <th className="px-5 py-3 font-semibold">
+                <Link
+                  href={sortHref({
+                    assessmentKey: selectedAssessment.key,
+                    sort: "score",
+                    currentSort: sort,
+                    currentDirection: direction,
+                  })}
+                  className="inline-flex items-center gap-2 rounded px-1 py-0.5 transition hover:text-[#286899] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2aa7c9]/30"
+                >
+                  Final score
+                  <span aria-hidden="true">
+                    {sortLabel("score", sort, direction)}
+                  </span>
+                </Link>
+              </th>
               <th className="px-5 py-3 font-semibold">Started</th>
               <th className="px-5 py-3 font-semibold">Submitted</th>
             </tr>
@@ -411,6 +514,9 @@ export default async function TeacherDashboardPage({
     typeof params.assessment === "string" ? params.assessment : undefined;
   const selectedAttemptId =
     typeof params.attempt === "string" ? params.attempt : undefined;
+  const sort: ResultsSort =
+    params.sort === "name" || params.sort === "score" ? params.sort : "default";
+  const direction: SortDirection = params.dir === "desc" ? "desc" : "asc";
   const assessments = await getAssessmentSummaries();
   const pendingCount = assessments.reduce(
     (total, assessment) => total + assessment.pendingMarkCount,
@@ -435,7 +541,12 @@ export default async function TeacherDashboardPage({
           {view === "mark" ? (
             <MarkView selectedAttemptId={selectedAttemptId} />
           ) : (
-            <ResultsView assessments={assessments} selectedKey={selectedKey} />
+            <ResultsView
+              assessments={assessments}
+              selectedKey={selectedKey}
+              sort={sort}
+              direction={direction}
+            />
           )}
         </div>
       </div>
