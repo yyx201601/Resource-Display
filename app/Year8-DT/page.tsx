@@ -10,14 +10,7 @@ export default function Year8DigitalTechnologiesPage() {
   return (
     <main className="min-h-[100dvh] bg-[#f4f8fb] px-5 py-10 text-[#172033] dark:bg-[#071321] dark:text-[#eef7fb] sm:px-8 sm:py-14">
       <div className="mx-auto w-full max-w-5xl">
-        <Link
-          href="/"
-          className="inline-flex min-h-11 items-center rounded-xl px-3 font-bold text-[#1c67a5] transition-colors hover:bg-[#dcecf5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2aa7c9]/30 dark:text-[#67c8df] dark:hover:bg-[#102536]"
-        >
-          Back to year levels
-        </Link>
-
-        <header className="mt-8 max-w-2xl">
+        <header className="max-w-2xl">
           <p className="text-sm font-bold text-[#1c67a5] dark:text-[#67c8df]">
             Course resources
           </p>
